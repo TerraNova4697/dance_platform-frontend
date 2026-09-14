@@ -28,7 +28,7 @@ export function AthleteDashboard() {
 
   return (
     <div className="dashboard-page">
-      <DashboardHeader firstName={firstName} onLogout={() => void handleLogout()} isLoggingOut={isLoggingOut} />
+      <DashboardHeader firstName={firstName} avatarUrl={queries.profile.data?.avatarUrl} onLogout={() => void handleLogout()} isLoggingOut={isLoggingOut} />
       <main className="dashboard-main">
         <section className="greeting-section">
           <p>{getGreeting()}, {firstName} <span aria-hidden="true">👋</span></p>

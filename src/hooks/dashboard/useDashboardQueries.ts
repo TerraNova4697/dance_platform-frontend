@@ -16,7 +16,7 @@ export function useDashboardQueries(userId: string) {
     schedule: useQuery({ queryKey: ['dashboard', 'schedule', userId], queryFn: () => getUpcomingSchedule(userId) }),
     myEvents: useQuery({ queryKey: ['dashboard', 'my-events', userId], queryFn: () => getMyEvents(userId) }),
     trainings: useQuery({ queryKey: ['dashboard', 'trainings', userId], queryFn: () => getMyTrainings(userId) }),
-    upcomingEvents: useQuery({ queryKey: ['dashboard', 'upcoming-events', userId], queryFn: () => getUpcomingEvents(userId) }),
-    notifications: useQuery({ queryKey: ['dashboard', 'notifications', userId], queryFn: () => getImportantNotifications(userId) }),
+    upcomingEvents: useQuery({ queryKey: ['dashboard', 'upcoming-events'], queryFn: getUpcomingEvents }),
+    notifications: useQuery({ queryKey: ['dashboard', 'notifications'], queryFn: getImportantNotifications }),
   }
 }

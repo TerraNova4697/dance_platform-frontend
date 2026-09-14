@@ -10905,6 +10905,241 @@
                     }
                 }
             }
+        },
+        "/api/method/dance_platform.openapi.docs": {
+            "get": {
+                "summary": "Docs",
+                "description": "Рендерит Swagger UI страницу.",
+                "tags": [
+                    "openapi"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    },
+                    "403": {
+                        "description": "Доступ запрещен"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Docs",
+                "description": "Рендерит Swagger UI страницу.",
+                "tags": [
+                    "openapi"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    },
+                    "403": {
+                        "description": "Доступ запрещен"
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {},
+                                "required": []
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/method/dance_platform.api.athlete_dashboard_profile.get_athlete_dashboard_profile": {
+            "get": {
+                "summary": "Get athlete dashboard profile",
+                "description": "Get athlete dashboard profile data for a given athlete_id.\n\nArgs:\n    athlete_id (str): The ID of the athlete.\n\nReturns:\n    dict: The athlete dashboard profile data.",
+                "tags": [
+                    "athlete_dashboard_profile"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    },
+                    "403": {
+                        "description": "Доступ запрещен"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "summary": "Get athlete dashboard profile",
+                "description": "Get athlete dashboard profile data for a given athlete_id.\n\nArgs:\n    athlete_id (str): The ID of the athlete.\n\nReturns:\n    dict: The athlete dashboard profile data.",
+                "tags": [
+                    "athlete_dashboard_profile"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    },
+                    "403": {
+                        "description": "Доступ запрещен"
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user_id": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "user_id"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/method/dance_platform.openapi.get_openapi_spec": {
+            "get": {
+                "summary": "Get openapi spec",
+                "description": "Описание отсутствует",
+                "tags": [
+                    "openapi"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    },
+                    "403": {
+                        "description": "Доступ запрещен"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Get openapi spec",
+                "description": "Описание отсутствует",
+                "tags": [
+                    "openapi"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    },
+                    "403": {
+                        "description": "Доступ запрещен"
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {},
+                                "required": []
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
