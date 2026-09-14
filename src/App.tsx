@@ -2,8 +2,9 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthProvider'
-import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage'
+import { PlaceholderPage } from './pages/PlaceholderPage'
+import { AthleteDashboard } from './pages/dashboard/AthleteDashboard'
 
 function App() {
   return (
@@ -12,7 +13,19 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route element={<ProtectedRoute />}>
-            <Route index element={<HomePage />} />
+            <Route index element={<AthleteDashboard />} />
+            <Route path="dashboard" element={<AthleteDashboard />} />
+            <Route path="events" element={<PlaceholderPage />} />
+            <Route path="events/map" element={<PlaceholderPage />} />
+            <Route path="events/:eventId" element={<PlaceholderPage />} />
+            <Route path="my-events" element={<PlaceholderPage />} />
+            <Route path="calendar" element={<PlaceholderPage />} />
+            <Route path="trainers" element={<PlaceholderPage />} />
+            <Route path="trainers/:trainerId" element={<PlaceholderPage />} />
+            <Route path="trainings/:bookingId" element={<PlaceholderPage />} />
+            <Route path="tickets" element={<PlaceholderPage />} />
+            <Route path="tickets/:ticketId" element={<PlaceholderPage />} />
+            <Route path="profile" element={<PlaceholderPage />} />
           </Route>
         </Routes>
       </AuthProvider>
