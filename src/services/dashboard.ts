@@ -1,4 +1,5 @@
 import { dashboardApi, type DanceEventRecord, type EventPriceRecord, type HostRecord, type VenueRecord } from '../api/dashboard'
+import { fetchSchedule } from '../api/schedule'
 import type { AthleteDashboardProfile, DashboardActivity, EventPreview, ImportantNotificationData, RegisteredEventPreview, TrainingBookingPreview } from '../types/dashboard'
 
 type EventContext = { venues: Map<string, VenueRecord>; hosts: Map<string, HostRecord>; prices: Map<string, EventPriceRecord>; directions: Map<string, string> }
@@ -111,10 +112,6 @@ export async function getUpcomingEvents(): Promise<EventPreview[]> {
   return events.map((event) => eventPreview(event, context))
 }
 
-async function personalSchedule(userId: string): Promise<DashboardActivity[]> {
-  const [events, trainings] = await Promise.all([getMyEvents(userId), getMyTrainings(userId)])
-  return [...events.map((event): DashboardActivity => ({ id: event.id, type: event.type, title: event.title, startAt: event.startAt, venueName: event.venueName, secondaryInfo: event.entries.map(({ label }) => label).join(', '), status: event.registrationStatus, ticketId: event.ticketId })), ...trainings.map((training): DashboardActivity => ({ id: training.id, type: 'training', title: training.title, startAt: training.startAt, endAt: training.endAt, venueName: training.venueName, secondaryInfo: training.trainerName, status: training.status }))].sort((a, b) => Date.parse(a.startAt) - Date.parse(b.startAt))
-}
 export async function getNextActivity(userId: string): Promise<DashboardActivity | null> {
   const activity = await dashboardApi.nextActivity(userId)
   if (!activity) return null
@@ -124,5 +121,5 @@ export async function getNextActivity(userId: string): Promise<DashboardActivity
     endAt: activity.endAt ? iso(activity.endAt) : undefined,
   }
 }
-export async function getUpcomingSchedule(userId: string): Promise<DashboardActivity[]> { return (await personalSchedule(userId)).slice(0, 5) }
+export async function getUpcomingSchedule(userId: string): Promise<DashboardActivity[]> { return (await fetchSchedule(userId, 5)).map((activity) => ({ ...activity, startAt: iso(activity.startAt), endAt: activity.endAt ? iso(activity.endAt) : undefined })) }
 export async function getImportantNotifications(): Promise<ImportantNotificationData[]> { return [] }
