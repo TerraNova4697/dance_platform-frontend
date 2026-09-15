@@ -13,9 +13,9 @@ const mobileLinks = [
   ['Профиль', routes.profile, 'user'],
 ] as const
 
-type DashboardHeaderProps = { firstName: string; avatarUrl?: string; onLogout: () => void; isLoggingOut: boolean }
+type DashboardHeaderProps = { firstName: string; avatarUrl?: string; onLogout: () => void; isLoggingOut: boolean; actionLabel?: string }
 
-export function DashboardHeader({ firstName, avatarUrl, onLogout, isLoggingOut }: DashboardHeaderProps) {
+export function DashboardHeader({ firstName, avatarUrl, onLogout, isLoggingOut, actionLabel }: DashboardHeaderProps) {
   const initial = firstName.charAt(0).toUpperCase() || 'D'
   return (
     <>
@@ -29,8 +29,8 @@ export function DashboardHeader({ firstName, avatarUrl, onLogout, isLoggingOut }
           </nav>
           <div className="header-actions">
             <a className="icon-button" href="#notifications" aria-label="Уведомления"><Icon name="bell" /></a>
-            <button className="profile-button" type="button" onClick={onLogout} disabled={isLoggingOut} aria-label="Выйти из аккаунта">
-              {avatarUrl ? <img className="avatar" src={avatarUrl} alt="" /> : <span className="avatar">{initial}</span>}<span>{isLoggingOut ? 'Выходим…' : firstName}</span>
+            <button className="profile-button" type="button" onClick={onLogout} disabled={isLoggingOut} aria-label={actionLabel ?? 'Выйти из аккаунта'}>
+              {avatarUrl ? <img className="avatar" src={avatarUrl} alt="" /> : <span className="avatar">{initial}</span>}<span>{isLoggingOut ? 'Выходим…' : actionLabel ?? firstName}</span>
             </button>
           </div>
         </div>

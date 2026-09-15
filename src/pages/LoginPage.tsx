@@ -16,7 +16,9 @@ export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const state = location.state as LocationState | null
-  const destination = state?.from?.pathname ?? '/'
+  const redirect = new URLSearchParams(location.search).get('redirect')
+  const safeRedirect = redirect?.startsWith('/') && !redirect.startsWith('//') ? redirect : undefined
+  const destination = state?.from?.pathname ?? safeRedirect ?? '/'
 
   if (isLoading) {
     return <LoadingScreen />
