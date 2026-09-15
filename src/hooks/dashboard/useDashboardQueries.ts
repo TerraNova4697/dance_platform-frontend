@@ -3,11 +3,11 @@ import {
   getDashboardProfile,
   getImportantNotifications,
   getNextActivity,
-  getUpcomingEvents,
   getUpcomingSchedule,
 } from '../../services/dashboard'
 import { getMyEvents } from '../../services/myEvents'
 import { getMyTrainings } from '../../services/myTrainings'
+import { getUpcomingEvents } from '../../services/upcomingEvents'
 
 export function useDashboardQueries(userId: string) {
   return {
@@ -16,7 +16,7 @@ export function useDashboardQueries(userId: string) {
     schedule: useQuery({ queryKey: ['dashboard', 'schedule', userId], queryFn: () => getUpcomingSchedule(userId) }),
     myEvents: useQuery({ queryKey: ['dashboard', 'my-events', userId], queryFn: () => getMyEvents(userId) }),
     trainings: useQuery({ queryKey: ['dashboard', 'trainings', userId], queryFn: () => getMyTrainings(userId) }),
-    upcomingEvents: useQuery({ queryKey: ['dashboard', 'upcoming-events'], queryFn: getUpcomingEvents }),
+    upcomingEvents: useQuery({ queryKey: ['dashboard', 'upcoming-events', userId], queryFn: () => getUpcomingEvents(userId) }),
     notifications: useQuery({ queryKey: ['dashboard', 'notifications'], queryFn: getImportantNotifications }),
   }
 }
