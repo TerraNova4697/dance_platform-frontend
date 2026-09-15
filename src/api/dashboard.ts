@@ -21,6 +21,7 @@ export type TrainingBookingRecord = { name: string; slot: string; participant: s
 export type TrainingSlotRecord = { name: string; training_offering: string; trainer: string; start_datetime: string; end_datetime: string; venue?: string; status?: string }
 export type TrainingOfferingRecord = { name: string; trainer: string; title: string; direction: string; default_venue?: string }
 export type AthleteDashboardProfileRecord = { id: string; firstName: string; avatarUrl?: string | null; city?: string | null }
+export type NextActivityRecord = { id: string; type: 'tournament' | 'master_class' | 'training'; title: string; startAt: string; endAt?: string; venueName?: string; secondaryInfo?: string; status: string; ticketId?: string }
 
 function byIds(field: string, ids: string[]): FrappeFilter[] {
   return ids.length ? [[field, 'in', [...new Set(ids)]]] : [[field, 'in', []]]
@@ -31,6 +32,12 @@ export const dashboardApi = {
     const query = new URLSearchParams({ user_id: userId })
     const response = await frappeFetch<AthleteDashboardProfileRecord | { message: AthleteDashboardProfileRecord }>(`/api/method/dance_platform.api.athlete_dashboard_profile.get_athlete_dashboard_profile?${query}`)
     return 'message' in response ? response.message : response
+  },
+  async nextActivity(userId: string) {
+    const query = new URLSearchParams({ user_id: userId })
+    const response = await frappeFetch<NextActivityRecord | null | { message: NextActivityRecord | null }>(`/api/method/dance_platform.api.athlete_dashboard_profile.get_next_activity?${query}`)
+    if (response && 'message' in response) return response.message
+    return response
   },
   events(filters: FrappeFilter[] = [], limit = 100) {
     return getResourceList<DanceEventRecord>('Dance Event', { fields: ['name', 'event_type', 'host', 'title', 'cover', 'venue', 'start_datetime', 'end_datetime', 'publication_status', 'event_status', 'currency', 'is_published'], filters, orderBy: 'start_datetime asc', limit })
