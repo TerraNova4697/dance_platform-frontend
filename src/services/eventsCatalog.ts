@@ -1,5 +1,6 @@
 import { fetchUpcomingEvents } from '../api/upcomingEvents'
 import type { EventPreview } from '../types/dashboard'
+import { normalizeCoordinate } from '../utils/coordinates'
 
 function normalizeDate(value: string): string {
   return value.includes('T') ? value : value.replace(' ', 'T')
@@ -7,5 +8,5 @@ function normalizeDate(value: string): string {
 
 export async function getEventsCatalog(userId: string, city: string): Promise<EventPreview[]> {
   const events = await fetchUpcomingEvents({ userId, city, period: 'all', type: 'all', limit: 20 })
-  return events.map((event) => ({ ...event, startAt: normalizeDate(event.startAt) }))
+  return events.map((event) => ({ ...event, startAt: normalizeDate(event.startAt), latitude: normalizeCoordinate(event.latitude), longitude: normalizeCoordinate(event.longitude) }))
 }

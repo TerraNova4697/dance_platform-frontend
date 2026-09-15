@@ -9,6 +9,8 @@ export interface MyEventRecord {
   city: string
   venueName?: string
   direction?: string
+  latitude?: number | string
+  longitude?: number | string
   hostName: string
   currency: 'KZT' | 'RUB' | 'USD' | 'EUR'
   registrationStatus: 'pending_payment' | 'confirmed' | 'cancelled' | 'transferred'
