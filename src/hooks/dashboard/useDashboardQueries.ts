@@ -2,12 +2,12 @@ import { useQuery } from '@tanstack/react-query'
 import {
   getDashboardProfile,
   getImportantNotifications,
-  getMyTrainings,
   getNextActivity,
   getUpcomingEvents,
   getUpcomingSchedule,
 } from '../../services/dashboard'
 import { getMyEvents } from '../../services/myEvents'
+import { getMyTrainings } from '../../services/myTrainings'
 
 export function useDashboardQueries(userId: string) {
   return {
