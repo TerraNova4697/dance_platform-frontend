@@ -5,6 +5,7 @@ import {
   getNextActivity,
   getUpcomingSchedule,
 } from '../../services/dashboard'
+import { getNearbySummary } from '../../services/nearbySummary'
 import { getMyEvents } from '../../services/myEvents'
 import { getMyTrainings } from '../../services/myTrainings'
 import { getUpcomingEvents } from '../../services/upcomingEvents'
@@ -17,6 +18,7 @@ export function useDashboardQueries(userId: string) {
     myEvents: useQuery({ queryKey: ['dashboard', 'my-events', userId], queryFn: () => getMyEvents(userId) }),
     trainings: useQuery({ queryKey: ['dashboard', 'trainings', userId], queryFn: () => getMyTrainings(userId) }),
     upcomingEvents: useQuery({ queryKey: ['dashboard', 'upcoming-events', userId], queryFn: () => getUpcomingEvents(userId) }),
+    nearbySummary: useQuery({ queryKey: ['dashboard', 'nearby-summary', userId], queryFn: () => getNearbySummary(userId) }),
     notifications: useQuery({ queryKey: ['dashboard', 'notifications'], queryFn: getImportantNotifications }),
   }
 }

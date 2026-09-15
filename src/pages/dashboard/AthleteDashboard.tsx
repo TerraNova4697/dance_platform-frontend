@@ -6,7 +6,8 @@ import { getGreeting } from '../../utils/date'
 import { DashboardHeader } from './components/DashboardHeader'
 import { MyEventsSection, UpcomingEventsSection } from './components/EventWidgets'
 import { ImportantNotification, NextActivityCard, SchedulePreview } from './components/PersonalWidgets'
-import { DiscoveryCtas, MyTrainingsSection } from './components/TrainingWidgets'
+import { DiscoveryCtas } from './components/DiscoveryCtas'
+import { MyTrainingsSection } from './components/TrainingWidgets'
 import './dashboard.css'
 
 export function AthleteDashboard() {
@@ -40,7 +41,7 @@ export function AthleteDashboard() {
         <MyEventsSection query={queries.myEvents} />
         <MyTrainingsSection query={queries.trainings} />
         <UpcomingEventsSection query={queries.upcomingEvents} />
-        <DiscoveryCtas nearbyCount={queries.upcomingEvents.data?.filter((event) => event.city === queries.profile.data?.city).length ?? 0} />
+        <DiscoveryCtas query={queries.nearbySummary} />
       </main>
     </div>
   )
