@@ -12,6 +12,10 @@ export interface UpcomingEventRecord {
   hostName: string
   minimumPrice?: number
   currency: 'KZT' | 'RUB' | 'USD' | 'EUR'
+  latitude?: number
+  longitude?: number
+  ageGroups?: string[]
+  levels?: string[]
 }
 
 export interface UpcomingEventsParams {

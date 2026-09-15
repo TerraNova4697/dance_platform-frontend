@@ -1,10 +1,11 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthProvider'
 import { LoginPage } from './pages/LoginPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 import { AthleteDashboard } from './pages/dashboard/AthleteDashboard'
+import { EventsPage } from './pages/events/EventsPage'
 
 function App() {
   return (
@@ -15,8 +16,8 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route index element={<AthleteDashboard />} />
             <Route path="dashboard" element={<AthleteDashboard />} />
-            <Route path="events" element={<PlaceholderPage />} />
-            <Route path="events/map" element={<PlaceholderPage />} />
+            <Route path="events" element={<EventsPage />} />
+            <Route path="events/map" element={<Navigate to="/events?view=map" replace />} />
             <Route path="events/:eventId" element={<PlaceholderPage />} />
             <Route path="my-events" element={<PlaceholderPage />} />
             <Route path="calendar" element={<PlaceholderPage />} />

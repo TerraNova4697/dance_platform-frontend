@@ -1,7 +1,7 @@
 export const routes = {
   home: '/',
   events: '/events',
-  eventsMap: '/events/map',
+  eventsMap: '/events?view=map',
   myEvents: '/my-events',
   calendar: '/calendar',
   trainers: '/trainers',

@@ -31,6 +31,10 @@ export interface EventPreview {
   hostName: string
   minimumPrice?: number
   currency: 'KZT' | 'RUB' | 'USD' | 'EUR'
+  latitude?: number
+  longitude?: number
+  ageGroups?: string[]
+  levels?: string[]
 }
 
 export interface RegisteredEventPreview extends EventPreview {
