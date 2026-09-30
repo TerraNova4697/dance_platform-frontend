@@ -41,7 +41,7 @@ export function LoginPage() {
       await login(normalizedUsr, pwd)
       navigate(destination, { replace: true })
     } catch {
-      // AuthProvider exposes a safe, user-facing error message.
+      // The auth store exposes a safe, user-facing error message.
     } finally {
       setSubmitting(false)
     }

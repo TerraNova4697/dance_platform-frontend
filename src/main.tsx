@@ -5,7 +5,7 @@ import './index.css'
 import App from './App.tsx'
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 30_000, retry: 1 } },
+  defaultOptions: { queries: { staleTime: 1000 * 60 * 5, retry: 1 } },
 })
 
 createRoot(document.getElementById('root')!).render(
