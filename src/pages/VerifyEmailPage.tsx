@@ -37,9 +37,9 @@ export function VerifyEmailPage() {
         setStatus('success')
         setSuccessMessage(result.message || 'Аккаунт успешно активирован!')
 
-        // Auto-redirect to home/dashboard after 2 seconds
+        // Auto-redirect to onboarding after 2 seconds
         const timer = setTimeout(() => {
-          navigate('/', { replace: true })
+          navigate('/onboarding', { replace: true })
         }, 2000)
         return () => clearTimeout(timer)
       } catch (err: unknown) {
@@ -115,14 +115,14 @@ export function VerifyEmailPage() {
             <p>{successMessage}</p>
           </div>
           <div className="auth-instructions">
-            <p>Сессия успешно создана. Перенаправляем вас в личный кабинет…</p>
+            <p>Сессия успешно создана. Переходим к заполнению анкеты профиля…</p>
           </div>
           <button
             type="button"
             className="primary-button"
-            onClick={() => navigate('/', { replace: true })}
+            onClick={() => navigate('/onboarding', { replace: true })}
           >
-            Перейти в личный кабинет
+            Заполнить анкету профиля
           </button>
         </section>
       </main>

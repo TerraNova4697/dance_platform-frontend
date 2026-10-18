@@ -16,6 +16,7 @@ export type PersonSummary = {
   first_name: string
   last_name: string
   photo: string | null
+  onboarding_status?: 'Pending' | 'Completed' | 'Skipped'
 }
 
 export type RegisterPayload = {

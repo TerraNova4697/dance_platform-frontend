@@ -3,6 +3,7 @@ export const routes = {
   login: '/login',
   register: '/register',
   verifyEmail: '/verify-email',
+  onboarding: '/onboarding',
   events: '/events',
   eventsMap: '/events?view=map',
   myEvents: '/my-events',

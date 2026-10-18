@@ -4,6 +4,7 @@ import './App.css'
 import { LoadingScreen } from './components/LoadingScreen'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { LoginPage } from './pages/LoginPage'
+import { OnboardingPage } from './pages/OnboardingPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { VerifyEmailPage } from './pages/VerifyEmailPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
@@ -28,6 +29,7 @@ function App() {
         <Route path="events/:eventId/tickets" element={<PlaceholderPage />} />
         <Route element={<ProtectedRoute />}>
           <Route index element={<AthleteDashboard />} />
+          <Route path="onboarding" element={<OnboardingPage />} />
           <Route path="dashboard" element={<AthleteDashboard />} />
           <Route path="events" element={<EventsPage />} />
           <Route path="events/map" element={<Navigate to="/events?view=map" replace />} />
