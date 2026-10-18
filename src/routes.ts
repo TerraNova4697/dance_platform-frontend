@@ -1,5 +1,8 @@
 export const routes = {
   home: '/',
+  login: '/login',
+  register: '/register',
+  verifyEmail: '/verify-email',
   events: '/events',
   eventsMap: '/events?view=map',
   myEvents: '/my-events',

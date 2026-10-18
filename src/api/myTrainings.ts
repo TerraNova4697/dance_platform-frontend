@@ -17,7 +17,7 @@ type MyTrainingsResponse = MyTrainingRecord[] | { message: MyTrainingRecord[] }
 export async function fetchMyTrainings(userId: string, limit = 20): Promise<MyTrainingRecord[]> {
   const query = new URLSearchParams({ user_id: userId, limit: String(limit) })
   const response = await frappeFetch<MyTrainingsResponse>(
-    `/api/method/dance_platform.api.get_my_trainings.get_my_trainings?${query}`,
+    `/api/method/dance_platform.api.get_my_trainings.get_my_trainings?${query}`, 
   )
   return Array.isArray(response) ? response : response.message
 }

@@ -1,16 +1,17 @@
-import React, { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
 import { LoadingScreen } from './components/LoadingScreen'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { LoginPage } from './pages/LoginPage'
+import { RegisterPage } from './pages/RegisterPage'
+import { VerifyEmailPage } from './pages/VerifyEmailPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 import { AthleteDashboard } from './pages/dashboard/AthleteDashboard'
 import { EventsPage } from './pages/events/EventsPage'
 import { useAuthStore } from './stores/authStore'
 
 const EventDetailsPage = lazy(() => import('./pages/events/details/EventDetailsPage').then((module) => ({ default: module.EventDetailsPage })))
-
 
 function App() {
   useEffect(() => {
@@ -21,6 +22,8 @@ function App() {
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="events/:eventId" element={<Suspense fallback={<LoadingScreen />}><EventDetailsPage /></Suspense>} />
         <Route path="events/:eventId/tickets" element={<PlaceholderPage />} />
         <Route element={<ProtectedRoute />}>

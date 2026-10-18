@@ -1,7 +1,9 @@
 import { useState, type FormEvent } from 'react'
-import { Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { resendVerificationEmail, FrappeApiError } from '../api/auth'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { useAuth } from '../hooks/useAuth'
+import { useAuthStore } from '../stores/authStore'
 
 type LocationState = {
   from?: { pathname?: string }
@@ -9,10 +11,17 @@ type LocationState = {
 
 export function LoginPage() {
   const { user, isLoading, error, login } = useAuth()
+  const unverifiedEmail = useAuthStore((state) => state.unverifiedEmail)
+
   const [usr, setUsr] = useState('')
   const [pwd, setPwd] = useState('')
   const [validationError, setValidationError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+
+  // Resend state for unverified accounts
+  const [resending, setResending] = useState(false)
+  const [resendStatus, setResendStatus] = useState<string | null>(null)
+
   const navigate = useNavigate()
   const location = useLocation()
   const state = location.state as LocationState | null
@@ -36,14 +45,35 @@ export function LoginPage() {
     }
 
     setValidationError(null)
+    setResendStatus(null)
     setSubmitting(true)
     try {
       await login(normalizedUsr, pwd)
       navigate(destination, { replace: true })
     } catch {
-      // The auth store exposes a safe, user-facing error message.
+      // The auth store exposes a safe, user-facing error message and updates unverifiedEmail.
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  async function handleResendActivation() {
+    const targetEmail = unverifiedEmail || usr.trim()
+    if (!targetEmail || resending) return
+
+    setResending(true)
+    setResendStatus(null)
+    try {
+      const res = await resendVerificationEmail(targetEmail)
+      setResendStatus(res.message || 'Ссылка для активации отправлена на вашу почту.')
+    } catch (err: unknown) {
+      if (err instanceof FrappeApiError) {
+        setResendStatus(err.message)
+      } else {
+        setResendStatus('Не удалось отправить ссылку повторно. Попробуйте позже.')
+      }
+    } finally {
+      setResending(false)
     }
   }
 
@@ -56,6 +86,26 @@ export function LoginPage() {
           <h1 id="login-title">Добро пожаловать</h1>
           <p>Войдите, чтобы продолжить работу</p>
         </div>
+
+        {unverifiedEmail && (
+          <div className="unverified-callout" role="alert">
+            <p className="unverified-title">Аккаунт не активирован</p>
+            <p className="unverified-text">
+              Адрес <strong>{unverifiedEmail}</strong> еще не подтвержден. Проверьте ваш почтовый ящик или отправьте ссылку повторно.
+            </p>
+            <button
+              type="button"
+              className="unverified-action-button"
+              onClick={handleResendActivation}
+              disabled={resending}
+            >
+              {resending ? 'Отправляем…' : 'Отправить ссылку активации повторно'}
+            </button>
+            {resendStatus && (
+              <p className="unverified-status">{resendStatus}</p>
+            )}
+          </div>
+        )}
 
         <form className="login-form" onSubmit={handleSubmit} noValidate>
           <label htmlFor="usr">
@@ -87,7 +137,7 @@ export function LoginPage() {
             />
           </label>
 
-          {(validationError || error) && (
+          {(validationError || error) && !unverifiedEmail && (
             <div className="form-error" role="alert">
               {validationError ?? error}
             </div>
@@ -97,6 +147,10 @@ export function LoginPage() {
             {submitting && <span className="button-spinner" aria-hidden="true" />}
             {submitting ? 'Входим…' : 'Войти'}
           </button>
+
+          <p className="auth-footer-text">
+            Еще нет аккаунта? <Link to="/register" className="auth-footer-link">Зарегистрироваться</Link>
+          </p>
         </form>
       </section>
     </main>
