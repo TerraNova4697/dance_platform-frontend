@@ -55,6 +55,7 @@ import { CitySelectInput } from '../components/CitySelectInput'
 import { DebouncedSearchSelect } from '../components/DebouncedSearchSelect'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { BookingHoldModal } from '../components/BookingHoldModal'
+import { resolveCountryCode } from '../utils/geoRu'
 import {
   isValidPhoneNumber,
   getCountries,
@@ -241,7 +242,7 @@ export function CabinetPage() {
       setAthleteGender(data.person.gender || 'Male')
       setAthletePhone(data.person.phone || '')
       setAthleteCity(data.person.city || '')
-      setAthleteCountry(data.person.country || 'KZ')
+      setAthleteCountry(resolveCountryCode(data.person.country || 'KZ'))
       setAthletePhoto(data.person.photo || '')
       setAthleteLevel(data.athlete.level || '')
       setAthleteDirections(data.athlete.directions || [])

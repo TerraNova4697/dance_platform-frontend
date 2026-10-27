@@ -16,6 +16,7 @@ import { LoadingScreen } from '../components/LoadingScreen'
 import { CountryPhoneInput } from '../components/CountryPhoneInput'
 import { CitySelectInput } from '../components/CitySelectInput'
 import { DebouncedSearchSelect } from '../components/DebouncedSearchSelect'
+import { resolveCountryCode } from '../utils/geoRu'
 import {
   isValidPhoneNumber,
   getCountries,
@@ -92,7 +93,7 @@ export function OnboardingPage() {
         setContext(data)
         if (data.person.date_of_birth) setDateOfBirth(data.person.date_of_birth)
         if (data.person.phone) setPhone(data.person.phone)
-        if (data.person.country) setCountry(data.person.country)
+        if (data.person.country) setCountry(resolveCountryCode(data.person.country))
         if (data.person.city) {
           setCity(data.person.city)
           setTrainerCity(data.person.city)

@@ -1,13 +1,14 @@
 import PhoneInput, { type Value, type Country } from 'react-phone-number-input'
 import ru from 'react-phone-number-input/locale/ru.json'
 import 'react-phone-number-input/style.css'
+import { resolveCountryCode } from '../utils/geoRu'
 
 type CountryPhoneInputProps = {
   id?: string
   value: string
   onChange: (value: string) => void
   onCountryChange?: (country: Country | undefined) => void
-  defaultCountry?: Country
+  defaultCountry?: string
   disabled?: boolean
   placeholder?: string
 }
@@ -25,6 +26,8 @@ export function CountryPhoneInput({
     onChange(val ? String(val) : '')
   }
 
+  const safeDefaultCountry = (resolveCountryCode(defaultCountry) as Country) || 'KZ'
+
   return (
     <div className="country-phone-input-wrapper">
       <PhoneInput
@@ -32,7 +35,7 @@ export function CountryPhoneInput({
         name="phone"
         international
         withCountryCallingCode
-        defaultCountry={defaultCountry}
+        defaultCountry={safeDefaultCountry}
         labels={ru}
         placeholder={placeholder}
         value={value ? (value as Value) : undefined}
@@ -43,4 +46,3 @@ export function CountryPhoneInput({
     </div>
   )
 }
-
