@@ -1,5 +1,11 @@
 const dateFormatter = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long' })
 const timeFormatter = new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit' })
+const dateTimeFormatter = new Intl.DateTimeFormat('ru-RU', {
+  day: 'numeric',
+  month: 'short',
+  hour: '2-digit',
+  minute: '2-digit',
+})
 
 function atStartOfDay(date: Date): number {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
@@ -15,6 +21,10 @@ export function formatDay(value: string, now = new Date()): string {
 
 export function formatTime(value: string): string {
   return timeFormatter.format(new Date(value))
+}
+
+export function formatDateTime(value: string): string {
+  return dateTimeFormatter.format(new Date(value))
 }
 
 export function formatTimeRange(startAt: string, endAt?: string): string {

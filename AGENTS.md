@@ -35,7 +35,7 @@ src/api/
 
 TanStack Table: All table logic
 React Query: backend requests from tables
-Redux: calculator state
+Zustand: calculator state
 decimal.js: exact financial calculations
 Zod: validation
 dnd-kit: drag & drop for rows and blocks

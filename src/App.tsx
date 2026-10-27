@@ -10,6 +10,7 @@ import { VerifyEmailPage } from './pages/VerifyEmailPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 import { AthleteDashboard } from './pages/dashboard/AthleteDashboard'
 import { EventsPage } from './pages/events/EventsPage'
+import { CabinetPage } from './pages/CabinetPage'
 import { useAuthStore } from './stores/authStore'
 
 const EventDetailsPage = lazy(() => import('./pages/events/details/EventDetailsPage').then((module) => ({ default: module.EventDetailsPage })))
@@ -41,7 +42,7 @@ function App() {
           <Route path="trainings/:bookingId" element={<PlaceholderPage />} />
           <Route path="tickets" element={<PlaceholderPage />} />
           <Route path="tickets/:ticketId" element={<PlaceholderPage />} />
-          <Route path="profile" element={<PlaceholderPage />} />
+          <Route path="profile" element={<CabinetPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
