@@ -33,6 +33,7 @@ import {
   searchVenues,
   getTrainerTrainings,
   saveTrainingOffering,
+  deleteTrainingOffering,
   createTrainingSlots,
   getTrainerMasterClasses,
   createMasterClass,
@@ -45,6 +46,7 @@ import {
 import {
   getAvailableTrainingSlots,
   initiateTrainingBooking,
+  cancelTrainingBooking,
   type AvailableTrainingSlot,
   type InitiateBookingResult,
 } from '../api/booking'
@@ -60,6 +62,8 @@ import {
   type Country,
 } from 'react-phone-number-input'
 import { formatDateTime } from '../utils/date'
+import { routes } from '../routes'
+import { HostApplicationSection } from './host/HostApplicationSection'
 import './CabinetPage.css'
 
 const CALLING_CODES = new Set(getCountries().map((c) => `+${getCountryCallingCode(c)}`))
@@ -80,6 +84,7 @@ type TabType =
   | 'trainer_master_classes'
   | 'athlete_profile'
   | 'athlete_booking'
+  | 'host_section'
 
 export function CabinetPage() {
   const navigate = useNavigate()
@@ -127,9 +132,19 @@ export function CabinetPage() {
   const [offeringPrice, setOfferingPrice] = useState('5000')
   const [offeringVenue, setOfferingVenue] = useState('')
   const [offeringVenueTitle, setOfferingVenueTitle] = useState('')
+  const [offeringIncludeSchedule, setOfferingIncludeSchedule] = useState(true)
+  const [offeringScheduleMode, setOfferingScheduleMode] = useState<'single' | 'recurring'>('single')
+  const [offeringPackageSize, setOfferingPackageSize] = useState('8')
+  const [offeringPackagePrice, setOfferingPackagePrice] = useState('36000')
+  const [offeringStartDatetime, setOfferingStartDatetime] = useState('')
+  const [offeringWeekdays, setOfferingWeekdays] = useState<string[]>(['Monday', 'Wednesday'])
+  const [offeringStartTime, setOfferingStartTime] = useState('18:00')
+  const [offeringValidFrom, setOfferingValidFrom] = useState('')
+  const [offeringValidTo, setOfferingValidTo] = useState('')
   const [savingOffering, setSavingOffering] = useState(false)
+  const [deletingOfferingId, setDeletingOfferingId] = useState<string | null>(null)
 
-  // Slots modal state
+  // Slots modal state (for adding additional slots to existing offerings)
   const [showSlotModal, setShowSlotModal] = useState(false)
   const [slotOfferingId, setSlotOfferingId] = useState('')
   const [slotMode, setSlotMode] = useState<'single' | 'recurring'>('single')
@@ -164,6 +179,9 @@ export function CabinetPage() {
 
   // Athlete booking catalog tab state
   const [availableSlots, setAvailableSlots] = useState<AvailableTrainingSlot[]>([])
+  const [selectedBookingDate, setSelectedBookingDate] = useState<string>('')
+  const [selectedBookingDirection, setSelectedBookingDirection] = useState<string>('')
+  const [selectedBookingType, setSelectedBookingType] = useState<string>('all')
   const [loadingSlots, setLoadingSlots] = useState(false)
   const [activeBookingSession, setActiveBookingSession] = useState<{
     session: InitiateBookingResult
@@ -297,10 +315,13 @@ export function CabinetPage() {
     }
   }, [])
 
-  const loadAvailableSlots = useCallback(async () => {
+  const loadAvailableSlots = useCallback(async (dateFilter?: string, dirFilter?: string) => {
     setLoadingSlots(true)
     try {
-      const data = await getAvailableTrainingSlots()
+      const data = await getAvailableTrainingSlots({
+        date: dateFilter || undefined,
+        direction: dirFilter || undefined,
+      })
       setAvailableSlots(data)
     } catch {
       // ignore
@@ -372,11 +393,7 @@ export function CabinetPage() {
           if (!isMounted) return
           setMasterClasses(data)
         } else if (activeTab === 'athlete_booking') {
-          setLoadingSlots(true)
-          const data = await getAvailableTrainingSlots()
-          if (!isMounted) return
-          setAvailableSlots(data)
-          setLoadingSlots(false)
+          await loadAvailableSlots(selectedBookingDate, selectedBookingDirection)
         }
       } catch {
         // ignore
@@ -386,7 +403,7 @@ export function CabinetPage() {
     return () => {
       isMounted = false
     }
-  }, [activeTab, loadAthleteData])
+  }, [activeTab, loadAthleteData, loadAvailableSlots, selectedBookingDate, selectedBookingDirection])
 
   // --- Handlers: Profile & Roles ---
   async function handleActivateRole(role: 'trainer' | 'athlete') {
@@ -754,7 +771,23 @@ export function CabinetPage() {
     setSavingOffering(true)
     setApiError(null)
     try {
-      await saveTrainingOffering({
+      const schedulePayload = offeringIncludeSchedule
+        ? {
+            mode: offeringScheduleMode,
+            start_datetime: offeringScheduleMode === 'single' ? offeringStartDatetime : undefined,
+            duration_minutes: Number(offeringDuration),
+            has_capacity_limit: offeringHasCapacityLimit,
+            capacity: Number(offeringCapacity),
+            price: Number(offeringPrice),
+            venue: offeringVenue || undefined,
+            weekdays: offeringScheduleMode === 'recurring' ? offeringWeekdays : undefined,
+            start_time: offeringScheduleMode === 'recurring' ? offeringStartTime : undefined,
+            valid_from: offeringScheduleMode === 'recurring' ? (offeringValidFrom || undefined) : undefined,
+            valid_to: offeringScheduleMode === 'recurring' ? (offeringValidTo || undefined) : undefined,
+          }
+        : undefined
+
+      const res = await saveTrainingOffering({
         title: offeringTitle,
         training_type: offeringType,
         direction: offeringDirection,
@@ -764,14 +797,54 @@ export function CabinetPage() {
         price: Number(offeringPrice),
         default_venue: offeringVenue || null,
         active: 1,
+        schedule_type: offeringScheduleMode === 'recurring' ? 'Recurring' : 'Single',
+        package_size: offeringScheduleMode === 'recurring' ? Number(offeringPackageSize) : 1,
+        package_price: offeringScheduleMode === 'recurring' ? Number(offeringPackagePrice) : Number(offeringPrice),
+        schedule: schedulePayload,
       })
       setShowOfferingModal(false)
       setOfferingTitle('')
+      setSuccessMessage(res.message)
       await loadTrainings()
     } catch (err: unknown) {
       if (err instanceof FrappeApiError) setApiError(err.message)
     } finally {
       setSavingOffering(false)
+    }
+  }
+
+  async function handleDeleteOffering(offeringId: string) {
+    if (!window.confirm('Вы уверены, что хотите удалить эту программу и связанные слоты?')) {
+      return
+    }
+    setDeletingOfferingId(offeringId)
+    setApiError(null)
+    setSuccessMessage(null)
+    try {
+      const res = await deleteTrainingOffering(offeringId)
+      setSuccessMessage(res.message)
+      await loadTrainings()
+    } catch (err: unknown) {
+      if (err instanceof FrappeApiError) setApiError(err.message)
+      else setApiError('Не удалось удалить программу.')
+    } finally {
+      setDeletingOfferingId(null)
+    }
+  }
+
+  async function handleCancelParticipantBooking(bookingId: string) {
+    if (!window.confirm('Вы действительно хотите отменить запись этого участника?')) {
+      return
+    }
+    setApiError(null)
+    setSuccessMessage(null)
+    try {
+      const res = await cancelTrainingBooking(bookingId)
+      setSuccessMessage(res.message)
+      await loadTrainings()
+    } catch (err: unknown) {
+      if (err instanceof FrappeApiError) setApiError(err.message)
+      else setApiError('Не удалось отменить запись участника.')
     }
   }
 
@@ -910,12 +983,46 @@ export function CabinetPage() {
               <span className="role-chip">Роли:</span>
               {isTrainer && <span className="role-badge role-badge-trainer">Тренер</span>}
               {isAthlete && <span className="role-badge role-badge-athlete">Танцор</span>}
+              {roles.is_host && <span className="role-badge role-badge-trainer">Организатор ✓</span>}
+              {!roles.is_host && roles.host_application_status && (
+                <span className="badge-pending-verify">
+                  Заявка Организатора: {roles.host_application_status}
+                </span>
+              )}
             </div>
           </div>
         </div>
 
         {/* Action: Connect second role */}
         <div className="cabinet-header-actions">
+          {roles.is_host ? (
+            <button
+              type="button"
+              className="primary-button add-role-btn"
+              onClick={() => navigate(routes.host)}
+            >
+              🎭 Host Dashboard ↗
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="secondary-button add-role-btn"
+              onClick={() => setActiveTab('host_section')}
+            >
+              {roles.host_application_status
+                ? '📋 Статус заявки Организатора'
+                : '+ Стать Организатором (Физ. лицо)'}
+            </button>
+          )}
+          {roles.is_admin && (
+            <button
+              type="button"
+              className="secondary-button add-role-btn"
+              onClick={() => navigate(routes.adminHostApplications)}
+            >
+              🛡️ Модерация заявок
+            </button>
+          )}
           {!isTrainer && (
             <button
               type="button"
@@ -1012,6 +1119,20 @@ export function CabinetPage() {
             </button>
           </>
         )}
+        <button
+          type="button"
+          className={`cabinet-tab ${activeTab === 'host_section' ? 'active' : ''}`}
+          onClick={() => setActiveTab('host_section')}
+        >
+          {roles.is_host
+            ? '🎭 Кабинет Организатора'
+            : roles.host_application_status
+              ? '📋 Заявка Организатора'
+              : '🎭 Стать Организатором'}
+          {roles.host_application_status === 'Changes Requested' && (
+            <span className="tab-badge">!</span>
+          )}
+        </button>
       </nav>
 
       {/* Tab 1: Trainer Profile */}
@@ -1350,11 +1471,34 @@ export function CabinetPage() {
               <div className="cards-grid">
                 {trainingsData.offerings.map((off) => (
                   <div key={off.id} className="offering-card">
-                    <div className="offering-head">
-                      <strong>{off.title}</strong>
-                      <span className="badge-pill">
-                        {off.training_type === 'Individual' ? 'Индивидуальная' : 'Групповая'}
-                      </span>
+                    <div className="offering-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div>
+                        <strong>{off.title}</strong>
+                        <div style={{ marginTop: '4px', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                          <span className="badge-pill">
+                            {off.training_type === 'Individual' ? 'Индивидуальная' : 'Групповая'}
+                          </span>
+                          {off.schedule_type === 'Recurring' ? (
+                            <span style={{ fontSize: '0.75rem', fontWeight: 600, background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: '4px' }}>
+                              Регулярная (Пакет {off.package_size || 8} зан.)
+                            </span>
+                          ) : (
+                            <span style={{ fontSize: '0.75rem', fontWeight: 600, background: '#e0e7ff', color: '#4338ca', padding: '2px 8px', borderRadius: '4px' }}>
+                              Разовая
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        className="ghost-button small-btn danger-link"
+                        title="Удалить программу"
+                        disabled={deletingOfferingId === off.id}
+                        onClick={() => void handleDeleteOffering(off.id)}
+                        style={{ padding: '4px 8px', fontSize: '0.8rem' }}
+                      >
+                        {deletingOfferingId === off.id ? 'Удаление…' : '🗑 Удалить'}
+                      </button>
                     </div>
                     <div className="offering-details">
                       <span>Направление: {off.direction_title || off.direction}</span>
@@ -1362,7 +1506,13 @@ export function CabinetPage() {
                       <span>
                         Места: {off.has_capacity_limit ? `до ${off.capacity} чел.` : 'Без ограничений'}
                       </span>
-                      <span>Цена: {off.price.toLocaleString()} {off.currency}</span>
+                      {off.schedule_type === 'Recurring' && off.package_price ? (
+                        <span>
+                          Цена пакета: <strong>{Number(off.package_price).toLocaleString()} {off.currency}</strong> ({off.package_size} зан.)
+                        </span>
+                      ) : (
+                        <span>Цена за занятие: <strong>{off.price.toLocaleString()} {off.currency}</strong></span>
+                      )}
                       {off.default_venue_title && <span>Зал: {off.default_venue_title}</span>}
                     </div>
                   </div>
@@ -1399,12 +1549,26 @@ export function CabinetPage() {
                     </div>
                     {sl.participants && sl.participants.length > 0 && (
                       <div className="slot-participants">
-                        <span className="field-label" style={{ fontSize: '11px' }}>Записавшиеся:</span>
-                        <div className="participants-list">
+                        <span className="field-label" style={{ fontSize: '11px', display: 'block', marginBottom: '4px' }}>Записавшиеся участники:</span>
+                        <div className="participants-list" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                           {sl.participants.map((p) => (
-                            <span key={p.booking_id} className="participant-chip">
-                              {p.participant_name} ({p.status === 'Booked' ? 'Оплачено' : p.status})
-                            </span>
+                            <div
+                              key={p.booking_id}
+                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f3f4f6', padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem' }}
+                            >
+                              <span>
+                                <strong>{p.participant_name}</strong> ({p.status === 'Booked' ? 'Оплачено' : p.status}) {p.phone && `· ${p.phone}`}
+                              </span>
+                              <button
+                                type="button"
+                                className="ghost-button small-btn danger-link"
+                                style={{ padding: '2px 6px', fontSize: '0.75rem', height: 'auto' }}
+                                title="Отменить запись этого участника"
+                                onClick={() => void handleCancelParticipantBooking(p.booking_id)}
+                              >
+                                Отменить
+                              </button>
+                            </div>
                           ))}
                         </div>
                       </div>
@@ -1516,9 +1680,165 @@ export function CabinetPage() {
                     fetchOptions={handleFetchVenues}
                     placeholder="Поиск зала по названию или городу…"
                   />
+
+                  {/* Schedule Configuration Direct in Offering Creation */}
+                  <div style={{ marginTop: '16px', borderTop: '1px solid #e5e7eb', paddingTop: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                      <strong style={{ fontSize: '0.95rem', color: '#111827' }}>
+                        📅 Время и слоты для записи
+                      </strong>
+                      <label className="checkbox-row" style={{ margin: 0 }}>
+                        <input
+                          type="checkbox"
+                          checked={offeringIncludeSchedule}
+                          onChange={(e) => setOfferingIncludeSchedule(e.target.checked)}
+                        />
+                        <span style={{ fontSize: '0.85rem' }}>Создать слоты для записи сразу</span>
+                      </label>
+                    </div>
+
+                    {offeringIncludeSchedule && (
+                      <div style={{ background: '#f9fafb', padding: '14px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+                        <div className="form-row" style={{ marginBottom: '12px' }}>
+                          <label className="radio-label">
+                            <input
+                              type="radio"
+                              name="offScheduleMode"
+                              checked={offeringScheduleMode === 'single'}
+                              onChange={() => setOfferingScheduleMode('single')}
+                            />
+                            Разовая дата и время
+                          </label>
+                          <label className="radio-label">
+                            <input
+                              type="radio"
+                              name="offScheduleMode"
+                              checked={offeringScheduleMode === 'recurring'}
+                              onChange={() => setOfferingScheduleMode('recurring')}
+                            />
+                            Регулярные дни недели и время
+                          </label>
+                        </div>
+
+                        {offeringScheduleMode === 'single' ? (
+                          <div className="form-row">
+                            <label htmlFor="offSlotStart">
+                              Дата и время начала занятия *
+                              <input
+                                id="offSlotStart"
+                                type="datetime-local"
+                                value={offeringStartDatetime}
+                                onChange={(e) => setOfferingStartDatetime(e.target.value)}
+                                required={offeringIncludeSchedule && offeringScheduleMode === 'single'}
+                              />
+                            </label>
+                          </div>
+                        ) : (
+                          <>
+                            <div style={{ marginBottom: '10px' }}>
+                              <span className="field-label" style={{ fontSize: '0.85rem', marginBottom: '6px', display: 'block' }}>
+                                Дни недели для записи:
+                              </span>
+                              <div className="chips-grid">
+                                {[
+                                  { id: 'Monday', label: 'Пн' },
+                                  { id: 'Tuesday', label: 'Вт' },
+                                  { id: 'Wednesday', label: 'Ср' },
+                                  { id: 'Thursday', label: 'Чт' },
+                                  { id: 'Friday', label: 'Пт' },
+                                  { id: 'Saturday', label: 'Сб' },
+                                  { id: 'Sunday', label: 'Вс' },
+                                ].map((d) => (
+                                  <button
+                                    key={d.id}
+                                    type="button"
+                                    className={`chip-button ${offeringWeekdays.includes(d.id) ? 'chip-button-active' : ''}`}
+                                    onClick={() => setOfferingWeekdays((prev) => toggleItem(prev, d.id))}
+                                  >
+                                    {d.label}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="form-row">
+                              <label htmlFor="offSlotTime">
+                                Время начала (ЧЧ:ММ) *
+                                <input
+                                  id="offSlotTime"
+                                  type="time"
+                                  value={offeringStartTime}
+                                  onChange={(e) => setOfferingStartTime(e.target.value)}
+                                  required={offeringIncludeSchedule && offeringScheduleMode === 'recurring'}
+                                />
+                              </label>
+                            </div>
+                            <div className="form-row">
+                              <label htmlFor="offSlotFrom">
+                                С даты
+                                <input
+                                  id="offSlotFrom"
+                                  type="date"
+                                  value={offeringValidFrom}
+                                  onChange={(e) => setOfferingValidFrom(e.target.value)}
+                                />
+                              </label>
+                              <label htmlFor="offSlotTo">
+                                По дату
+                                <input
+                                  id="offSlotTo"
+                                  type="date"
+                                  value={offeringValidTo}
+                                  onChange={(e) => setOfferingValidTo(e.target.value)}
+                                />
+                              </label>
+                            </div>
+
+                            {/* Package size & Package Price for Recurring Trainings */}
+                            <div style={{ marginTop: '12px', padding: '12px', background: '#fffbeb', borderRadius: '6px', border: '1px solid #fde68a' }}>
+                              <strong style={{ display: 'block', fontSize: '0.85rem', color: '#92400e', marginBottom: '8px' }}>
+                                📦 Настройки абонемента / пакета (Пользователь оплачивает сразу пакетом):
+                              </strong>
+                              <div className="form-row">
+                                <label htmlFor="offPkgSize">
+                                  Кол-во тренировок в пакете
+                                  <input
+                                    id="offPkgSize"
+                                    type="number"
+                                    min="2"
+                                    max="100"
+                                    value={offeringPackageSize}
+                                    onChange={(e) => {
+                                      const sz = e.target.value
+                                      setOfferingPackageSize(sz)
+                                      setOfferingPackagePrice(String(Number(sz) * Number(offeringPrice)))
+                                    }}
+                                  />
+                                </label>
+                                <label htmlFor="offPkgPrice">
+                                  Стоимость всего пакета (KZT)
+                                  <input
+                                    id="offPkgPrice"
+                                    type="number"
+                                    min="0"
+                                    step="500"
+                                    value={offeringPackagePrice}
+                                    onChange={(e) => setOfferingPackagePrice(e.target.value)}
+                                  />
+                                </label>
+                              </div>
+                              <span style={{ fontSize: '0.8rem', color: '#b45309' }}>
+                                Ученик бронирует первое занятие и сразу оплачивает абонемент на {offeringPackageSize} занятий без необходимости перезаписываться на каждое.
+                              </span>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
                   <div className="modal-actions">
                     <button type="submit" className="primary-button" disabled={savingOffering}>
-                      {savingOffering ? 'Сохранение…' : 'Сохранить шаблон'}
+                      {savingOffering ? 'Сохранение…' : 'Сохранить программу и расписание'}
                     </button>
                     <button type="button" className="secondary-button" onClick={() => setShowOfferingModal(false)}>
                       Отмена
@@ -2579,66 +2899,223 @@ export function CabinetPage() {
         <section className="cabinet-card tab-content-card">
           <div className="section-head">
             <h3>Запись на тренировки</h3>
-            <p className="helper-note">Выберите тренировку для записи. Место резервируется за вами на 15 минут для оплаты.</p>
+            <p className="helper-note">Выберите подходящую дату и время для записи на индивидуальные или групповые занятия.</p>
+          </div>
+
+          {/* Date & Filter controls for Athlete Booking */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '20px', background: '#f9fafb', padding: '14px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+            <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem', fontWeight: 500, color: '#374151' }}>
+              <span>📅 Выберите дату:</span>
+              <input
+                type="date"
+                value={selectedBookingDate}
+                onChange={(e) => setSelectedBookingDate(e.target.value)}
+                style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '0.9rem' }}
+              />
+            </label>
+
+            <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem', fontWeight: 500, color: '#374151', minWidth: '180px' }}>
+              <span>💃 Направление:</span>
+              <select
+                value={selectedBookingDirection}
+                onChange={(e) => setSelectedBookingDirection(e.target.value)}
+                style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '0.9rem' }}
+              >
+                <option value="">Все направления</option>
+                {catalogs.directions.map((d) => (
+                  <option key={d.name} value={d.name}>{d.title}</option>
+                ))}
+              </select>
+            </label>
+
+            <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem', fontWeight: 500, color: '#374151', minWidth: '160px' }}>
+              <span>👥 Тип занятия:</span>
+              <select
+                value={selectedBookingType}
+                onChange={(e) => setSelectedBookingType(e.target.value)}
+                style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '0.9rem' }}
+              >
+                <option value="all">Все форматы</option>
+                <option value="Individual">Индивидуальные</option>
+                <option value="Group">Групповые</option>
+              </select>
+            </label>
+
+            {(selectedBookingDate || selectedBookingDirection || selectedBookingType !== 'all') && (
+              <button
+                type="button"
+                className="ghost-button"
+                style={{ alignSelf: 'flex-end', height: '38px', marginBottom: '1px', fontSize: '0.85rem' }}
+                onClick={() => {
+                  setSelectedBookingDate('')
+                  setSelectedBookingDirection('')
+                  setSelectedBookingType('all')
+                }}
+              >
+                ✕ Сбросить фильтры
+              </button>
+            )}
           </div>
 
           {loadingSlots ? (
             <p className="helper-note">Загрузка доступных тренировок…</p>
-          ) : availableSlots.length === 0 ? (
-            <p className="helper-note">На данный момент нет доступных слотов для записи.</p>
-          ) : (
-            <div className="cards-grid">
-              {availableSlots.map((sl) => (
-                <div key={sl.id} className="catalog-slot-card">
-                  <div className="slot-card-trainer">
-                    {sl.trainer_photo ? (
-                      <img src={sl.trainer_photo} alt={sl.trainer_name} className="trainer-avatar-small" />
-                    ) : (
-                      <div className="trainer-avatar-placeholder">
-                        {sl.trainer_name.charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                    <div>
-                      <strong>{sl.trainer_name}</strong>
-                      {sl.trainer_verification_status === 'Verified' && (
-                        <span className="badge-verified">✓</span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="catalog-slot-title">{sl.offering_title}</div>
-                  <div className="catalog-slot-meta">
-                    <span>📅 {formatDateTime(sl.start_datetime)}</span>
-                    {sl.venue_title && <span>📍 {sl.venue_title} ({sl.venue_city})</span>}
-                    <span>
-                      {sl.has_capacity_limit ? (
-                        sl.is_full ? (
-                          <strong className="danger-text">Мест нет</strong>
-                        ) : (
-                          `Осталось мест: ${sl.available_places}`
-                        )
-                      ) : (
-                        'Без ограничений'
-                      )}
-                    </span>
-                  </div>
-                  <div className="catalog-slot-footer">
-                    <span className="catalog-slot-price">
-                      {sl.price > 0 ? `${sl.price.toLocaleString()} ${sl.currency}` : 'Бесплатно'}
-                    </span>
-                    <button
-                      type="button"
-                      className="primary-button small-btn"
-                      onClick={() => void handleStartBooking(sl)}
-                      disabled={sl.is_full}
-                    >
-                      {sl.is_full ? 'Заполнено' : 'Записаться'}
-                    </button>
-                  </div>
+          ) : (() => {
+            const filteredSlots = availableSlots.filter((sl) => {
+              if (selectedBookingType !== 'all' && sl.training_type !== selectedBookingType) return false
+              return true
+            })
+
+            if (filteredSlots.length === 0) {
+              return (
+                <div style={{ textAlign: 'center', padding: '40px 20px', color: '#6b7280' }}>
+                  <p style={{ fontSize: '1.1rem', marginBottom: '8px' }}>🔍 Доступных занятий по выбранным параметрам не найдено</p>
+                  <p className="helper-note">Попробуйте выбрать другую дату или сбросить фильтры.</p>
                 </div>
-              ))}
-            </div>
-          )}
+              )
+            }
+
+            // Group filtered slots by date string YYYY-MM-DD
+            const groupedByDate: Record<string, AvailableTrainingSlot[]> = {}
+            for (const sl of filteredSlots) {
+              const dateKey = sl.start_datetime.slice(0, 10)
+              if (!groupedByDate[dateKey]) groupedByDate[dateKey] = []
+              groupedByDate[dateKey].push(sl)
+            }
+
+            return (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+                {Object.entries(groupedByDate).map(([dateStr, slotsOnDate]) => {
+                  const dateObj = new Date(dateStr)
+                  const formattedDateHeader = dateObj.toLocaleDateString('ru-RU', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                  })
+                  const capitalizedDateHeader = formattedDateHeader.charAt(0).toUpperCase() + formattedDateHeader.slice(1)
+
+                  return (
+                    <div key={dateStr} className="date-slots-group">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px', borderBottom: '2px solid #e0e7ff', paddingBottom: '6px' }}>
+                        <span style={{ fontSize: '1.2rem' }}>🗓</span>
+                        <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 600, color: '#1e1b4b' }}>
+                          {capitalizedDateHeader}
+                        </h4>
+                        <span style={{ fontSize: '0.85rem', color: '#6366f1', background: '#e0e7ff', padding: '2px 8px', borderRadius: '12px', fontWeight: 500 }}>
+                          {slotsOnDate.length} {slotsOnDate.length === 1 ? 'слот' : 'слотов'}
+                        </span>
+                      </div>
+
+                      <div className="cards-grid">
+                        {slotsOnDate.map((sl) => {
+                          const startTime = new Date(sl.start_datetime).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+                          const endTime = new Date(sl.end_datetime).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+
+                          return (
+                            <div key={sl.id} className="catalog-slot-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                              <div>
+                                <div className="slot-card-trainer" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                                  {sl.trainer_photo ? (
+                                    <img src={sl.trainer_photo} alt={sl.trainer_name} className="trainer-avatar-small" />
+                                  ) : (
+                                    <div className="trainer-avatar-placeholder">
+                                      {sl.trainer_name.charAt(0).toUpperCase()}
+                                    </div>
+                                  )}
+                                  <div style={{ flex: 1 }}>
+                                    <strong style={{ fontSize: '0.95rem', color: '#111827' }}>{sl.trainer_name}</strong>
+                                    {sl.trainer_verification_status === 'Verified' && (
+                                      <span className="badge-verified" style={{ marginLeft: '6px' }}>✓</span>
+                                    )}
+                                  </div>
+                                  <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '3px 8px', borderRadius: '6px', background: sl.training_type === 'Individual' ? '#eff6ff' : '#f0fdf4', color: sl.training_type === 'Individual' ? '#1d4ed8' : '#15803d' }}>
+                                    {sl.training_type === 'Individual' ? 'Индивидуально' : 'Группа'}
+                                  </span>
+                                </div>
+
+                                <div className="catalog-slot-title" style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '8px', color: '#111827' }}>
+                                  {sl.offering_title}
+                                </div>
+
+                                {sl.schedule_type === 'Recurring' && (
+                                  <div style={{ marginBottom: '8px', fontSize: '0.8rem', background: '#fef3c7', color: '#92400e', padding: '4px 8px', borderRadius: '4px', fontWeight: 500 }}>
+                                    📦 Регулярный курс: абонемент на {sl.package_size || 8} тренировок
+                                  </div>
+                                )}
+
+                                <div className="catalog-slot-meta" style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.85rem', color: '#4b5563', marginBottom: '16px' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#4338ca' }}>
+                                    <span>⏰</span>
+                                    <span>{startTime} — {endTime}</span>
+                                  </div>
+                                  {sl.venue_title && (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <span>📍</span>
+                                      <span>{sl.venue_title} {sl.venue_city ? `(${sl.venue_city})` : ''}</span>
+                                    </div>
+                                  )}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <span>👥</span>
+                                    <span>
+                                      {sl.has_capacity_limit ? (
+                                        sl.is_full ? (
+                                          <strong className="danger-text">Мест нет</strong>
+                                        ) : (
+                                          `Осталось мест: ${sl.available_places}`
+                                        )
+                                      ) : (
+                                        'Без ограничений'
+                                      )}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="catalog-slot-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #f3f4f6', paddingTop: '12px' }}>
+                                <div>
+                                  {sl.schedule_type === 'Recurring' && sl.package_price ? (
+                                    <div>
+                                      <span className="catalog-slot-price" style={{ fontSize: '1.1rem', fontWeight: 700, color: '#111827', display: 'block' }}>
+                                        {Number(sl.package_price).toLocaleString()} {sl.currency}
+                                      </span>
+                                      <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+                                        за весь абонемент ({sl.package_size} зан.)
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <span className="catalog-slot-price" style={{ fontSize: '1.1rem', fontWeight: 700, color: '#111827' }}>
+                                      {sl.price > 0 ? `${sl.price.toLocaleString()} ${sl.currency}` : 'Бесплатно'}
+                                    </span>
+                                  )}
+                                </div>
+                                <button
+                                  type="button"
+                                  className="primary-button small-btn"
+                                  onClick={() => void handleStartBooking(sl)}
+                                  disabled={sl.is_full}
+                                >
+                                  {sl.is_full ? 'Заполнено' : sl.schedule_type === 'Recurring' ? 'Записаться на курс' : 'Записаться'}
+                                </button>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )
+          })()}
         </section>
+      )}
+
+      {/* Host Application / Embedded Host Dashboard Tab */}
+      {activeTab === 'host_section' && (
+        <HostApplicationSection
+          person={person}
+          hostStatus={context.host}
+          onReloadContext={loadContext}
+        />
       )}
 
       {/* 15-Minute Booking Hold Modal */}

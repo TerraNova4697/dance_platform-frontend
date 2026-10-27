@@ -11,6 +11,17 @@ import { PlaceholderPage } from './pages/PlaceholderPage'
 import { AthleteDashboard } from './pages/dashboard/AthleteDashboard'
 import { EventsPage } from './pages/events/EventsPage'
 import { CabinetPage } from './pages/CabinetPage'
+import { EventRegistrationPage } from './pages/events/registration/EventRegistrationPage'
+import { MyEventsPage } from './pages/events/MyEventsPage'
+import { CalendarPage } from './pages/calendar/CalendarPage'
+import { MyTicketsPage } from './pages/tickets/MyTicketsPage'
+import { TicketDetailsPage } from './pages/tickets/TicketDetailsPage'
+import { TicketVerifyPage } from './pages/tickets/TicketVerifyPage'
+import { TrainersCatalogPage } from './pages/trainers/TrainersCatalogPage'
+import { TrainerDetailsPage } from './pages/trainers/TrainerDetailsPage'
+import { TrainingBookingDetailsPage } from './pages/trainings/TrainingBookingDetailsPage'
+import { HostDashboardPage } from './pages/host/HostDashboardPage'
+import { AdminHostApplicationsPage } from './pages/admin/AdminHostApplicationsPage'
 import { useAuthStore } from './stores/authStore'
 
 const EventDetailsPage = lazy(() => import('./pages/events/details/EventDetailsPage').then((module) => ({ default: module.EventDetailsPage })))
@@ -28,21 +39,24 @@ function App() {
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="events/:eventId" element={<Suspense fallback={<LoadingScreen />}><EventDetailsPage /></Suspense>} />
         <Route path="events/:eventId/tickets" element={<PlaceholderPage />} />
+        <Route path="tickets/verify/:tokenHash" element={<TicketVerifyPage />} />
         <Route element={<ProtectedRoute />}>
           <Route index element={<AthleteDashboard />} />
           <Route path="onboarding" element={<OnboardingPage />} />
           <Route path="dashboard" element={<AthleteDashboard />} />
           <Route path="events" element={<EventsPage />} />
           <Route path="events/map" element={<Navigate to="/events?view=map" replace />} />
-          <Route path="events/:eventId/register" element={<PlaceholderPage />} />
-          <Route path="my-events" element={<PlaceholderPage />} />
-          <Route path="calendar" element={<PlaceholderPage />} />
-          <Route path="trainers" element={<PlaceholderPage />} />
-          <Route path="trainers/:trainerId" element={<PlaceholderPage />} />
-          <Route path="trainings/:bookingId" element={<PlaceholderPage />} />
-          <Route path="tickets" element={<PlaceholderPage />} />
-          <Route path="tickets/:ticketId" element={<PlaceholderPage />} />
+          <Route path="events/:eventId/register" element={<EventRegistrationPage />} />
+          <Route path="my-events" element={<MyEventsPage />} />
+          <Route path="calendar" element={<CalendarPage />} />
+          <Route path="trainers" element={<TrainersCatalogPage />} />
+          <Route path="trainers/:trainerId" element={<TrainerDetailsPage />} />
+          <Route path="trainings/:bookingId" element={<TrainingBookingDetailsPage />} />
+          <Route path="tickets" element={<MyTicketsPage />} />
+          <Route path="tickets/:ticketId" element={<TicketDetailsPage />} />
           <Route path="profile" element={<CabinetPage />} />
+          <Route path="host" element={<HostDashboardPage />} />
+          <Route path="admin/host-applications" element={<AdminHostApplicationsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

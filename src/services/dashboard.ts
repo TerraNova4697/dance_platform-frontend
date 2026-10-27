@@ -106,6 +106,44 @@ export async function getMyEvents(userId: string): Promise<RegisteredEventPrevie
   return [...tournamentEvents, ...masterEvents].filter((item) => Date.parse(item.startAt) >= Date.now() && item.registrationStatus !== 'cancelled').sort((a, b) => Date.parse(a.startAt) - Date.parse(b.startAt)).slice(0, 3)
 }
 
+export async function getAllMyEvents(userId: string): Promise<RegisteredEventPreview[]> {
+  const [tournamentRegs, masterRegs] = await Promise.all([dashboardApi.tournamentRegistrations(userId), dashboardApi.masterRegistrations(userId)])
+  const [tournaments, masterClasses] = await Promise.all([
+    tournamentRegs.length ? dashboardApi.tournamentsByIds(tournamentRegs.map(({ tournament }) => tournament)) : [],
+    masterRegs.length ? dashboardApi.masterClassesByIds(masterRegs.map(({ master_class }) => master_class)) : [],
+  ])
+  const eventIds = [...tournaments.map(({ event }) => event), ...masterClasses.map(({ event }) => event)]
+  if (!eventIds.length) return []
+  const events = await dashboardApi.eventsByIds(eventIds)
+  const [context, tickets, entries, slots, packages] = await Promise.all([
+    eventContext(events), dashboardApi.tickets(userId, eventIds),
+    tournamentRegs.length ? dashboardApi.tournamentEntries(tournamentRegs.map(({ name }) => name)) : [],
+    masterRegs.some(({ slot }) => slot) ? dashboardApi.masterSlots(masterRegs.flatMap(({ slot }) => slot ? [slot] : [])) : [],
+    masterRegs.some(({ package: packageId }) => packageId) ? dashboardApi.masterPackages(masterRegs.flatMap(({ package: packageId }) => packageId ? [packageId] : [])) : [],
+  ])
+  const categories = entries.length ? await dashboardApi.tournamentCategories(entries.map(({ tournament_category }) => tournament_category)) : []
+  const eventsById = index(events), tournamentsById = index(tournaments), mastersById = index(masterClasses)
+  const categoriesById = index(categories), slotsById = index(slots), packagesById = index(packages)
+  const ticketsByEvent = new Map(tickets.map((ticket) => [ticket.event, ticket]))
+  const tournamentEvents = tournamentRegs.flatMap((registration): RegisteredEventPreview[] => {
+    const tournament = tournamentsById.get(registration.tournament), event = tournament ? eventsById.get(tournament.event) : undefined
+    if (!event) return []
+    const registrationEntries = entries.filter(({ registration: id }) => id === registration.name).map((entry) => {
+      const category = categoriesById.get(entry.tournament_category)
+      return { id: entry.name, label: category ? [category.participation_type, category.category, category.level].filter(Boolean).join(' / ') : entry.tournament_category }
+    })
+    return [{ ...eventPreview(event, context), registrationStatus: registrationStatus(registration.status), entries: registrationEntries.length ? registrationEntries : [{ id: registration.name, label: registration.participation_type }], ticketId: ticketsByEvent.get(event.name)?.name }]
+  })
+  const masterEvents = masterRegs.flatMap((registration): RegisteredEventPreview[] => {
+    const master = mastersById.get(registration.master_class), event = master ? eventsById.get(master.event) : undefined
+    if (!event) return []
+    const slot = registration.slot ? slotsById.get(registration.slot) : undefined
+    const packageRecord = registration.package ? packagesById.get(registration.package) : undefined
+    return [{ ...eventPreview(event, context), type: 'master_class', startAt: slot ? iso(slot.start_datetime) : iso(event.start_datetime), venueName: slot?.venue ?? eventPreview(event, context).venueName, registrationStatus: registrationStatus(registration.status), entries: [{ id: registration.name, label: packageRecord?.title ?? 'Мастер-класс' }], ticketId: ticketsByEvent.get(event.name)?.name }]
+  })
+  return [...tournamentEvents, ...masterEvents].sort((a, b) => Date.parse(a.startAt) - Date.parse(b.startAt))
+}
+
 export async function getUpcomingEvents(): Promise<EventPreview[]> {
   const events = await dashboardApi.events([['start_datetime', '>=', frappeDate(new Date())], ['is_published', '=', 1], ['event_status', '!=', 'Cancelled']], 6)
   const context = await eventContext(events)
@@ -122,4 +160,5 @@ export async function getNextActivity(userId: string): Promise<DashboardActivity
   }
 }
 export async function getUpcomingSchedule(userId: string): Promise<DashboardActivity[]> { return (await fetchSchedule(userId, 5)).map((activity) => ({ ...activity, startAt: iso(activity.startAt), endAt: activity.endAt ? iso(activity.endAt) : undefined })) }
+export async function getAllUpcomingSchedule(userId: string): Promise<DashboardActivity[]> { return (await fetchSchedule(userId, 50)).map((activity) => ({ ...activity, startAt: iso(activity.startAt), endAt: activity.endAt ? iso(activity.endAt) : undefined })) }
 export async function getImportantNotifications(): Promise<ImportantNotificationData[]> { return [] }

@@ -3,8 +3,9 @@ import { routes } from '../../../routes'
 import { Icon } from './Icons'
 
 const desktopLinks = [
-  ['Главная', routes.home], ['Ивенты', routes.events], ['Кабинет', routes.profile],
-  ['Тренеры', routes.trainers], ['Мои Ивенты', routes.myEvents], ['Календарь', routes.calendar],
+  ['Главная', routes.home], ['Ивенты', routes.events], ['Билеты', routes.tickets],
+  ['Кабинет', routes.profile], ['Организатор', routes.host], ['Тренеры', routes.trainers],
+  ['Мои Ивенты', routes.myEvents], ['Календарь', routes.calendar],
 ] as const
 
 const mobileLinks = [
@@ -13,9 +14,9 @@ const mobileLinks = [
   ['Профиль', routes.profile, 'user'],
 ] as const
 
-type DashboardHeaderProps = { firstName: string; avatarUrl?: string; onLogout: () => void; isLoggingOut: boolean; actionLabel?: string }
+type DashboardHeaderProps = { firstName: string; avatarUrl?: string; onLogout: () => void; isLoggingOut?: boolean; actionLabel?: string }
 
-export function DashboardHeader({ firstName, avatarUrl, onLogout, isLoggingOut, actionLabel }: DashboardHeaderProps) {
+export function DashboardHeader({ firstName, avatarUrl, onLogout, isLoggingOut = false, actionLabel }: DashboardHeaderProps) {
   const initial = firstName.charAt(0).toUpperCase() || 'D'
   return (
     <>

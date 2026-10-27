@@ -1,5 +1,6 @@
 import { frappeFetch, FrappeApiError } from './frappe'
 import type { CatalogItem, ClubCatalogItem, TrainerVerificationStatus } from './onboarding'
+import type { HostApplicationStatus, MyHostStatusResponse } from './hostCabinet'
 
 type FrappeResponse<T> = { message: T }
 
@@ -7,8 +8,11 @@ export type CabinetPerson = {
   name: string
   first_name: string
   last_name: string
+  middle_name?: string | null
   date_of_birth: string | null
+  gender?: string | null
   phone: string | null
+  email?: string | null
   city: string | null
   country?: string | null
   photo: string | null
@@ -45,10 +49,14 @@ export type CabinetContext = {
   roles: {
     is_trainer: boolean
     is_athlete: boolean
+    is_host?: boolean
+    is_admin?: boolean
     trainer_verification_status: TrainerVerificationStatus
+    host_application_status?: HostApplicationStatus | null
   }
   trainer: CabinetTrainerProfile | null
   athlete: CabinetAthleteProfile | null
+  host?: MyHostStatusResponse
   catalogs: {
     directions: CatalogItem[]
     levels: CatalogItem[]
@@ -115,6 +123,9 @@ export type TrainingOfferingItem = {
   default_venue?: string | null
   default_venue_title?: string | null
   active: boolean | number
+  schedule_type?: 'Single' | 'Recurring'
+  package_size?: number
+  package_price?: number
 }
 
 export type TrainingSlotItem = {
@@ -300,13 +311,40 @@ export async function getTrainerTrainings(): Promise<TrainerTrainingsResponse> {
 }
 
 export async function saveTrainingOffering(
-  offering: Partial<TrainingOfferingItem>
-): Promise<{ success: boolean; offering: TrainingOfferingItem; message: string }> {
-  const response = await frappeFetch<FrappeResponse<{ success: boolean; offering: TrainingOfferingItem; message: string }>>(
+  offering: Partial<TrainingOfferingItem> & {
+    schedule?: {
+      mode: 'single' | 'recurring'
+      start_datetime?: string
+      duration_minutes?: number
+      has_capacity_limit?: boolean | number
+      capacity?: number
+      venue?: string
+      price?: number
+      weekdays?: string[]
+      start_time?: string
+      valid_from?: string
+      valid_to?: string
+    }
+  }
+): Promise<{ success: boolean; offering: TrainingOfferingItem; created_slots?: string[]; message: string }> {
+  const response = await frappeFetch<FrappeResponse<{ success: boolean; offering: TrainingOfferingItem; created_slots?: string[]; message: string }>>(
     '/api/method/dance_platform.api.trainer_cabinet.save_training_offering',
     {
       method: 'POST',
       body: JSON.stringify({ offering }),
+    }
+  )
+  return response.message
+}
+
+export async function deleteTrainingOffering(
+  offeringId: string
+): Promise<{ success: boolean; message: string }> {
+  const response = await frappeFetch<FrappeResponse<{ success: boolean; message: string }>>(
+    '/api/method/dance_platform.api.trainer_cabinet.delete_training_offering',
+    {
+      method: 'POST',
+      body: JSON.stringify({ offering_id: offeringId }),
     }
   )
   return response.message

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { confirmBookingPayment, cancelBookingHold, type InitiateBookingResult } from '../api/booking'
+import { confirmBookingPayment, cancelBookingHold, type InitiateBookingResult, type ConfirmPaymentResult } from '../api/booking'
 import { FrappeApiError } from '../api/frappe'
 
 type BookingHoldModalProps = {
   session: InitiateBookingResult
   title: string
   subtitle?: string
-  onSuccess: () => void
+  onSuccess: (result?: ConfirmPaymentResult) => void
   onClose: () => void
 }
 
@@ -51,8 +51,8 @@ export function BookingHoldModal({
     setLoading(true)
     setError(null)
     try {
-      await confirmBookingPayment(session.checkout_session_id)
-      onSuccess()
+      const result = await confirmBookingPayment(session.checkout_session_id)
+      onSuccess(result)
     } catch (err: unknown) {
       if (err instanceof FrappeApiError) {
         setError(err.message)
@@ -122,6 +122,10 @@ export function BookingHoldModal({
                 : 'Бесплатно'}
             </strong>
           </div>
+        </div>
+
+        <div className="payment-stub-banner" style={{ background: '#f8fafc', border: '1px dashed #94a3b8', borderRadius: '8px', padding: '10px 12px', fontSize: '13px', color: '#475569', marginBottom: '14px' }}>
+          <strong>ℹ️ Демо-режим (Sprint 1):</strong> Онлайн-оплата отключена. Нажмите кнопку ниже для подтверждения бронирования и мгновенного выпуска QR-билета.
         </div>
 
         {error && (

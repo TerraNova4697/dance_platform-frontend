@@ -26,6 +26,9 @@ export type AvailableTrainingSlot = {
   trainer_name: string
   trainer_photo?: string | null
   trainer_verification_status: TrainerVerificationStatus
+  schedule_type?: 'Single' | 'Recurring'
+  package_size?: number
+  package_price?: number
   available_places: number | null
   is_full: boolean
 }
@@ -45,11 +48,13 @@ export async function getAvailableTrainingSlots(params?: {
   direction?: string
   city?: string
   trainerId?: string
+  date?: string
 }): Promise<AvailableTrainingSlot[]> {
   const query = new URLSearchParams()
   if (params?.direction) query.append('direction', params.direction)
   if (params?.city) query.append('city', params.city)
   if (params?.trainerId) query.append('trainer_id', params.trainerId)
+  if (params?.date) query.append('date', params.date)
 
   const response = await frappeFetch<FrappeResponse<AvailableTrainingSlot[]>>(
     `/api/method/dance_platform.api.booking.get_available_training_slots?${query.toString()}`
@@ -87,8 +92,27 @@ export async function initiateMasterClassBooking(params: {
   return response.message
 }
 
-export async function confirmBookingPayment(checkoutSessionId: string): Promise<{ success: boolean; message: string }> {
+export async function cancelTrainingBooking(bookingId: string): Promise<{ success: boolean; message: string }> {
   const response = await frappeFetch<FrappeResponse<{ success: boolean; message: string }>>(
+    '/api/method/dance_platform.api.booking.cancel_training_booking',
+    {
+      method: 'POST',
+      body: JSON.stringify({ booking_id: bookingId }),
+    }
+  )
+  return response.message
+}
+
+export type ConfirmPaymentResult = {
+  success: boolean
+  message: string
+  order_id?: string
+  ticket_id?: string
+  booking_id?: string
+}
+
+export async function confirmBookingPayment(checkoutSessionId: string): Promise<ConfirmPaymentResult> {
+  const response = await frappeFetch<FrappeResponse<ConfirmPaymentResult>>(
     '/api/method/dance_platform.api.booking.confirm_booking_payment',
     {
       method: 'POST',

@@ -11,7 +11,11 @@ export const routes = {
   trainers: '/trainers',
   tickets: '/tickets',
   profile: '/profile',
+  host: '/host',
+  adminHostApplications: '/admin/host-applications',
   event: (id: string) => `/events/${encodeURIComponent(id)}`,
+  eventRegister: (id: string) => `/events/${encodeURIComponent(id)}/register`,
+  trainer: (id: string) => `/trainers/${encodeURIComponent(id)}`,
   training: (id: string) => `/trainings/${encodeURIComponent(id)}`,
   ticket: (id: string) => `/tickets/${encodeURIComponent(id)}`,
 } as const
