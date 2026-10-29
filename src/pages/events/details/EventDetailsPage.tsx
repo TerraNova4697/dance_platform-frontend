@@ -32,11 +32,11 @@ import '../../dashboard/dashboard.css'
 import './event-details.css'
 
 function EventDetailsSkeleton() {
-  return <main className="event-details-main" aria-busy="true" aria-label="Загрузка Ивента"><div className="details-skeleton back" /><div className="details-skeleton hero" /><div className="event-body-grid"><div><div className="details-skeleton section" /><div className="details-skeleton section" /><div className="details-skeleton map" /></div><div className="details-skeleton sidebar" /></div></main>
+  return <main className="event-details-main" aria-busy="true" aria-label="Загрузка мероприятия"><div className="details-skeleton back" /><div className="details-skeleton hero" /><div className="event-body-grid"><div><div className="details-skeleton section" /><div className="details-skeleton section" /><div className="details-skeleton map" /></div><div className="details-skeleton sidebar" /></div></main>
 }
 
 function isNotFound(error: unknown): boolean {
-  return (error instanceof FrappeApiError && error.status === 404) || (error instanceof InvalidEventDetailsError && error.message === 'Ивент не найден')
+  return (error instanceof FrappeApiError && error.status === 404) || (error instanceof InvalidEventDetailsError && error.message === 'Мероприятие не найдено')
 }
 
 export function EventDetailsPage() {
@@ -70,7 +70,7 @@ export function EventDetailsPage() {
   if (eventQuery.isPending) return <div className="dashboard-page event-details-page">{header}<EventDetailsSkeleton /></div>
   if (eventQuery.isError || !event) {
     const notFound = isNotFound(eventQuery.error)
-    return <div className="dashboard-page event-details-page">{header}<main className="event-details-main"><div className="event-page-state" role={notFound ? undefined : 'alert'}><Icon name="events" size={34} /><h1>{notFound ? 'Ивент не найден' : 'Не удалось загрузить Ивент'}</h1><p>{notFound ? 'Возможно, он был удален или ссылка больше недействительна.' : 'Проверьте подключение и попробуйте еще раз.'}</p>{notFound ? <Link className="button primary" to={routes.events}>Вернуться к Ивентам</Link> : <button className="button primary" type="button" onClick={() => void eventQuery.refetch()}>Повторить</button>}</div></main></div>
+    return <div className="dashboard-page event-details-page">{header}<main className="event-details-main"><div className="event-page-state" role={notFound ? undefined : 'alert'}><Icon name="events" size={34} /><h1>{notFound ? 'Мероприятие не найдено' : 'Не удалось загрузить мероприятие'}</h1><p>{notFound ? 'Возможно, оно было удалено или ссылка больше недействительна.' : 'Проверьте подключение и попробуйте еще раз.'}</p>{notFound ? <Link className="button primary" to={routes.events}>Вернуться к мероприятиям</Link> : <button className="button primary" type="button" onClick={() => void eventQuery.refetch()}>Повторить</button>}</div></main></div>
   }
 
   const registerPath = `/events/${encodeURIComponent(event.id)}/register`
@@ -83,10 +83,10 @@ export function EventDetailsPage() {
     <div className="dashboard-page event-details-page">
       {header}
       <main className="event-details-main">
-        <button className="event-back" type="button" onClick={goBack}>← Назад к Ивентам</button>
+        <button className="event-back" type="button" onClick={goBack}>← Назад к мероприятиям</button>
         <EventStatusBanner event={event} />
         <div className="event-top-grid"><EventHero event={event} /><EventRegistrationCard event={event} registrationHref={registrationHref} ticketHref={ticketHref} /></div>
-        <nav className="event-anchor-nav" aria-label="Разделы Ивента"><a href="#about">Описание</a><a href="#schedule">Расписание</a><a href={event.type === 'tournament' ? '#categories' : '#slots'}>{event.type === 'tournament' ? 'Категории' : 'Слоты'}</a><a href="#pricing">Стоимость</a><a href="#location">Место</a><a href="#rules">Правила</a></nav>
+        <nav className="event-anchor-nav" aria-label="Разделы мероприятия"><a href="#about">Описание</a><a href="#schedule">Расписание</a><a href={event.type === 'tournament' ? '#categories' : '#slots'}>{event.type === 'tournament' ? 'Категории' : 'Слоты'}</a><a href="#pricing">Стоимость</a><a href="#location">Место</a><a href="#rules">Правила</a></nav>
         <div className="event-body-grid">
           <div className="event-content-column">
             <EventAbout event={event} />

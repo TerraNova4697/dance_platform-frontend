@@ -3,13 +3,13 @@ import { routes } from '../../../routes'
 import { Icon } from './Icons'
 
 const desktopLinks = [
-  ['Главная', routes.home], ['Ивенты', routes.events], ['Билеты', routes.tickets],
+  ['Главная', routes.home], ['Мероприятия', routes.events], ['Билеты', routes.tickets],
   ['Кабинет', routes.profile], ['Организатор', routes.host], ['Тренеры', routes.trainers],
-  ['Мои Ивенты', routes.myEvents], ['Календарь', routes.calendar],
+  ['Мои мероприятия', routes.myEvents], ['Календарь', routes.calendar],
 ] as const
 
 const mobileLinks = [
-  ['Главная', routes.home, 'home'], ['Ивенты', routes.events, 'events'],
+  ['Главная', routes.home, 'home'], ['Мероприятия', routes.events, 'events'],
   ['Календарь', routes.calendar, 'calendar'], ['Билеты', routes.tickets, 'ticket'],
   ['Профиль', routes.profile, 'user'],
 ] as const

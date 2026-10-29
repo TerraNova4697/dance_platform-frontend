@@ -15,7 +15,7 @@ export function EventHero({ event }: { event: EventDetails }) {
   return (
     <section className="event-details-hero">
       <div className="event-details-cover">
-        {event.coverUrl ? <img src={event.coverUrl} alt={`Обложка Ивента «${event.title}»`} /> : <span>Dance Platform</span>}
+        {event.coverUrl ? <img src={event.coverUrl} alt={`Обложка мероприятия «${event.title}»`} /> : <span>Dance Platform</span>}
       </div>
       <div className="event-hero-copy">
         <span className={`type-badge type-${event.type}`}>{event.type === 'tournament' ? 'Турнир' : 'Мастер-класс'}</span>
@@ -53,7 +53,7 @@ export function EventRegistrationCard({ event, registrationHref, ticketHref }: {
       {event.currentUserState?.ticketId && <Link className="button secondary" to={`/tickets/${encodeURIComponent(event.currentUserState.ticketId)}`}>Открыть билет</Link>}
       {ticketHref && !event.currentUserState?.spectatorTicketOwned && <Link className="button secondary" to={ticketHref}>Купить билет зрителя</Link>}
       {event.currentUserState?.spectatorTicketOwned && <div className="registered-state"><Icon name="ticket" size={18} /><strong>Билет зрителя куплен</strong></div>}
-      <small>Продолжая регистрацию или покупку, вы соглашаетесь с правилами Ивента и условиями платформы.</small>
+      <small>Продолжая регистрацию или покупку, вы соглашаетесь с правилами мероприятия и условиями платформы.</small>
     </aside>
   )
 }
@@ -76,5 +76,5 @@ export function EventMobileCta({ event, registrationHref, ticketHref }: {
 
 export function EventStatusBanner({ event }: { event: EventDetails }) {
   if (event.eventStatus !== 'cancelled') return null
-  return <div className="event-warning" role="alert"><strong>Ивент отменен</strong><p>Организатор отменил мероприятие. Если вы уже оплатили участие или билет, возврат будет обработан согласно правилам платформы.</p></div>
+  return <div className="event-warning" role="alert"><strong>Мероприятие отменено</strong><p>Организатор отменил мероприятие. Если вы уже оплатили участие или билет, возврат будет обработан согласно правилам платформы.</p></div>
 }

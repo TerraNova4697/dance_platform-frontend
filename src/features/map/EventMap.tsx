@@ -63,7 +63,7 @@ export function EventMap({ events, selectedEventId, onSelect }: {
   }
 
   return (
-    <div className="event-map" aria-label="Карта найденных Ивентов">
+    <div className="event-map" aria-label="Карта найденных мероприятий">
       <MapContainer center={defaultCenter} zoom={11} maxZoom={18} scrollWheelZoom className="event-map-canvas">
         <TileLayer
           url={twoGisTilesUrl}
@@ -95,7 +95,7 @@ export function EventMap({ events, selectedEventId, onSelect }: {
       {!markers.length && (
         <div className="map-empty">
           <Icon name="map" size={32} />
-          <strong>Нет Ивентов с координатами</strong>
+          <strong>Нет мероприятий с координатами</strong>
           <span>Все результаты доступны в списке слева.</span>
         </div>
       )}

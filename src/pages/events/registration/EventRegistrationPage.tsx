@@ -127,10 +127,10 @@ export function EventRegistrationPage() {
         <DashboardHeader firstName={firstName} onLogout={() => void logout()} />
         <main className="registration-main">
           <div className="registration-card error-card">
-            <h2>Ивент не найден</h2>
+            <h2>Мероприятие не найдено</h2>
             <p>Не удалось загрузить параметры записи для данного мероприятия.</p>
             <Link to="/events" className="button primary">
-              В каталог Ивентов
+              В каталог мероприятий
             </Link>
           </div>
         </main>
@@ -166,7 +166,7 @@ export function EventRegistrationPage() {
       <DashboardHeader firstName={firstName} onLogout={() => void logout()} />
       <main className="registration-main">
         <div className="registration-breadcrumbs">
-          <Link to={`/events/${encodeURIComponent(event.id)}`}>← Назад к Ивенту</Link>
+          <Link to={`/events/${encodeURIComponent(event.id)}`}>← Назад к мероприятию</Link>
         </div>
 
         <div className="registration-card">

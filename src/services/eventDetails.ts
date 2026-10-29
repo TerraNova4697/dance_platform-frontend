@@ -25,7 +25,7 @@ import type {
 type UnknownRecord = Record<string, unknown>
 
 export class InvalidEventDetailsError extends Error {
-  constructor(message = 'Backend вернул неполные данные Ивента') {
+  constructor(message = 'Backend вернул неполные данные мероприятия') {
     super(message)
     this.name = 'InvalidEventDetailsError'
   }
@@ -201,7 +201,7 @@ function normalizePackages(input: unknown): MasterClassPackage[] {
 
 export async function getEventDetails(eventId: string): Promise<EventDetails> {
   const source = objectPayload(await fetchEventDetails(eventId), 'event', 'details')
-  if (!source || booleanValue(source, 'found') === false) throw new InvalidEventDetailsError('Ивент не найден')
+  if (!source || booleanValue(source, 'found') === false) throw new InvalidEventDetailsError('Мероприятие не найдено')
   const title = text(source, 'title', 'event_title', 'eventTitle')
   const startAt = dateValue(source, 'start_at', 'startAt', 'start_datetime', 'startDatetime')
   const rawType = text(source, 'type', 'event_type', 'eventType')?.toLowerCase().replace(/[ -]/g, '_')

@@ -28,7 +28,7 @@ export function EventsFilters({ filters, setFilters, directions, resultCount, mo
       <label><span>Уровень</span><select value={filters.level} onChange={(event) => update('level', event.target.value)}><option value="">Все уровни</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>Pro</option></select></label>
       <div className="price-fields"><label><span>Цена от</span><input type="number" min="0" inputMode="numeric" value={filters.priceFrom} onChange={(event) => update('priceFrom', event.target.value)} /></label><label><span>Цена до</span><input type="number" min="0" inputMode="numeric" value={filters.priceTo} onChange={(event) => update('priceTo', event.target.value)} /></label></div>
       <button className="filters-reset" type="button" onClick={reset}>Сбросить</button>
-      {mobile && <button className="button primary apply-filters" type="button" onClick={onClose}>Показать {resultCount} Ивентов</button>}
+      {mobile && <button className="button primary apply-filters" type="button" onClick={onClose}>Показать {resultCount} {resultCount % 10 === 1 && resultCount % 100 !== 11 ? 'мероприятие' : [2, 3, 4].includes(resultCount % 10) && ![12, 13, 14].includes(resultCount % 100) ? 'мероприятия' : 'мероприятий'}</button>}
     </div>
   )
 }

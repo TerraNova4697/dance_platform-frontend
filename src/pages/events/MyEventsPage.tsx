@@ -38,7 +38,7 @@ export function MyEventsPage() {
       <main className="my-events-main">
         <div className="my-events-header">
           <div>
-            <h1>Мои Ивенты</h1>
+            <h1>Мои мероприятия</h1>
             <p className="my-events-subtitle">
               Мастер-классы и мероприятия, на которые вы зарегистрированы
             </p>

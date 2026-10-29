@@ -13,12 +13,12 @@ function Section({ id, title, children }: { id?: string; title: string; children
 
 export function EventAbout({ event }: { event: EventDetails }) {
   if (!event.description) return null
-  return <Section id="about" title="Об Ивенте"><p className="event-long-copy">{event.description}</p></Section>
+  return <Section id="about" title="О мероприятии"><p className="event-long-copy">{event.description}</p></Section>
 }
 
 export function EventPoster({ event }: { event: EventDetails }) {
   if (!event.posterUrl) return null
-  return <Section title="Афиша"><a className="event-poster" href={event.posterUrl} target="_blank" rel="noreferrer"><img src={event.posterUrl} alt={`Афиша Ивента «${event.title}»`} /></a></Section>
+  return <Section title="Афиша"><a className="event-poster" href={event.posterUrl} target="_blank" rel="noreferrer"><img src={event.posterUrl} alt={`Афиша мероприятия «${event.title}»`} /></a></Section>
 }
 
 export function EventSchedule({ event }: { event: EventDetails }) {
@@ -65,5 +65,5 @@ export function EventRules({ event }: { event: EventDetails }) {
 }
 
 export function EventContactsAndOrganizer({ event }: { event: EventDetails }) {
-  return <>{event.contacts.length > 0 && <Section title="Контакты"><div className="event-contacts">{event.contacts.map((contact) => <article key={contact.id}>{contact.name && <strong>{contact.name}</strong>}{contact.phone && <a href={`tel:${contact.phone}`}>{contact.phone}</a>}{contact.email && <a href={`mailto:${contact.email}`}>{contact.email}</a>}</article>)}</div></Section>}<Section title="Организатор"><div className="event-organizer">{event.host.logoUrl ? <img src={event.host.logoUrl} alt="" /> : <span>{event.host.name.charAt(0) || 'D'}</span>}<div><strong>{event.host.name || 'Организатор Ивента'}</strong>{event.host.type && <small>{event.host.type}</small>}</div></div></Section></>
+  return <>{event.contacts.length > 0 && <Section title="Контакты"><div className="event-contacts">{event.contacts.map((contact) => <article key={contact.id}>{contact.name && <strong>{contact.name}</strong>}{contact.phone && <a href={`tel:${contact.phone}`}>{contact.phone}</a>}{contact.email && <a href={`mailto:${contact.email}`}>{contact.email}</a>}</article>)}</div></Section>}<Section title="Организатор"><div className="event-organizer">{event.host.logoUrl ? <img src={event.host.logoUrl} alt="" /> : <span>{event.host.name.charAt(0) || 'D'}</span>}<div><strong>{event.host.name || 'Организатор мероприятия'}</strong>{event.host.type && <small>{event.host.type}</small>}</div></div></Section></>
 }

@@ -18,7 +18,7 @@ export function NextActivityCard({ query }: { query: UseQueryResult<DashboardAct
   if (query.isPending) return <section><Skeleton variant="feature" /></section>
   if (query.isError) return <section className="feature-card"><WidgetError message="Не удалось загрузить ближайшую активность." onRetry={() => void query.refetch()} /></section>
   const activity = query.data
-  if (!activity) return <section className="feature-card"><EmptyState title="У вас пока нет предстоящих мероприятий" description="Найдите турнир, мастер-класс или запишитесь на тренировку." action={<div className="button-row"><Link className="button primary" to={routes.events}>Найти Ивент</Link><Link className="button secondary" to={routes.trainers}>Найти тренера</Link></div>} /></section>
+  if (!activity) return <section className="feature-card"><EmptyState title="У вас пока нет предстоящих мероприятий" description="Найдите турнир, мастер-класс или запишитесь на тренировку." action={<div className="button-row"><Link className="button primary" to={routes.events}>Найти мероприятие</Link><Link className="button secondary" to={routes.trainers}>Найти тренера</Link></div>} /></section>
   const detailUrl = activity.type === 'training' ? routes.training(activity.id) : routes.event(activity.id)
   return (
     <section className="feature-card">

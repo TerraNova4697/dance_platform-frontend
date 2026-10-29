@@ -295,7 +295,7 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
       await loadDashboard()
     } catch (err: unknown) {
       if (err instanceof FrappeApiError) setApiError(err.message)
-      else setApiError('Не удалось создать Ивент.')
+      else setApiError('Не удалось создать мероприятие.')
     } finally {
       setSavingEvent(false)
     }
@@ -371,7 +371,7 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
             className="primary-button"
             onClick={() => setShowCreateModal(true)}
           >
-            + Создать Ивент
+            + Создать мероприятие
           </button>
           {embedded ? (
             <button
@@ -410,7 +410,7 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
       {/* KPI Cards */}
       <div className="host-kpi-grid">
         <div className="host-kpi-card">
-          <span className="host-kpi-label">Мои Ивенты</span>
+          <span className="host-kpi-label">Мои мероприятия</span>
           <span className="host-kpi-value">{stats.total_events}</span>
           <span className="host-kpi-sub">Активных в афише: {stats.active_events}</span>
         </div>
@@ -440,7 +440,7 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
           className={`host-tab-btn ${activeTab === 'events' ? 'active' : ''}`}
           onClick={() => setActiveTab('events')}
         >
-          🎭 Мои Ивенты
+          🎭 Мои мероприятия
           <span className="host-tab-count">{events.length}</span>
         </button>
         <button
@@ -472,13 +472,13 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
       {activeTab === 'events' && (
         <section className="host-section-card">
           <div className="host-section-header">
-            <h2>Мои Ивенты ({events.length})</h2>
+            <h2>Мои мероприятия ({events.length})</h2>
             <button
               type="button"
               className="primary-button"
               onClick={() => setShowCreateModal(true)}
             >
-              + Создать Ивент
+              + Создать мероприятие
             </button>
           </div>
 
@@ -490,7 +490,7 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
                 className="primary-button"
                 onClick={() => setShowCreateModal(true)}
               >
-                Создать первый Ивент
+                Создать первое мероприятие
               </button>
             </div>
           ) : (
@@ -580,9 +580,9 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
               className="host-filter-select"
               value={selectedEventFilter}
               onChange={(e) => setSelectedEventFilter(e.target.value)}
-              aria-label="Фильтр по ивенту"
+              aria-label="Фильтр по мероприятию"
             >
-              <option value="all">Все Ивенты ({data.registrations.length})</option>
+              <option value="all">Все мероприятия ({data.registrations.length})</option>
               {events.map((ev) => (
                 <option key={ev.id} value={ev.id}>
                   {ev.title} ({ev.registrations_count})
@@ -621,7 +621,7 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
                 <thead>
                   <tr>
                     <th>Участник</th>
-                    <th>Ивент / Выбор</th>
+                    <th>Мероприятие / Выбор</th>
                     <th>Дата записи</th>
                     <th>Статус</th>
                     <th>Сумма</th>
@@ -876,7 +876,7 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
         <div className="modal-backdrop" role="dialog" aria-modal="true">
           <div className="modal-card modal-wide">
             <div className="modal-header">
-              <h3>Создать новый Ивент</h3>
+              <h3>Создать новое мероприятие</h3>
               <button type="button" className="close-btn" onClick={() => setShowCreateModal(false)}>
                 ×
               </button>
@@ -897,7 +897,7 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
                 </label>
 
                 <label htmlFor="createEventTitle">
-                  Название Ивента *
+                  Название мероприятия *
                   <input
                     id="createEventTitle"
                     type="text"
@@ -934,7 +934,7 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
               </label>
 
               <div className="photo-upload-block">
-                <span className="field-label">Обложка Ивента</span>
+                <span className="field-label">Обложка мероприятия</span>
                 <div className="photo-upload-controls">
                   <input
                     type="file"
@@ -1211,7 +1211,7 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
                   Отмена
                 </button>
                 <button type="submit" className="primary-button" disabled={savingEvent}>
-                  {savingEvent ? 'Публикация…' : 'Опубликовать Ивент'}
+                  {savingEvent ? 'Публикация…' : 'Опубликовать мероприятие'}
                 </button>
               </div>
             </form>

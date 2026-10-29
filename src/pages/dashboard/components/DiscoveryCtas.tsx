@@ -10,17 +10,17 @@ export function DiscoveryCtas({ query }: { query: UseQueryResult<NearbyEventsSum
       <article className="nearby-card">
         <div>
           <span className="overline">Рядом с вами</span>
-          <h2>Ивенты рядом</h2>
-          {query.isPending && <p aria-busy="true">Считаем ближайшие Ивенты…</p>}
+          <h2>Мероприятия рядом</h2>
+          {query.isPending && <p aria-busy="true">Считаем ближайшие мероприятия…</p>}
           {query.isError && (
             <div className="nearby-error" role="alert">
-              <p>Не удалось загрузить количество Ивентов.</p>
+              <p>Не удалось загрузить количество мероприятий.</p>
               <button className="text-button" type="button" onClick={() => void query.refetch()}>Повторить</button>
             </div>
           )}
           {query.data && (
             <p>
-              <strong>{query.data.upcomingCount} предстоящих Ивентов</strong><br />
+              <strong>{query.data.upcomingCount} предстоящих мероприятий</strong><br />
               {query.data.city ? `в городе ${query.data.city}` : 'рядом с вами'}
             </p>
           )}
