@@ -8,28 +8,15 @@ import {
   uploadProfilePhoto,
   searchLeagues,
   searchFederations,
-  searchTrainerByPhone,
   type OnboardingContext,
-  type TrainerSearchResult,
 } from '../api/onboarding'
 import { LoadingScreen } from '../components/LoadingScreen'
+import { BrandLogo } from '../components/BrandLogo'
 import { CountryPhoneInput } from '../components/CountryPhoneInput'
 import { CitySelectInput } from '../components/CitySelectInput'
 import { DebouncedSearchSelect } from '../components/DebouncedSearchSelect'
 import { resolveCountryCode } from '../utils/geoRu'
-import {
-  isValidPhoneNumber,
-  getCountries,
-  getCountryCallingCode,
-  type Country as PhoneCountry,
-} from 'react-phone-number-input'
-
-const CALLING_CODES = new Set(getCountries().map((c) => `+${getCountryCallingCode(c)}`))
-
-function isPhoneInputEmptyOrPrefixOnly(val: string): boolean {
-  const trimmed = (val || '').trim()
-  return !trimmed || trimmed === '+' || CALLING_CODES.has(trimmed)
-}
+import { type Country as PhoneCountry } from 'react-phone-number-input'
 
 type RoleChoice = 'athlete' | 'trainer'
 
@@ -61,13 +48,6 @@ export function OnboardingPage() {
   const [federation, setFederation] = useState('')
   const [federationTitle, setFederationTitle] = useState('')
   const [athleteClubs, setAthleteClubs] = useState<string[]>([])
-  const [athleteTrainers, setAthleteTrainers] = useState<string[]>([])
-  const [attachedTrainers, setAttachedTrainers] = useState<TrainerSearchResult[]>([])
-  const [trainerSearchPhone, setTrainerSearchPhone] = useState('')
-  const [searchingTrainer, setSearchingTrainer] = useState(false)
-  const [trainerPhoneWarning, setTrainerPhoneWarning] = useState<string | null>(null)
-  const [trainerNotFound, setTrainerNotFound] = useState(false)
-  const [foundTrainer, setFoundTrainer] = useState<TrainerSearchResult | null>(null)
 
   // Step 2B: Trainer fields
   const [publicName, setPublicName] = useState('')
@@ -126,38 +106,6 @@ export function OnboardingPage() {
     return await searchFederations(q)
   }, [])
 
-  const handleTrainerPhoneChange = useCallback(async (val: string) => {
-    setTrainerSearchPhone(val)
-    setTrainerPhoneWarning(null)
-    setTrainerNotFound(false)
-    setFoundTrainer(null)
-
-    if (isPhoneInputEmptyOrPrefixOnly(val)) {
-      return
-    }
-
-    if (!isValidPhoneNumber(val)) {
-      setTrainerPhoneWarning('Номер телефона не валиден')
-      return
-    }
-
-    setSearchingTrainer(true)
-    try {
-      const res = await searchTrainerByPhone(val)
-      if (res) {
-        setFoundTrainer(res)
-        setTrainerNotFound(false)
-      } else {
-        setFoundTrainer(null)
-        setTrainerNotFound(true)
-      }
-    } catch {
-      setTrainerNotFound(true)
-    } finally {
-      setSearchingTrainer(false)
-    }
-  }, [])
-
   if (loadingContext) {
     return <LoadingScreen />
   }
@@ -180,23 +128,6 @@ export function OnboardingPage() {
     } finally {
       setUploadingPhoto(false)
     }
-  }
-
-  function handleAddTrainer(trainer: TrainerSearchResult) {
-    if (!trainer) return
-    if (!attachedTrainers.some((t) => t.name === trainer.name)) {
-      setAttachedTrainers((prev) => [...prev, trainer])
-      setAthleteTrainers((prev) => [...prev, trainer.name])
-    }
-    setFoundTrainer(null)
-    setTrainerNotFound(false)
-    setTrainerPhoneWarning(null)
-    setTrainerSearchPhone('')
-  }
-
-  function handleRemoveTrainer(name: string) {
-    setAttachedTrainers((prev) => prev.filter((t) => t.name !== name))
-    setAthleteTrainers((prev) => prev.filter((n) => n !== name))
   }
 
   function handleNextStep(event: FormEvent<HTMLFormElement>) {
@@ -274,7 +205,6 @@ export function OnboardingPage() {
                 league: league || null,
                 federation: federation || null,
                 clubs: athleteClubs,
-                trainers: athleteTrainers,
               }
             : undefined,
         trainer:
@@ -317,14 +247,14 @@ export function OnboardingPage() {
     <main className="login-page">
       <section className="login-card onboarding-card" aria-labelledby="onboarding-title">
         <div className="onboarding-header">
-          <div className="brand-mark" aria-hidden="true">D</div>
+          <BrandLogo size={32} showText={true} />
           <span className="step-badge">Шаг {step} из 2</span>
         </div>
 
         {step === 1 ? (
           <>
             <div className="login-heading">
-              <p className="eyebrow">Добро пожаловать в Dance Platform</p>
+              <p className="eyebrow">Добро пожаловать в on dance space</p>
               <h1 id="onboarding-title">Расскажите о себе</h1>
               <p>Выберите вашу основную роль. Вторую роль вы сможете подключить позже в профиле.</p>
             </div>
@@ -536,106 +466,6 @@ export function OnboardingPage() {
                   </div>
                 ) : (
                   <p className="helper-note">Клубы пока не добавлены</p>
-                )}
-              </div>
-
-              <div className="trainer-search-group">
-                <span className="field-label">Поиск тренера по номеру телефона</span>
-                <p className="helper-note" style={{ margin: 0 }}>
-                  Введите номер телефона тренера для отправки заявки на прикрепление
-                </p>
-
-                <CountryPhoneInput
-                  id="trainerSearchPhone"
-                  value={trainerSearchPhone}
-                  onChange={handleTrainerPhoneChange}
-                  defaultCountry={(country as PhoneCountry) || 'KZ'}
-                  placeholder="+7 700 000 00 00"
-                  disabled={submitting || searchingTrainer}
-                />
-
-                {trainerPhoneWarning && (
-                  <div className="trainer-warning-banner" role="status">
-                    <span className="warning-icon" aria-hidden="true">⚠️</span>
-                    <span>{trainerPhoneWarning}</span>
-                  </div>
-                )}
-
-                {searchingTrainer && (
-                  <p className="helper-note">Выполняется поиск тренера…</p>
-                )}
-
-                {trainerNotFound && !searchingTrainer && !trainerPhoneWarning && (
-                  <div className="trainer-not-found-banner" role="alert">
-                    По данному номеру телефона тренер не найден
-                  </div>
-                )}
-
-                {foundTrainer && (
-                  <div className="trainer-found-card">
-                    <div className="trainer-found-main">
-                      {foundTrainer.photo ? (
-                        <img
-                          src={foundTrainer.photo}
-                          alt={foundTrainer.public_name}
-                          className="trainer-avatar-small"
-                        />
-                      ) : (
-                        <div className="trainer-avatar-placeholder" aria-hidden="true">
-                          {foundTrainer.public_name.charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                      <div className="trainer-found-info">
-                        <div className="trainer-name-row">
-                          <strong className="trainer-public-name">{foundTrainer.public_name}</strong>
-                          {foundTrainer.verification_status === 'Verified' && (
-                            <span className="badge-verified" title="Подтвержден">✓</span>
-                          )}
-                        </div>
-                        {foundTrainer.city && (
-                          <span className="trainer-city-sub">{foundTrainer.city}</span>
-                        )}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      className="secondary-button add-trainer-btn"
-                      onClick={() => handleAddTrainer(foundTrainer)}
-                    >
-                      + Прикрепить тренера
-                    </button>
-                  </div>
-                )}
-
-                {attachedTrainers.length > 0 && (
-                  <div className="attached-trainers-list">
-                    <span className="field-label" style={{ fontSize: '13px' }}>
-                      Выбранные тренеры (заявка на прикрепление):
-                    </span>
-                    <div className="chips-grid">
-                      {attachedTrainers.map((tr) => (
-                        <span key={tr.name} className="trainer-chip">
-                          {tr.photo && (
-                            <img
-                              src={tr.photo}
-                              alt=""
-                              className="trainer-chip-avatar"
-                            />
-                          )}
-                          {tr.public_name}
-                          {tr.verification_status === 'Verified' && ' ✓'}
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveTrainer(tr.name)}
-                            aria-label={`Удалить ${tr.public_name}`}
-                            title="Удалить"
-                          >
-                            ×
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
                 )}
               </div>
 

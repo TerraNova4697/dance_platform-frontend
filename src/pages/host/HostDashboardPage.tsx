@@ -640,7 +640,7 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
                       </td>
                       <td>
                         <div style={{ fontWeight: 600, color: '#111827' }}>{r.event_title}</div>
-                        <div style={{ fontSize: '0.82rem', color: '#4f46e5' }}>{r.item_label}</div>
+                        <div style={{ fontSize: '0.82rem', color: '#fd3a25', fontWeight: 600 }}>{r.item_label}</div>
                       </td>
                       <td>{formatDateTime(r.registered_at)}</td>
                       <td>{renderStatusBadge(r.status)}</td>

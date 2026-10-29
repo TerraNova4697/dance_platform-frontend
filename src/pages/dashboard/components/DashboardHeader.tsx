@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { routes } from '../../../routes'
 import { Icon } from './Icons'
+import { BrandLogo } from '../../../components/BrandLogo'
 
 const desktopLinks = [
   ['Главная', routes.home], ['Мероприятия', routes.events], ['Билеты', routes.tickets],
@@ -22,8 +23,8 @@ export function DashboardHeader({ firstName, avatarUrl, onLogout, isLoggingOut =
     <>
       <header className="dashboard-header">
         <div className="header-inner">
-          <NavLink className="dashboard-logo" to={routes.home} aria-label="Dance Platform — главная">
-            <span className="logo-symbol">D</span><span>Dance Platform</span>
+          <NavLink className="dashboard-logo" to={routes.home} aria-label="on dance space — главная">
+            <BrandLogo size={28} showText={true} />
           </NavLink>
           <nav className="desktop-nav" aria-label="Основная навигация">
             {desktopLinks.map(([label, path]) => <NavLink key={path} to={path} end={path === routes.home}>{label}</NavLink>)}

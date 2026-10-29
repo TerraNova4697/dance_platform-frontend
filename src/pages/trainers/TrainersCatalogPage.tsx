@@ -254,7 +254,7 @@ export function TrainersCatalogPage() {
                               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', borderBottom: '1px solid #f1f5f9', paddingBottom: '6px' }}>
                                 <span>🗓</span>
                                 <h4 style={{ margin: 0, fontSize: '1rem', color: '#1e293b' }}>{capitalizedHeader}</h4>
-                                <span style={{ fontSize: '0.8rem', color: '#6366f1', background: '#e0e7ff', padding: '1px 6px', borderRadius: '10px' }}>
+                                <span style={{ fontSize: '0.8rem', color: '#fd3a25', background: '#f5f5f5', padding: '2px 8px', borderRadius: '100px', fontWeight: 650, boxShadow: 'var(--shadow-badge-tactile)' }}>
                                   {dSlots.length} {dSlots.length === 1 ? 'время' : 'варианта'}
                                 </span>
                               </div>
@@ -275,7 +275,7 @@ export function TrainersCatalogPage() {
                                       <div className="slot-meta-box">
                                         <div className="meta-row">
                                           <span className="meta-icon">⏰</span>
-                                          <strong style={{ fontSize: '1.05rem', color: '#4338ca' }}>{startStr} — {endStr}</strong>
+                                          <strong style={{ fontSize: '1.05rem', color: 'var(--text-primary, #09090b)' }}>{startStr} — {endStr}</strong>
                                         </div>
                                         <div className="meta-row">
                                           <span className="meta-icon">📍</span>

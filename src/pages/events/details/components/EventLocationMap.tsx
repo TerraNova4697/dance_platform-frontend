@@ -32,7 +32,7 @@ export default function EventLocationMap({ latitude, longitude, title, address }
         attribution={'&copy; <a href="https://2gis.com/">2GIS</a>'}
         eventHandlers={{ tileerror: () => setHasTileError(true) }}
       />
-      <CircleMarker center={[latitude, longitude]} radius={11} pathOptions={{ color: '#fff', fillColor: '#5b48e8', fillOpacity: 1, weight: 3 }}>
+      <CircleMarker center={[latitude, longitude]} radius={11} pathOptions={{ color: '#fff', fillColor: '#fd3a25', fillOpacity: 1, weight: 3 }}>
         <Popup><strong>{title}</strong>{address && <><br />{address}</>}</Popup>
       </CircleMarker>
     </MapContainer>

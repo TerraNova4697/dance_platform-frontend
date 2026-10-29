@@ -2,6 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { register, resendVerificationEmail, FrappeApiError } from '../api/auth'
 import { LoadingScreen } from '../components/LoadingScreen'
+import { BrandLogo } from '../components/BrandLogo'
 import { useAuth } from '../hooks/useAuth'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -195,9 +196,11 @@ export function RegisterPage() {
   return (
     <main className="login-page">
       <section className="login-card" aria-labelledby="register-title">
-        <div className="brand-mark" aria-hidden="true">D</div>
+        <div style={{ marginBottom: '22px' }}>
+          <BrandLogo size={36} showText={true} />
+        </div>
         <div className="login-heading">
-          <p className="eyebrow">Dance Platform</p>
+          <p className="eyebrow">on dance space</p>
           <h1 id="register-title">Создать аккаунт</h1>
           <p>Заполните форму для регистрации на платформе</p>
         </div>

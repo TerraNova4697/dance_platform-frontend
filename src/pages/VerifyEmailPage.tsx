@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, type FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { verifyEmail, resendVerificationEmail, FrappeApiError } from '../api/auth'
+import { BrandLogo } from '../components/BrandLogo'
 import { useAuthStore } from '../stores/authStore'
 
 type VerifyState = 'loading' | 'success' | 'error'
@@ -88,9 +89,11 @@ export function VerifyEmailPage() {
     return (
       <main className="login-page">
         <section className="login-card" aria-busy="true">
-          <div className="brand-mark" aria-hidden="true">D</div>
+          <div style={{ marginBottom: '22px' }}>
+            <BrandLogo size={36} showText={true} />
+          </div>
           <div className="login-heading">
-            <p className="eyebrow">Dance Platform</p>
+            <p className="eyebrow">on dance space</p>
             <h1>Активация аккаунта</h1>
             <p>Проверяем ссылку активации…</p>
           </div>
@@ -110,7 +113,7 @@ export function VerifyEmailPage() {
         <section className="login-card" aria-labelledby="verify-success-title">
           <div className="brand-mark brand-mark-success" aria-hidden="true">✓</div>
           <div className="login-heading">
-            <p className="eyebrow">Dance Platform</p>
+            <p className="eyebrow">on dance space</p>
             <h1 id="verify-success-title">Почта подтверждена!</h1>
             <p>{successMessage}</p>
           </div>
@@ -135,7 +138,7 @@ export function VerifyEmailPage() {
       <section className="login-card" aria-labelledby="verify-error-title">
         <div className="brand-mark brand-mark-error" aria-hidden="true">!</div>
         <div className="login-heading">
-          <p className="eyebrow">Dance Platform</p>
+          <p className="eyebrow">on dance space</p>
           <h1 id="verify-error-title">Ошибка активации</h1>
           <p>{errorMessage}</p>
         </div>

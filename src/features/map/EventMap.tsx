@@ -82,7 +82,7 @@ export function EventMap({ events, selectedEventId, onSelect }: {
               radius={isSelected ? 13 : 10}
               pathOptions={{
                 color: '#ffffff',
-                fillColor: isSelected ? '#30229d' : '#5b48e8',
+                fillColor: isSelected ? '#18181b' : '#fd3a25',
                 fillOpacity: 1,
                 opacity: 1,
                 weight: 3,

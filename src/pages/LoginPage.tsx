@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { resendVerificationEmail, FrappeApiError } from '../api/auth'
 import { LoadingScreen } from '../components/LoadingScreen'
+import { BrandLogo } from '../components/BrandLogo'
 import { useAuth } from '../hooks/useAuth'
 import { useAuthStore } from '../stores/authStore'
 
@@ -80,9 +81,11 @@ export function LoginPage() {
   return (
     <main className="login-page">
       <section className="login-card" aria-labelledby="login-title">
-        <div className="brand-mark" aria-hidden="true">D</div>
+        <div style={{ marginBottom: '22px' }}>
+          <BrandLogo size={36} showText={true} />
+        </div>
         <div className="login-heading">
-          <p className="eyebrow">Dance Platform</p>
+          <p className="eyebrow">on dance space</p>
           <h1 id="login-title">Добро пожаловать</h1>
           <p>Войдите, чтобы продолжить работу</p>
         </div>

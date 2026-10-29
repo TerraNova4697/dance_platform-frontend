@@ -220,12 +220,12 @@ export function TrainerDetailsPage() {
 
                   return (
                     <div key={dateStr} className="date-group-block">
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', borderBottom: '2px solid #e0e7ff', paddingBottom: '4px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', borderBottom: '2px solid var(--border-default, #e4e4e7)', paddingBottom: '4px' }}>
                         <span style={{ fontSize: '1.1rem' }}>🗓</span>
-                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 600, color: '#1e1b4b' }}>
+                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary, #09090b)' }}>
                           {capitalizedDateHeader}
                         </h3>
-                        <span style={{ fontSize: '0.8rem', color: '#6366f1', background: '#e0e7ff', padding: '1px 6px', borderRadius: '10px' }}>
+                        <span style={{ fontSize: '0.8rem', color: '#fd3a25', background: '#f5f5f5', padding: '2px 8px', borderRadius: '100px', fontWeight: 650, boxShadow: 'var(--shadow-badge-tactile)' }}>
                           {slotsOnDate.length}
                         </span>
                       </div>
@@ -257,7 +257,7 @@ export function TrainerDetailsPage() {
                               <div className="slot-meta-box">
                                 <div className="meta-row">
                                   <span className="meta-icon">⏰</span>
-                                  <strong style={{ color: '#4338ca' }}>{startStr} — {endStr}</strong>
+                                  <strong style={{ color: 'var(--text-primary, #09090b)' }}>{startStr} — {endStr}</strong>
                                 </div>
                                 <div className="meta-row">
                                   <span className="meta-icon">📍</span>

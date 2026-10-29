@@ -3,16 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { FrappeApiError } from '../api/frappe'
 import {
   uploadProfilePhoto,
-  searchTrainerByPhone,
   searchLeagues,
   searchFederations,
-  type TrainerSearchResult,
 } from '../api/onboarding'
 import {
   getAthleteCabinetData,
   updateAthleteProfile,
   searchClubs,
-  sendTrainerRequest,
   respondTrainerRelation,
   sendClubRequest,
   respondClubMembership,
@@ -26,9 +23,7 @@ import {
   getCabinetContext,
   updateTrainerProfile,
   activateSecondaryRole,
-  searchAthleteByPhone,
   getTrainerStudents,
-  sendStudentRequest,
   respondStudentRequest,
   searchVenues,
   getTrainerTrainings,
@@ -38,7 +33,6 @@ import {
   getTrainerMasterClasses,
   createMasterClass,
   type CabinetContext,
-  type AthleteSearchResult,
   type StudentRelationItem,
   type TrainerTrainingsResponse,
   type TrainerMasterClassEvent,
@@ -56,23 +50,11 @@ import { DebouncedSearchSelect } from '../components/DebouncedSearchSelect'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { BookingHoldModal } from '../components/BookingHoldModal'
 import { resolveCountryCode } from '../utils/geoRu'
-import {
-  isValidPhoneNumber,
-  getCountries,
-  getCountryCallingCode,
-  type Country,
-} from 'react-phone-number-input'
+import { type Country } from 'react-phone-number-input'
 import { formatDateTime } from '../utils/date'
 import { routes } from '../routes'
 import { HostApplicationSection } from './host/HostApplicationSection'
 import './CabinetPage.css'
-
-const CALLING_CODES = new Set(getCountries().map((c) => `+${getCountryCallingCode(c)}`))
-
-function isPhoneInputEmptyOrPrefixOnly(val: string): boolean {
-  const trimmed = (val || '').trim()
-  return !trimmed || trimmed === '+' || CALLING_CODES.has(trimmed)
-}
 
 function toggleItem(list: string[], item: string): string[] {
   return list.includes(item) ? list.filter((x) => x !== item) : [...list, item]
@@ -112,11 +94,6 @@ export function CabinetPage() {
   const [savingProfile, setSavingProfile] = useState(false)
 
   // Students tab state
-  const [studentSearchPhone, setStudentSearchPhone] = useState('')
-  const [searchingStudent, setSearchingStudent] = useState(false)
-  const [studentPhoneWarning, setStudentPhoneWarning] = useState<string | null>(null)
-  const [studentNotFound, setStudentNotFound] = useState(false)
-  const [foundStudent, setFoundStudent] = useState<AthleteSearchResult | null>(null)
   const [activeStudents, setActiveStudents] = useState<StudentRelationItem[]>([])
   const [incomingRequests, setIncomingRequests] = useState<StudentRelationItem[]>([])
   const [outgoingRequests, setOutgoingRequests] = useState<StudentRelationItem[]>([])
@@ -207,14 +184,6 @@ export function CabinetPage() {
 
   // Athlete attachments data state
   const [athleteData, setAthleteData] = useState<AthleteCabinetData | null>(null)
-
-  // Athlete Trainer Search state
-  const [athTrainerSearchPhone, setAthTrainerSearchPhone] = useState('')
-  const [searchingTrainer, setSearchingTrainer] = useState(false)
-  const [athTrainerPhoneWarning, setAthTrainerPhoneWarning] = useState<string | null>(null)
-  const [athTrainerNotFound, setAthTrainerNotFound] = useState(false)
-  const [foundTrainer, setFoundTrainer] = useState<TrainerSearchResult | null>(null)
-  const [sendingTrainerReq, setSendingTrainerReq] = useState(false)
 
   // Athlete Club Search state
   const [selectedClub, setSelectedClub] = useState('')
@@ -529,56 +498,6 @@ export function CabinetPage() {
     }
   }
 
-  const handleAthTrainerPhoneChange = useCallback(async (val: string) => {
-    setAthTrainerSearchPhone(val)
-    setAthTrainerPhoneWarning(null)
-    setAthTrainerNotFound(false)
-    setFoundTrainer(null)
-
-    if (isPhoneInputEmptyOrPrefixOnly(val)) {
-      return
-    }
-
-    if (!isValidPhoneNumber(val)) {
-      setAthTrainerPhoneWarning('Номер телефона не валиден')
-      return
-    }
-
-    setSearchingTrainer(true)
-    try {
-      const res = await searchTrainerByPhone(val)
-      if (res) {
-        setFoundTrainer(res)
-        setAthTrainerNotFound(false)
-      } else {
-        setFoundTrainer(null)
-        setAthTrainerNotFound(true)
-      }
-    } catch {
-      setAthTrainerNotFound(true)
-    } finally {
-      setSearchingTrainer(false)
-    }
-  }, [])
-
-  async function handleSendTrainerRequestAction(trainerProfile: string) {
-    setSendingTrainerReq(true)
-    setApiError(null)
-    setSuccessMessage(null)
-    try {
-      const res = await sendTrainerRequest(trainerProfile)
-      setSuccessMessage(res.message)
-      setFoundTrainer(null)
-      setAthTrainerSearchPhone('')
-      await loadAthleteData()
-    } catch (err: unknown) {
-      if (err instanceof FrappeApiError) setApiError(err.message)
-      else setApiError('Не удалось отправить заявку тренеру.')
-    } finally {
-      setSendingTrainerReq(false)
-    }
-  }
-
   async function handleRespondTrainerAction(relationId: string, action: 'accept' | 'reject' | 'cancel' | 'leave') {
     setApiError(null)
     setSuccessMessage(null)
@@ -707,50 +626,6 @@ export function CabinetPage() {
   }
 
   // --- Handlers: Students & Requests ---
-  const handleStudentPhoneChange = useCallback(async (val: string) => {
-    setStudentSearchPhone(val)
-    setStudentPhoneWarning(null)
-    setStudentNotFound(false)
-    setFoundStudent(null)
-
-    if (isPhoneInputEmptyOrPrefixOnly(val)) {
-      return
-    }
-
-    if (!isValidPhoneNumber(val)) {
-      setStudentPhoneWarning('Номер телефона не валиден')
-      return
-    }
-
-    setSearchingStudent(true)
-    try {
-      const res = await searchAthleteByPhone(val)
-      if (res) {
-        setFoundStudent(res)
-        setStudentNotFound(false)
-      } else {
-        setFoundStudent(null)
-        setStudentNotFound(true)
-      }
-    } catch {
-      setStudentNotFound(true)
-    } finally {
-      setSearchingStudent(false)
-    }
-  }, [])
-
-  async function handleSendStudentRequest(athleteProfile: string) {
-    try {
-      const res = await sendStudentRequest(athleteProfile)
-      setSuccessMessage(res.message)
-      setFoundStudent(null)
-      setStudentSearchPhone('')
-      await loadStudents()
-    } catch (err: unknown) {
-      if (err instanceof FrappeApiError) setApiError(err.message)
-    }
-  }
-
   async function handleRespondRequest(relationId: string, action: 'accept' | 'reject' | 'remove' | 'cancel') {
     try {
       const res = await respondStudentRequest(relationId, action)
@@ -1289,58 +1164,7 @@ export function CabinetPage() {
         <section className="cabinet-card tab-content-card">
           <div className="section-head">
             <h3>Управление учениками</h3>
-            <p className="helper-note">Поиск танцора по номеру телефона для отправки заявки на прикрепление</p>
-          </div>
-
-          <div className="student-search-box">
-            <span className="field-label">Поиск танцора по номеру телефона</span>
-            <CountryPhoneInput
-              id="studentSearchPhone"
-              value={studentSearchPhone}
-              onChange={handleStudentPhoneChange}
-              defaultCountry="KZ"
-              placeholder="+7 701 000 00 00"
-              disabled={searchingStudent}
-            />
-
-            {studentPhoneWarning && (
-              <div className="trainer-warning-banner" role="status">
-                ⚠️ {studentPhoneWarning}
-              </div>
-            )}
-
-            {searchingStudent && <p className="helper-note">Поиск танцора…</p>}
-
-            {studentNotFound && !searchingStudent && !studentPhoneWarning && (
-              <div className="trainer-not-found-banner" role="alert">
-                По данному номеру телефона танцор не найден
-              </div>
-            )}
-
-            {foundStudent && (
-              <div className="trainer-found-card">
-                <div className="trainer-found-main">
-                  {foundStudent.photo ? (
-                    <img src={foundStudent.photo} alt={foundStudent.full_name} className="trainer-avatar-small" />
-                  ) : (
-                    <div className="trainer-avatar-placeholder">
-                      {foundStudent.full_name.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <div className="trainer-found-info">
-                    <strong className="trainer-public-name">{foundStudent.full_name}</strong>
-                    {foundStudent.city && <span className="trainer-city-sub">{foundStudent.city}</span>}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={() => void handleSendStudentRequest(foundStudent.athlete_profile)}
-                >
-                  + Отправить заявку на прикрепление
-                </button>
-              </div>
-            )}
+            <p className="helper-note">Список прикрепленных учеников и управление заявками</p>
           </div>
 
           {/* Incoming requests from dancers */}
@@ -1484,7 +1308,7 @@ export function CabinetPage() {
                               Регулярная (Пакет {off.package_size || 8} зан.)
                             </span>
                           ) : (
-                            <span style={{ fontSize: '0.75rem', fontWeight: 600, background: '#e0e7ff', color: '#4338ca', padding: '2px 8px', borderRadius: '4px' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 700, background: '#f5f5f5', color: '#fd3a25', padding: '2px 8px', borderRadius: '100px', boxShadow: 'var(--shadow-badge-tactile)' }}>
                               Разовая
                             </span>
                           )}
@@ -2447,66 +2271,7 @@ export function CabinetPage() {
           <section className="cabinet-card tab-content-card">
             <div className="section-head">
               <h3>Мои тренеры и заявки</h3>
-              <p className="helper-note">Прикрепляйтесь к персональным тренерам по номеру телефона</p>
-            </div>
-
-            {/* Trainer Search by Phone */}
-            <div className="student-search-box">
-              <span className="field-label">Поиск тренера по номеру телефона</span>
-              <div className="search-phone-row">
-                <CountryPhoneInput
-                  id="athTrainerPhone"
-                  value={athTrainerSearchPhone}
-                  onChange={handleAthTrainerPhoneChange}
-                  defaultCountry="KZ"
-                />
-              </div>
-
-              {athTrainerPhoneWarning && (
-                <div className="phone-warning-banner" role="status">
-                  ⚠️ {athTrainerPhoneWarning}
-                </div>
-              )}
-
-              {searchingTrainer && <p className="helper-note">Поиск тренера в базе…</p>}
-
-              {athTrainerNotFound && !searchingTrainer && (
-                <div className="phone-not-found-banner" role="status">
-                  По данному номеру телефона не был найден тренер.
-                </div>
-              )}
-
-              {foundTrainer && !searchingTrainer && (
-                <div className="found-student-card">
-                  <div className="found-student-avatar">
-                    {foundTrainer.photo ? (
-                      <img src={foundTrainer.photo} alt={foundTrainer.public_name} />
-                    ) : (
-                      <div className="cabinet-avatar-placeholder">
-                        {foundTrainer.public_name.charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                  </div>
-                  <div className="found-student-info">
-                    <div className="trainer-name-row">
-                      <strong>{foundTrainer.public_name}</strong>
-                      {foundTrainer.verification_status === 'Verified' && (
-                        <span className="badge-verified">Подтвержден ✓</span>
-                      )}
-                    </div>
-                    {foundTrainer.city && <span>г. {foundTrainer.city}</span>}
-                    {foundTrainer.phone && <span>{foundTrainer.phone}</span>}
-                  </div>
-                  <button
-                    type="button"
-                    className="primary-button small-btn"
-                    onClick={() => void handleSendTrainerRequestAction(foundTrainer.name)}
-                    disabled={sendingTrainerReq}
-                  >
-                    {sendingTrainerReq ? 'Отправка…' : 'Отправить заявку тренеру'}
-                  </button>
-                </div>
-              )}
+              <p className="helper-note">Список прикрепленных тренеров и управление заявками</p>
             </div>
 
             {/* Incoming requests from trainers */}
@@ -2996,12 +2761,12 @@ export function CabinetPage() {
 
                   return (
                     <div key={dateStr} className="date-slots-group">
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px', borderBottom: '2px solid #e0e7ff', paddingBottom: '6px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px', borderBottom: '2px solid var(--border-default, #e4e4e7)', paddingBottom: '6px' }}>
                         <span style={{ fontSize: '1.2rem' }}>🗓</span>
-                        <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 600, color: '#1e1b4b' }}>
+                        <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary, #09090b)' }}>
                           {capitalizedDateHeader}
                         </h4>
-                        <span style={{ fontSize: '0.85rem', color: '#6366f1', background: '#e0e7ff', padding: '2px 8px', borderRadius: '12px', fontWeight: 500 }}>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--brand-accent, #fd3a25)', background: '#f5f5f5', padding: '2px 10px', borderRadius: '100px', fontWeight: 650, boxShadow: 'var(--shadow-badge-tactile)' }}>
                           {slotsOnDate.length} {slotsOnDate.length === 1 ? 'слот' : 'слотов'}
                         </span>
                       </div>
@@ -3044,7 +2809,7 @@ export function CabinetPage() {
                                 )}
 
                                 <div className="catalog-slot-meta" style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.85rem', color: '#4b5563', marginBottom: '16px' }}>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: '#4338ca' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700, color: 'var(--text-primary, #09090b)' }}>
                                     <span>⏰</span>
                                     <span>{startTime} — {endTime}</span>
                                   </div>

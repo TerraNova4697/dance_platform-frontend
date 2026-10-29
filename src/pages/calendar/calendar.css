@@ -1,42 +1,66 @@
 .calendar-page {
   min-height: 100vh;
-  background: #f8fafc;
+  background: var(--bg-canvas, #edecec);
+  color: var(--text-primary, #09090b);
 }
 
 .calendar-main {
-  max-width: 860px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 24px 16px 64px;
+  padding: 32px 20px 72px;
 }
 
 .calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
   flex-wrap: wrap;
   gap: 16px;
 }
 
 .calendar-header h1 {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
-  color: #0f172a;
+  letter-spacing: -0.03em;
   margin: 0 0 6px;
+  background: linear-gradient(93deg, #61666A 0%, #292C2E 36%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .calendar-subtitle {
-  color: #64748b;
+  color: var(--text-secondary, #3f3f46);
   font-size: 14px;
   margin: 0;
 }
 
 .calendar-filter-tabs {
   display: flex;
-  background: #e2e8f0;
+  background: var(--bg-surface-subtle, #f5f5f5);
   padding: 4px;
-  border-radius: 10px;
+  border: 1px solid var(--border-default, #e4e4e7);
+  border-radius: var(--radius-pill, 100px);
+  box-shadow: var(--shadow-badge-tactile);
   gap: 4px;
+}
+
+.calendar-filter-tabs button {
+  padding: 7px 18px;
+  border-radius: var(--radius-pill, 100px);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary, #3f3f46);
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.calendar-filter-tabs button.active {
+  background: var(--brand-dark, #272727);
+  color: #ffffff;
+  box-shadow: var(--shadow-btn-dark);
 }
 
 .calendar-timeline {
@@ -58,14 +82,14 @@
 }
 
 .day-bullet {
-  color: #3b82f6;
-  font-size: 12px;
+  color: var(--brand-accent, #fd3a25);
+  font-size: 14px;
 }
 
 .day-title {
   font-size: 16px;
-  font-weight: 700;
-  color: #0f172a;
+  font-weight: 750;
+  color: var(--text-primary, #09090b);
   margin: 0;
   text-transform: capitalize;
 }
@@ -73,24 +97,23 @@
 .day-activities-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .timeline-item-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 16px 20px;
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-default, #e4e4e7);
+  border-radius: var(--radius-lg, 24px);
+  padding: 20px 24px;
   display: flex;
   align-items: center;
   gap: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  box-shadow: var(--shadow-card-tactile);
   transition: transform 0.15s ease;
 }
 
 .timeline-item-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
 }
 
 .timeline-time-col {
@@ -104,12 +127,12 @@
 .time-start {
   font-size: 16px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-primary, #09090b);
 }
 
 .time-end {
   font-size: 12px;
-  color: #64748b;
+  color: var(--text-muted, #71717a);
   margin-top: 2px;
 }
 
@@ -120,18 +143,20 @@
 .timeline-type-pill {
   display: inline-block;
   font-size: 11px;
-  font-weight: 600;
-  background: #ede9fe;
-  color: #6d28d9;
-  padding: 2px 8px;
-  border-radius: 6px;
-  margin-bottom: 4px;
+  font-weight: 700;
+  background: var(--bg-surface-subtle, #f5f5f5);
+  box-shadow: var(--shadow-badge-tactile);
+  color: var(--brand-accent, #fd3a25);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill, 100px);
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
 }
 
 .timeline-activity-title {
   font-size: 16px;
-  font-weight: 700;
-  color: #0f172a;
+  font-weight: 750;
+  color: var(--text-primary, #09090b);
   margin: 0 0 6px;
 }
 
@@ -140,7 +165,7 @@
   gap: 16px;
   flex-wrap: wrap;
   font-size: 13px;
-  color: #64748b;
+  color: var(--text-secondary, #3f3f46);
 }
 
 .timeline-action-col {
@@ -149,17 +174,18 @@
 }
 
 .button.small {
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-size: 13px;
-  font-weight: 600;
-  border-radius: 8px;
+  font-weight: 700;
+  border-radius: var(--radius-pill, 100px);
 }
 
 .calendar-loading,
 .calendar-empty-state {
-  background: #ffffff;
-  border: 1px dashed #cbd5e1;
-  border-radius: 16px;
+  background: var(--bg-surface, #ffffff);
+  border: 1px dashed var(--border-strong, #d4d4d8);
+  border-radius: var(--radius-lg, 24px);
+  box-shadow: var(--shadow-card-tactile);
   text-align: center;
   padding: 48px 20px;
 }
@@ -170,4 +196,3 @@
   justify-content: center;
   margin-top: 18px;
 }
-
