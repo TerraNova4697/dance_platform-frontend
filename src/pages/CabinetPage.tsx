@@ -10,7 +10,6 @@ import {
   getAthleteCabinetData,
   updateAthleteProfile,
   searchClubs,
-  respondTrainerRelation,
   sendClubRequest,
   respondClubMembership,
   sendLeagueRequest,
@@ -498,19 +497,6 @@ export function CabinetPage() {
     }
   }
 
-  async function handleRespondTrainerAction(relationId: string, action: 'accept' | 'reject' | 'cancel' | 'leave') {
-    setApiError(null)
-    setSuccessMessage(null)
-    try {
-      const res = await respondTrainerRelation(relationId, action)
-      setSuccessMessage(res.message)
-      await loadAthleteData()
-    } catch (err: unknown) {
-      if (err instanceof FrappeApiError) setApiError(err.message)
-      else setApiError('Не удалось выполнить действие.')
-    }
-  }
-
   const handleFetchClubs = useCallback(async (q: string) => {
     const list = await searchClubs(q)
     return list.map((c) => ({
@@ -980,9 +966,9 @@ export function CabinetPage() {
               onClick={() => setActiveTab('athlete_profile')}
             >
               🩰 Профиль и прикрепления
-              {((athleteData?.trainers.incoming.length || 0) + (athleteData?.clubs.invited.length || 0)) > 0 && (
+              {(athleteData?.clubs.invited.length || 0) > 0 && (
                 <span className="tab-badge">
-                  {(athleteData?.trainers.incoming.length || 0) + (athleteData?.clubs.invited.length || 0)}
+                  {athleteData?.clubs.invited.length}
                 </span>
               )}
             </button>
@@ -2267,107 +2253,7 @@ export function CabinetPage() {
             </form>
           </section>
 
-          {/* Section 2: Мои тренеры и заявки */}
-          <section className="cabinet-card tab-content-card">
-            <div className="section-head">
-              <h3>Мои тренеры и заявки</h3>
-              <p className="helper-note">Список прикрепленных тренеров и управление заявками</p>
-            </div>
-
-            {/* Incoming requests from trainers */}
-            {(athleteData?.trainers.incoming || []).length > 0 && (
-              <div className="requests-subgroup">
-                <h4>Входящие заявки от тренеров ({athleteData?.trainers.incoming.length})</h4>
-                <div className="cards-grid">
-                  {athleteData?.trainers.incoming.map((req) => (
-                    <div key={req.id} className="student-card">
-                      <div className="student-card-info">
-                        <div className="trainer-name-row">
-                          <strong>{req.public_name}</strong>
-                          {req.verification_status === 'Verified' && (
-                            <span className="badge-verified">Подтвержден ✓</span>
-                          )}
-                        </div>
-                        {req.city && <span>г. {req.city}</span>}
-                        {req.phone && <span>тел: {req.phone}</span>}
-                      </div>
-                      <div className="card-btn-group">
-                        <button
-                          type="button"
-                          className="primary-button small-btn"
-                          onClick={() => void handleRespondTrainerAction(req.id, 'accept')}
-                        >
-                          Принять
-                        </button>
-                        <button
-                          type="button"
-                          className="secondary-button small-btn"
-                          onClick={() => void handleRespondTrainerAction(req.id, 'reject')}
-                        >
-                          Отклонить
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Outgoing requests to trainers */}
-            {(athleteData?.trainers.outgoing || []).length > 0 && (
-              <div className="requests-subgroup">
-                <h4>Исходящие заявки тренерам ({athleteData?.trainers.outgoing.length})</h4>
-                <div className="cards-grid">
-                  {athleteData?.trainers.outgoing.map((req) => (
-                    <div key={req.id} className="student-card">
-                      <div className="student-card-info">
-                        <strong>{req.public_name}</strong>
-                        {req.city && <span>г. {req.city}</span>}
-                        <span className="badge-pending">На рассмотрении ⏳</span>
-                      </div>
-                      <button
-                        type="button"
-                        className="ghost-button small-btn danger-link"
-                        onClick={() => void handleRespondTrainerAction(req.id, 'cancel')}
-                      >
-                        Отозвать заявку
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Active trainers */}
-            <div className="requests-subgroup">
-              <h4>Мои тренеры ({(athleteData?.trainers.active || []).length})</h4>
-              {(athleteData?.trainers.active || []).length === 0 ? (
-                <p className="helper-note">Вы пока не прикреплены ни к одному тренеру.</p>
-              ) : (
-                <div className="cards-grid">
-                  {athleteData?.trainers.active.map((tr) => (
-                    <div key={tr.id} className="student-card">
-                      <div className="student-card-info">
-                        <strong>{tr.public_name}</strong>
-                        {tr.city && <span>г. {tr.city}</span>}
-                        {tr.phone && <span>тел: {tr.phone}</span>}
-                        <span className="badge-active">Активен ✓</span>
-                      </div>
-                      <button
-                        type="button"
-                        className="ghost-button small-btn danger-link"
-                        onClick={() => void handleRespondTrainerAction(tr.id, 'leave')}
-                      >
-                        Открепиться
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </section>
-
-          {/* Section 3: Студии и клубы */}
+          {/* Section 2: Студии и клубы */}
           <section className="cabinet-card tab-content-card">
             <div className="section-head">
               <h3>Студии и клубы</h3>
@@ -2488,7 +2374,7 @@ export function CabinetPage() {
             </div>
           </section>
 
-          {/* Section 4: Лиги */}
+          {/* Section 3: Лиги */}
           <section className="cabinet-card tab-content-card">
             <div className="section-head">
               <h3>Лиги</h3>
@@ -2573,7 +2459,7 @@ export function CabinetPage() {
             </div>
           </section>
 
-          {/* Section 5: Федерации */}
+          {/* Section 4: Федерации */}
           <section className="cabinet-card tab-content-card">
             <div className="section-head">
               <h3>Федерации</h3>
@@ -2890,11 +2776,14 @@ export function CabinetPage() {
           session={activeBookingSession.session}
           title={activeBookingSession.title}
           subtitle={activeBookingSession.subtitle}
-          onSuccess={() => {
+          onSuccess={(result) => {
             setActiveBookingSession(null)
             setSuccessMessage('Запись успешно оплачена и подтверждена!')
             if (activeTab === 'athlete_booking') {
               void loadAvailableSlots()
+            }
+            if (result?.ticket_id) {
+              navigate(`/tickets/${encodeURIComponent(result.ticket_id)}`)
             }
           }}
           onClose={() => {

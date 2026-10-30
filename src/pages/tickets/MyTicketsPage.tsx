@@ -61,23 +61,34 @@ export function MyTicketsPage() {
           <div className="tickets-empty-state">
             <span className="empty-icon">🎟️</span>
             <h3>У вас пока нет {filter === 'active' ? 'активных' : ''} билетов</h3>
-            <p>Запишитесь на мастер-классы в каталоге, и билеты появятся здесь.</p>
-            <Link to="/events" className="button primary">
-              Смотреть афишу событий
-            </Link>
+            <p>Запишитесь на тренировку или мастер-класс, и билеты появятся здесь.</p>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', marginTop: '1rem' }}>
+              <Link to="/trainers" className="button primary">
+                Выбрать тренера
+              </Link>
+              <Link to="/events" className="button secondary">
+                Смотреть события
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="tickets-grid">
             {tickets.map((t: TicketSummary) => {
-              const dateStr = new Date(t.event.startAt).toLocaleDateString('ru-RU', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-              })
-              const timeStr = new Date(t.event.startAt).toLocaleTimeString('ru-RU', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })
+              const startAt = t.event.startAt ? new Date(t.event.startAt) : null
+              const hasValidDate = startAt && !isNaN(startAt.getTime())
+              const dateStr = hasValidDate
+                ? startAt.toLocaleDateString('ru-RU', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  })
+                : 'Дата уточняется'
+              const timeStr = hasValidDate
+                ? startAt.toLocaleTimeString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })
+                : ''
 
               return (
                 <div key={t.id} className={`ticket-card status-${t.status}`}>

@@ -54,13 +54,16 @@ export function TicketDetailsPage() {
     )
   }
 
-  const startFormatted = new Date(ticket.event.startAt).toLocaleString('ru-RU', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  const startAt = ticket.event.startAt ? new Date(ticket.event.startAt) : null
+  const startFormatted = startAt && !isNaN(startAt.getTime())
+    ? startAt.toLocaleString('ru-RU', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : 'Дата уточняется'
 
   return (
     <div className="dashboard-page tickets-page">

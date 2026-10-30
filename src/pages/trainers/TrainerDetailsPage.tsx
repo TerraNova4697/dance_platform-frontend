@@ -299,9 +299,13 @@ export function TrainerDetailsPage() {
           session={holdSession}
           title={holdTitle}
           subtitle={holdSubtitle}
-          onSuccess={() => {
+          onSuccess={(result) => {
             setHoldSession(null)
-            navigate('/')
+            if (result?.ticket_id) {
+              navigate(`/tickets/${encodeURIComponent(result.ticket_id)}`)
+            } else {
+              navigate('/tickets')
+            }
           }}
           onClose={() => setHoldSession(null)}
         />
