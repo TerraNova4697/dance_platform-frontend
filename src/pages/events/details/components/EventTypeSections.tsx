@@ -15,17 +15,19 @@ function SectionState({ isLoading, isError, onRetry }: { isLoading: boolean; isE
   return null
 }
 
-export function TournamentCategories({ categories, isLoading, isError, onRetry }: {
+export function TournamentCategories({ eventId, categories, isLoading, isError, onRetry, registrationHref }: {
+  eventId?: string
   categories: TournamentCategory[]
   isLoading: boolean
   isError: boolean
   onRetry: () => void
+  registrationHref?: string
 }) {
   const state = <SectionState isLoading={isLoading} isError={isError} onRetry={onRetry} />
   return (
     <section className="event-content-card" id="categories">
       <h2>Категории</h2>
-      {isLoading || isError ? state : categories.length ? <div className="category-grid">{categories.map((item) => <article className="category-card" key={item.id}><div><span className="type-badge">{item.discipline.name}</span><h3>{item.category.name}</h3></div><dl><div><dt>Возраст</dt><dd>{item.ageFrom !== undefined || item.ageTo !== undefined ? `${item.ageFrom ?? '—'}–${item.ageTo ?? '—'}` : 'Без ограничений'}</dd></div>{item.level?.name && <div><dt>Уровень</dt><dd>{item.level.name}</dd></div>}{item.league?.name && <div><dt>Лига</dt><dd>{item.league.name}</dd></div>}{item.className && <div><dt>Класс</dt><dd>{item.className}</dd></div>}<div><dt>Формат</dt><dd>{participationLabels[item.participationType]}</dd></div></dl><footer><span className={`availability availability-${item.availabilityStatus}`}>{availabilityLabels[item.availabilityStatus]}</span>{item.price !== undefined && <strong>{formatCurrency(item.price, item.currency ?? 'KZT')}</strong>}</footer></article>)}</div> : <p className="section-empty">Категории пока не опубликованы.</p>}
+      {isLoading || isError ? state : categories.length ? <div className="category-grid">{categories.map((item) => { const disabled = item.availabilityStatus === 'full'; return <article className="category-card" key={item.id}><div><span className="type-badge">{item.discipline.name}</span><h3>{item.category.name}</h3></div><dl><div><dt>Возраст</dt><dd>{item.ageFrom !== undefined || item.ageTo !== undefined ? `${item.ageFrom ?? '—'}–${item.ageTo ?? '—'}` : 'Без ограничений'}</dd></div>{item.level?.name && <div><dt>Уровень</dt><dd>{item.level.name}</dd></div>}{item.league?.name && <div><dt>Лига</dt><dd>{item.league.name}</dd></div>}{item.className && <div><dt>Класс</dt><dd>{item.className}</dd></div>}<div><dt>Формат</dt><dd>{participationLabels[item.participationType]}</dd></div></dl><footer><span className={`availability availability-${item.availabilityStatus}`}>{item.availablePlaces !== undefined && item.availabilityStatus === 'low' ? `Осталось ${item.availablePlaces} мест` : availabilityLabels[item.availabilityStatus]}</span><div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>{item.price !== undefined && <strong>{formatCurrency(item.price, item.currency ?? 'KZT')}</strong>}{registrationHref && (disabled ? <button className="button secondary" type="button" disabled>Выбрать</button> : <Link className="button secondary" to={withRegistrationParam(registrationHref, 'category', item.id)} state={{ eventId }}>Выбрать</Link>)}</div></footer></article> })}</div> : <p className="section-empty">Категории пока не опубликованы.</p>}
     </section>
   )
 }
@@ -42,7 +44,7 @@ export function MasterClassSlots({ eventId, slots, isLoading, isError, onRetry, 
   return (
     <section className="event-content-card" id="slots">
       <h2>Доступные занятия</h2>
-      {isLoading || isError ? state : slots.length ? <div className="slot-list">{slots.map((slot) => { const disabled = slot.availabilityStatus === 'full' || slot.availabilityStatus === 'cancelled'; return <article className="slot-card" key={slot.id}><div><span>{formatEventDate(slot.startAt)}</span><strong>{formatTimeRange(slot.startAt, slot.endAt)}</strong></div><div><h3>{slot.title ?? 'Мастер-класс'}</h3>{slot.venue?.name && <small>{slot.venue.name}</small>}<span className={`availability availability-${slot.availabilityStatus}`}>{slot.availabilityStatus === 'cancelled' ? 'Занятие отменено' : slot.availablePlaces !== undefined && slot.availabilityStatus === 'low' ? `Осталось ${slot.availablePlaces} мест` : availabilityLabels[slot.availabilityStatus]}</span></div><div>{slot.price !== undefined && <strong>{formatCurrency(slot.price, slot.currency ?? 'KZT')}</strong>}{disabled ? <button className="button secondary" type="button" disabled>Выбрать</button> : <Link className="button secondary" to={withRegistrationParam(registrationHref, 'slot', slot.id)} state={{ eventId }}>Выбрать</Link>}</div></article> })}</div> : <p className="section-empty">Доступные занятия пока не опубликованы.</p>}
+      {isLoading || isError ? state : slots.length ? <div className="slot-list">{slots.map((slot) => { const isBooked = Boolean(slot.alreadyBooked); const disabled = isBooked || slot.availabilityStatus === 'full' || slot.availabilityStatus === 'cancelled'; return <article className="slot-card" key={slot.id}><div><span>{formatEventDate(slot.startAt)}</span><strong>{formatTimeRange(slot.startAt, slot.endAt)}</strong></div><div><h3>{slot.title ?? 'Мастер-класс'}</h3>{slot.venue?.name && <small>{slot.venue.name}</small>}<span className={`availability availability-${slot.availabilityStatus}`}>{isBooked ? 'Вы уже записаны ✓' : slot.availabilityStatus === 'cancelled' ? 'Занятие отменено' : slot.availablePlaces !== undefined && slot.availabilityStatus === 'low' ? `Осталось ${slot.availablePlaces} мест` : availabilityLabels[slot.availabilityStatus]}</span></div><div>{slot.price !== undefined && <strong>{formatCurrency(slot.price, slot.currency ?? 'KZT')}</strong>}{disabled ? <button className="button secondary" type="button" disabled>{isBooked ? 'Записаны ✓' : 'Выбрать'}</button> : <Link className="button secondary" to={withRegistrationParam(registrationHref, 'slot', slot.id)} state={{ eventId }}>Выбрать</Link>}</div></article> })}</div> : <p className="section-empty">Доступные занятия пока не опубликованы.</p>}
     </section>
   )
 }

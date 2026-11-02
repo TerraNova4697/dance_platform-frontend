@@ -94,6 +94,7 @@ export interface TournamentCategory {
   className?: string
   participationType: 'solo' | 'couple' | 'team' | 'formation'
   capacity?: number
+  availablePlaces?: number
   availabilityStatus: 'available' | 'low' | 'full'
   registrationStatus: RegistrationStatus
   price?: number
@@ -111,6 +112,7 @@ export interface MasterClassSlot {
   availabilityStatus: 'available' | 'low' | 'full' | 'cancelled'
   price?: number
   currency?: string
+  alreadyBooked?: boolean
 }
 
 export interface MasterClassPackage {
@@ -119,6 +121,7 @@ export interface MasterClassPackage {
   description?: string
   price: number
   currency: string
+  alreadyBooked?: boolean
 }
 
 export interface SpectatorTicketType {

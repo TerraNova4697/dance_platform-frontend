@@ -6,7 +6,6 @@ import {
   skipOnboarding,
   submitOnboarding,
   uploadProfilePhoto,
-  searchLeagues,
   searchFederations,
   type OnboardingContext,
 } from '../api/onboarding'
@@ -14,7 +13,8 @@ import { LoadingScreen } from '../components/LoadingScreen'
 import { BrandLogo } from '../components/BrandLogo'
 import { CountryPhoneInput } from '../components/CountryPhoneInput'
 import { CitySelectInput } from '../components/CitySelectInput'
-import { DebouncedSearchSelect } from '../components/DebouncedSearchSelect'
+import { AvatarCropModal } from '../components/AvatarCropModal'
+import { DancerCardFields, type DancerCardState } from '../components/DancerCardFields'
 import { resolveCountryCode } from '../utils/geoRu'
 import { type Country as PhoneCountry } from 'react-phone-number-input'
 
@@ -33,21 +33,36 @@ export function OnboardingPage() {
 
   // Step 1: Common Dance Person + Role choice
   const [role, setRole] = useState<RoleChoice>('athlete')
+  const [lastName, setLastName] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [middleName, setMiddleName] = useState('')
   const [dateOfBirth, setDateOfBirth] = useState('')
+  const [gender, setGender] = useState('Female')
   const [phone, setPhone] = useState('')
   const [country, setCountry] = useState('KZ')
   const [city, setCity] = useState('')
+  const [heightCm, setHeightCm] = useState('')
   const [photoUrl, setPhotoUrl] = useState('')
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
+  const [cropFile, setCropFile] = useState<File | null>(null)
 
-  // Step 2A: Athlete fields
-  const [athleteDirections, setAthleteDirections] = useState<string[]>([])
-  const [level, setLevel] = useState('')
-  const [league, setLeague] = useState('')
-  const [leagueTitle, setLeagueTitle] = useState('')
-  const [federation, setFederation] = useState('')
-  const [federationTitle, setFederationTitle] = useState('')
-  const [athleteClubs, setAthleteClubs] = useState<string[]>([])
+  // Step 2A: Athlete Dancer Card state
+  const [dancerCard, setDancerCard] = useState<DancerCardState>({
+    directions: ['Европейская / Standard'],
+    clubs: [],
+    federation: '',
+    federationTitle: '',
+    standardClass: '',
+    latinClass: '',
+    dancesCount: 2,
+    internationalCompetitions: '',
+    trainingActivities: [],
+    trainingFrequency: '',
+    achievements: [],
+    galleryPhotos: [],
+    videos: [],
+    socialLinks: [],
+  })
 
   // Step 2B: Trainer fields
   const [publicName, setPublicName] = useState('')
@@ -71,13 +86,18 @@ export function OnboardingPage() {
         const data = await getOnboardingContext()
         if (!active) return
         setContext(data)
+        if (data.person.last_name) setLastName(data.person.last_name)
+        if (data.person.first_name) setFirstName(data.person.first_name)
+        if (data.person.middle_name) setMiddleName(data.person.middle_name)
         if (data.person.date_of_birth) setDateOfBirth(data.person.date_of_birth)
+        if (data.person.gender) setGender(data.person.gender)
         if (data.person.phone) setPhone(data.person.phone)
         if (data.person.country) setCountry(resolveCountryCode(data.person.country))
         if (data.person.city) {
           setCity(data.person.city)
           setTrainerCity(data.person.city)
         }
+        if (data.person.height_cm) setHeightCm(String(data.person.height_cm))
         if (data.person.photo) setPhotoUrl(data.person.photo)
         const fullName = `${data.person.first_name} ${data.person.last_name}`.trim()
         setPublicName(fullName)
@@ -98,10 +118,6 @@ export function OnboardingPage() {
     }
   }, [])
 
-  const handleFetchLeagues = useCallback(async (q: string) => {
-    return await searchLeagues(q)
-  }, [])
-
   const handleFetchFederations = useCallback(async (q: string) => {
     return await searchFederations(q)
   }, [])
@@ -110,14 +126,19 @@ export function OnboardingPage() {
     return <LoadingScreen />
   }
 
-  async function handlePhotoUpload(event: ChangeEvent<HTMLInputElement>) {
+  function handleSelectAvatarFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
+    event.target.value = ''
     if (!file) return
+    setCropFile(file)
+  }
 
+  async function handleConfirmCroppedAvatar(croppedFile: File) {
+    setCropFile(null)
     setUploadingPhoto(true)
     setApiError(null)
     try {
-      const uploadedUrl = await uploadProfilePhoto(file)
+      const uploadedUrl = await uploadProfilePhoto(croppedFile)
       setPhotoUrl(uploadedUrl)
     } catch (err: unknown) {
       if (err instanceof FrappeApiError) {
@@ -135,10 +156,32 @@ export function OnboardingPage() {
     setApiError(null)
 
     const errors: Record<string, string> = {}
+    if (!lastName.trim()) {
+      errors.lastName = 'Укажите фамилию'
+    }
+    if (!firstName.trim()) {
+      errors.firstName = 'Укажите имя'
+    }
     if (!dateOfBirth) {
       errors.dateOfBirth = 'Укажите дату рождения'
     } else if (new Date(dateOfBirth) >= new Date()) {
       errors.dateOfBirth = 'Дата рождения должна быть в прошлом'
+    }
+    if (!phone.trim() || phone.trim().length < 8) {
+      errors.phone = 'Укажите номер телефона'
+    }
+    if (!city.trim()) {
+      errors.city = 'Укажите город'
+    }
+
+    if (role === 'athlete') {
+      const hNum = Number(heightCm)
+      if (!heightCm.trim() || Number.isNaN(hNum) || hNum < 50 || hNum > 250) {
+        errors.heightCm = 'Укажите рост от 50 до 250 см'
+      }
+      if (!photoUrl) {
+        errors.photo = 'Загрузите и кадрируйте аватар профиля'
+      }
     }
 
     setValidationErrors(errors)
@@ -173,7 +216,29 @@ export function OnboardingPage() {
     setApiError(null)
 
     const errors: Record<string, string> = {}
-    if (role === 'trainer') {
+    if (role === 'athlete') {
+      if (dancerCard.clubs.length === 0) {
+        errors.clubs = 'Выберите танцевальный клуб из реестра'
+      }
+      if (dancerCard.directions.length === 0) {
+        errors.directions = 'Выберите хотя бы одно танцевальное направление'
+      }
+      if (!dancerCard.standardClass) {
+        errors.standardClass = 'Выберите класс европейской программы (или «Не танцую»)'
+      }
+      if (!dancerCard.latinClass) {
+        errors.latinClass = 'Выберите класс латиноамериканской программы (или «Не танцую»)'
+      }
+      if (!dancerCard.internationalCompetitions) {
+        errors.internationalCompetitions = 'Укажите опыт участия в международных соревнованиях'
+      }
+      if (dancerCard.trainingActivities.length === 0) {
+        errors.trainingActivities = 'Выберите хотя бы один вариант дополнительного обучения'
+      }
+      if (!dancerCard.trainingFrequency) {
+        errors.trainingFrequency = 'Укажите частоту дополнительного обучения'
+      }
+    } else if (role === 'trainer') {
       if (!publicName.trim()) {
         errors.publicName = 'Укажите публичное имя тренера'
       }
@@ -191,20 +256,33 @@ export function OnboardingPage() {
       await submitOnboarding({
         role,
         person: {
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+          middle_name: middleName.trim() || null,
           date_of_birth: dateOfBirth,
+          gender: gender || null,
           phone: phone.trim() || null,
           country: country || null,
           city: effectiveCity || null,
+          height_cm: heightCm ? Number(heightCm) : null,
           photo: photoUrl || null,
         },
         athlete:
           role === 'athlete'
             ? {
-                directions: athleteDirections,
-                level: level || null,
-                league: league || null,
-                federation: federation || null,
-                clubs: athleteClubs,
+                directions: dancerCard.directions,
+                federation: dancerCard.federation || null,
+                clubs: dancerCard.clubs,
+                standard_class: dancerCard.standardClass,
+                latin_class: dancerCard.latinClass,
+                dances_count: dancerCard.dancesCount,
+                international_competitions: dancerCard.internationalCompetitions,
+                training_activities: dancerCard.trainingActivities,
+                training_frequency: dancerCard.trainingFrequency,
+                achievements: dancerCard.achievements,
+                gallery_photos: dancerCard.galleryPhotos,
+                videos: dancerCard.videos,
+                social_links: dancerCard.socialLinks,
               }
             : undefined,
         trainer:
@@ -255,8 +333,8 @@ export function OnboardingPage() {
           <>
             <div className="login-heading">
               <p className="eyebrow">Добро пожаловать в on dance space</p>
-              <h1 id="onboarding-title">Расскажите о себе</h1>
-              <p>Выберите вашу основную роль. Вторую роль вы сможете подключить позже в профиле.</p>
+              <h1 id="onboarding-title">Карточка танцора — Личные данные</h1>
+              <p>Выберите вашу основную роль и заполните персональные данные профиля.</p>
             </div>
 
             <form className="login-form" onSubmit={handleNextStep} noValidate>
@@ -288,6 +366,126 @@ export function OnboardingPage() {
                 </button>
               </div>
 
+              {/* Аватар с обязательным кадрированием */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '16px',
+                  padding: '14px',
+                  borderRadius: '14px',
+                  background: '#f8fafc',
+                  border: validationErrors.photo
+                    ? '1px solid #dc2626'
+                    : '1px solid #e2e8f0',
+                }}
+              >
+                <div
+                  style={{
+                    width: '72px',
+                    height: '72px',
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    background: '#e2e8f0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    fontWeight: 700,
+                    fontSize: '24px',
+                    color: '#475569',
+                  }}
+                >
+                  {photoUrl ? (
+                    <img
+                      src={photoUrl}
+                      alt={firstName || 'Аватар'}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    (firstName || 'Т').charAt(0).toUpperCase()
+                  )}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <span style={{ fontWeight: 600, fontSize: '14px', color: '#0f172a' }}>
+                    Аватар профиля {role === 'athlete' ? '*' : ''}
+                  </span>
+                  <span className="helper-note" style={{ margin: 0 }}>
+                    Загрузите фотографию и выберите область кадрирования
+                  </span>
+                  <div style={{ marginTop: '4px' }}>
+                    <label
+                      htmlFor="photoFile"
+                      className="secondary-button"
+                      style={{
+                        display: 'inline-block',
+                        cursor: uploadingPhoto ? 'not-allowed' : 'pointer',
+                        fontSize: '13px',
+                        padding: '6px 12px',
+                      }}
+                    >
+                      {uploadingPhoto
+                        ? 'Загрузка фото…'
+                        : photoUrl
+                          ? 'Изменить и кадрировать фото'
+                          : 'Загрузить фото'}
+                      <input
+                        id="photoFile"
+                        name="photoFile"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleSelectAvatarFile}
+                        disabled={uploadingPhoto}
+                        style={{ display: 'none' }}
+                      />
+                    </label>
+                  </div>
+                  {validationErrors.photo && (
+                    <span className="field-error">{validationErrors.photo}</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="form-row">
+                <label htmlFor="onbLastName">
+                  Фамилия *
+                  <input
+                    id="onbLastName"
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                  />
+                  {validationErrors.lastName && (
+                    <span className="field-error">{validationErrors.lastName}</span>
+                  )}
+                </label>
+
+                <label htmlFor="onbFirstName">
+                  Имя *
+                  <input
+                    id="onbFirstName"
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                  />
+                  {validationErrors.firstName && (
+                    <span className="field-error">{validationErrors.firstName}</span>
+                  )}
+                </label>
+
+                <label htmlFor="onbMiddleName">
+                  Отчество (необязательно)
+                  <input
+                    id="onbMiddleName"
+                    type="text"
+                    value={middleName}
+                    onChange={(e) => setMiddleName(e.target.value)}
+                  />
+                </label>
+              </div>
+
               <div className="form-row">
                 <label htmlFor="dateOfBirth">
                   Дата рождения *
@@ -305,8 +503,42 @@ export function OnboardingPage() {
                   )}
                 </label>
 
+                <label htmlFor="onbGender">
+                  Пол *
+                  <select
+                    id="onbGender"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                  >
+                    <option value="Male">Мужской</option>
+                    <option value="Female">Женский</option>
+                    <option value="Other">Другой</option>
+                  </select>
+                </label>
+
+                {role === 'athlete' && (
+                  <label htmlFor="onbHeightCm">
+                    Рост, см *
+                    <input
+                      id="onbHeightCm"
+                      type="number"
+                      min={50}
+                      max={250}
+                      placeholder="Например: 172"
+                      value={heightCm}
+                      onChange={(e) => setHeightCm(e.target.value)}
+                      required
+                    />
+                    {validationErrors.heightCm && (
+                      <span className="field-error">{validationErrors.heightCm}</span>
+                    )}
+                  </label>
+                )}
+              </div>
+
+              <div className="form-row">
                 <label htmlFor="phone">
-                  Телефон
+                  Телефон *
                   <CountryPhoneInput
                     id="phone"
                     value={phone}
@@ -317,6 +549,9 @@ export function OnboardingPage() {
                     }}
                     disabled={submitting}
                   />
+                  {validationErrors.phone && (
+                    <span className="field-error">{validationErrors.phone}</span>
+                  )}
                 </label>
               </div>
 
@@ -325,25 +560,11 @@ export function OnboardingPage() {
                 onCountryChange={(c) => setCountry(c)}
                 city={city}
                 onCityChange={(val) => setCity(val)}
+                required={true}
+                error={validationErrors.city}
                 disabled={submitting}
                 showCountry={true}
-              >
-                <div className="geo-field">
-                  <label htmlFor="photoFile">
-                    Фото профиля
-                    <input
-                      id="photoFile"
-                      name="photoFile"
-                      type="file"
-                      accept="image/*"
-                      onChange={handlePhotoUpload}
-                      disabled={uploadingPhoto}
-                    />
-                    {uploadingPhoto && <span className="helper-note">Загрузка фото…</span>}
-                    {photoUrl && !uploadingPhoto && <span className="helper-note">Фото загружено ✓</span>}
-                  </label>
-                </div>
-              </CitySelectInput>
+              />
 
               {apiError && (
                 <div className="form-error" role="alert">
@@ -373,101 +594,25 @@ export function OnboardingPage() {
         ) : role === 'athlete' ? (
           <>
             <div className="login-heading">
-              <p className="eyebrow">Профиль танцора</p>
-              <h1 id="onboarding-title">Танцевальная деятельность</h1>
-              <p>Все поля на этом шаге необязательны — вы можете указать их сейчас или позже.</p>
+              <p className="eyebrow">Карточка танцора</p>
+              <h1 id="onboarding-title">Танцевальные данные и портфолио</h1>
+              <p>
+                Укажите ваш танцевальный клуб, классы программ и параметры обучения. Достижения, фото, видео и соцсети можно добавить сейчас или позже в личном кабинете.
+              </p>
             </div>
 
             <form className="login-form" onSubmit={handleSubmitFinal} noValidate>
-              <div>
-                <span className="field-label">Танцевальные направления</span>
-                {catalogs.directions.length > 0 ? (
-                  <div className="chips-grid">
-                    {catalogs.directions.map((dir) => {
-                      const active = athleteDirections.includes(dir.name)
-                      return (
-                        <button
-                          key={dir.name}
-                          type="button"
-                          className={`chip-button ${active ? 'chip-button-active' : ''}`}
-                          onClick={() => setAthleteDirections((prev) => toggleItem(prev, dir.name))}
-                        >
-                          {dir.title}
-                        </button>
-                      )
-                    })}
-                  </div>
-                ) : (
-                  <p className="helper-note">Список направлений пока пуст</p>
-                )}
-              </div>
-
-              <div className="form-row">
-                <label htmlFor="level">
-                  Уровень
-                  <select id="level" value={level} onChange={(e) => setLevel(e.target.value)}>
-                    <option value="">Не выбран</option>
-                    {catalogs.levels.map((lvl) => (
-                      <option key={lvl.name} value={lvl.name}>
-                        {lvl.title}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <DebouncedSearchSelect
-                  id="league"
-                  label="Лига"
-                  value={league}
-                  selectedTitle={leagueTitle}
-                  onChange={(name, title) => {
-                    setLeague(name)
-                    setLeagueTitle(title)
-                  }}
-                  fetchOptions={handleFetchLeagues}
-                  placeholder="Поиск лиги по названию…"
-                  debounceMs={1000}
-                  disabled={submitting}
-                />
-              </div>
-
-              <DebouncedSearchSelect
-                id="federation"
-                label="Федерация"
-                value={federation}
-                selectedTitle={federationTitle}
-                onChange={(name, title) => {
-                  setFederation(name)
-                  setFederationTitle(title)
-                }}
-                fetchOptions={handleFetchFederations}
-                placeholder="Поиск федерации по названию…"
-                debounceMs={1000}
+              <DancerCardFields
+                value={dancerCard}
+                onChange={setDancerCard}
+                directionsCatalog={catalogs.directions}
+                clubsCatalog={catalogs.clubs}
+                fetchFederations={handleFetchFederations}
+                showClubsSelector={true}
+                errors={validationErrors}
                 disabled={submitting}
+                onMediaError={(msg) => setApiError(msg)}
               />
-
-              <div>
-                <span className="field-label">Клубы (будет отправлена заявка на подтверждение)</span>
-                {catalogs.clubs.length > 0 ? (
-                  <div className="chips-grid">
-                    {catalogs.clubs.map((cl) => {
-                      const active = athleteClubs.includes(cl.name)
-                      return (
-                        <button
-                          key={cl.name}
-                          type="button"
-                          className={`chip-button ${active ? 'chip-button-active' : ''}`}
-                          onClick={() => setAthleteClubs((prev) => toggleItem(prev, cl.name))}
-                        >
-                          {cl.club_name} {cl.city ? `(${cl.city})` : ''}
-                        </button>
-                      )
-                    })}
-                  </div>
-                ) : (
-                  <p className="helper-note">Клубы пока не добавлены</p>
-                )}
-              </div>
 
               {apiError && (
                 <div className="form-error" role="alert">
@@ -653,7 +798,14 @@ export function OnboardingPage() {
           </>
         )}
       </section>
+
+      {cropFile && (
+        <AvatarCropModal
+          file={cropFile}
+          onCancel={() => setCropFile(null)}
+          onComplete={(cropped) => void handleConfirmCroppedAvatar(cropped)}
+        />
+      )}
     </main>
   )
 }
-

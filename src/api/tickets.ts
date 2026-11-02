@@ -72,6 +72,14 @@ export type TicketDetails = {
     endAt: string
     venueTitle?: string
   }>
+  tournamentEntries?: Array<{
+    id: string
+    title: string
+    className?: string
+    ageRange?: string
+    price: number
+    currency: string
+  }>
 }
 
 export type VerifyTicketResult = {

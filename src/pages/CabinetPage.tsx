@@ -42,12 +42,16 @@ import {
   cancelTrainingBooking,
   type AvailableTrainingSlot,
   type InitiateBookingResult,
+  type BookingConflictItem,
 } from '../api/booking'
 import { CountryPhoneInput } from '../components/CountryPhoneInput'
 import { CitySelectInput } from '../components/CitySelectInput'
 import { DebouncedSearchSelect } from '../components/DebouncedSearchSelect'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { BookingHoldModal } from '../components/BookingHoldModal'
+import { TimeConflictWarningModal } from '../components/TimeConflictWarningModal'
+import { AvatarCropModal } from '../components/AvatarCropModal'
+import { DancerCardFields, type DancerCardState } from '../components/DancerCardFields'
 import { resolveCountryCode } from '../utils/geoRu'
 import { type Country } from 'react-phone-number-input'
 import { formatDateTime } from '../utils/date'
@@ -165,6 +169,11 @@ export function CabinetPage() {
     title: string
     subtitle?: string
   } | null>(null)
+  const [conflictWarning, setConflictWarning] = useState<{
+    conflicts: BookingConflictItem[]
+    message?: string
+    onConfirm: () => void
+  } | null>(null)
 
   // Athlete profile form state
   const [athleteFirstName, setAthleteFirstName] = useState('')
@@ -175,9 +184,26 @@ export function CabinetPage() {
   const [athletePhone, setAthletePhone] = useState('')
   const [athleteCity, setAthleteCity] = useState('')
   const [athleteCountry, setAthleteCountry] = useState('KZ')
+  const [athleteHeightCm, setAthleteHeightCm] = useState('')
   const [athletePhoto, setAthletePhoto] = useState('')
   const [athleteLevel, setAthleteLevel] = useState('')
-  const [athleteDirections, setAthleteDirections] = useState<string[]>([])
+  const [athleteCropFile, setAthleteCropFile] = useState<File | null>(null)
+  const [athleteCardState, setAthleteCardState] = useState<DancerCardState>({
+    directions: [],
+    clubs: [],
+    federation: '',
+    federationTitle: '',
+    standardClass: '',
+    latinClass: '',
+    dancesCount: 2,
+    internationalCompetitions: '',
+    trainingActivities: [],
+    trainingFrequency: '',
+    achievements: [],
+    galleryPhotos: [],
+    videos: [],
+    socialLinks: [],
+  })
   const [uploadingAthletePhoto, setUploadingAthletePhoto] = useState(false)
   const [savingAthleteProfile, setSavingAthleteProfile] = useState(false)
 
@@ -211,9 +237,29 @@ export function CabinetPage() {
       setAthletePhone(data.person.phone || '')
       setAthleteCity(data.person.city || '')
       setAthleteCountry(resolveCountryCode(data.person.country || 'KZ'))
+      setAthleteHeightCm(data.person.height_cm ? String(data.person.height_cm) : '')
       setAthletePhoto(data.person.photo || '')
       setAthleteLevel(data.athlete.level || '')
-      setAthleteDirections(data.athlete.directions || [])
+      const existingClubIds = [
+        ...(data.clubs.active || []).map((c) => c.club),
+        ...(data.clubs.outgoing || []).map((c) => c.club),
+      ]
+      setAthleteCardState({
+        directions: data.athlete.directions || [],
+        clubs: existingClubIds,
+        federation: data.athlete.federation || '',
+        federationTitle: data.athlete.federation_title || data.athlete.federation || '',
+        standardClass: data.athlete.standard_class || '',
+        latinClass: data.athlete.latin_class || '',
+        dancesCount: data.athlete.dances_count || 2,
+        internationalCompetitions: data.athlete.international_competitions || '',
+        trainingActivities: data.athlete.training_activities || [],
+        trainingFrequency: data.athlete.training_frequency || '',
+        achievements: data.athlete.achievements || [],
+        galleryPhotos: data.athlete.gallery_photos || [],
+        videos: data.athlete.videos || [],
+        socialLinks: data.athlete.social_links || [],
+      })
     } catch {
       // ignore
     }
@@ -449,6 +495,15 @@ export function CabinetPage() {
       setApiError('Дата рождения обязательна для заполнения.')
       return
     }
+    if (!athletePhoto) {
+      setApiError('Загрузите и кадрируйте аватар профиля.')
+      return
+    }
+    const hVal = Number(athleteHeightCm)
+    if (!athleteHeightCm.trim() || Number.isNaN(hVal) || hVal < 50 || hVal > 250) {
+      setApiError('Укажите корректный рост от 50 до 250 см.')
+      return
+    }
 
     setSavingAthleteProfile(true)
     setApiError(null)
@@ -464,11 +519,24 @@ export function CabinetPage() {
           phone: athletePhone || undefined,
           city: athleteCity || undefined,
           country: athleteCountry || undefined,
+          height_cm: hVal,
           photo: athletePhoto || undefined,
         },
         {
           level: athleteLevel || undefined,
-          directions: athleteDirections,
+          directions: athleteCardState.directions,
+          clubs: athleteCardState.clubs,
+          federation: athleteCardState.federation || null,
+          standard_class: athleteCardState.standardClass || null,
+          latin_class: athleteCardState.latinClass || null,
+          dances_count: athleteCardState.dancesCount,
+          international_competitions: athleteCardState.internationalCompetitions || null,
+          training_activities: athleteCardState.trainingActivities,
+          training_frequency: athleteCardState.trainingFrequency || null,
+          achievements: athleteCardState.achievements,
+          gallery_photos: athleteCardState.galleryPhotos,
+          videos: athleteCardState.videos,
+          social_links: athleteCardState.socialLinks,
         }
       )
       setSuccessMessage(res.message)
@@ -482,13 +550,19 @@ export function CabinetPage() {
     }
   }
 
-  async function handleAthletePhotoUpload(e: ChangeEvent<HTMLInputElement>) {
+  function handleSelectAthleteAvatar(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
+    e.target.value = ''
     if (!file) return
+    setAthleteCropFile(file)
+  }
+
+  async function handleConfirmAthleteAvatar(croppedFile: File) {
+    setAthleteCropFile(null)
     setUploadingAthletePhoto(true)
     setApiError(null)
     try {
-      const url = await uploadProfilePhoto(file)
+      const url = await uploadProfilePhoto(croppedFile)
       setAthletePhoto(url)
     } catch {
       setApiError('Не удалось загрузить фотографию.')
@@ -774,10 +848,25 @@ export function CabinetPage() {
   }
 
   // --- Handlers: Athlete Booking ---
-  async function handleStartBooking(slot: AvailableTrainingSlot) {
+  async function handleStartBooking(slot: AvailableTrainingSlot, ignoreConflict = false) {
     setApiError(null)
+    if (slot.is_already_booked) {
+      setApiError('Вы уже записаны на эту тренировку.')
+      return
+    }
     try {
-      const res = await initiateTrainingBooking(slot.id)
+      const res = await initiateTrainingBooking(slot.id, ignoreConflict)
+      if (res.warning_required && res.conflicts?.length) {
+        setConflictWarning({
+          conflicts: res.conflicts,
+          message: res.message,
+          onConfirm: () => {
+            setConflictWarning(null)
+            void handleStartBooking(slot, true)
+          },
+        })
+        return
+      }
       setActiveBookingSession({
         session: res,
         title: slot.offering_title,
@@ -2098,12 +2187,14 @@ export function CabinetPage() {
           {/* Section 1: Личные данные и танцевальная анкета */}
           <section className="cabinet-card tab-content-card">
             <div className="section-head">
-              <h3>Профиль танцора</h3>
-              <p className="helper-note">Персональная информация и танцевальные предпочтения</p>
+              <h3>Карточка танцора</h3>
+              <p className="helper-note">
+                Личные данные, танцевальные классы, параметры обучения, достижения и медиагалерея
+              </p>
             </div>
 
             <form onSubmit={(e) => void handleSaveAthleteProfile(e)} className="cabinet-form">
-              {/* Photo Upload */}
+              {/* Photo Upload with Cropper */}
               <div className="avatar-upload-row">
                 <div className="cabinet-avatar-wrap">
                   {athletePhoto ? (
@@ -2116,17 +2207,23 @@ export function CabinetPage() {
                 </div>
                 <div className="avatar-upload-info">
                   <label htmlFor="athPhotoInput" className="secondary-button upload-btn">
-                    {uploadingAthletePhoto ? 'Загрузка…' : 'Загрузить фото профиля'}
+                    {uploadingAthletePhoto
+                      ? 'Загрузка…'
+                      : athletePhoto
+                        ? 'Изменить и кадрировать аватар'
+                        : 'Загрузить аватар профиля *'}
                     <input
                       id="athPhotoInput"
                       type="file"
                       accept="image/*"
-                      onChange={(e) => void handleAthletePhotoUpload(e)}
+                      onChange={handleSelectAthleteAvatar}
                       disabled={uploadingAthletePhoto}
                       style={{ display: 'none' }}
                     />
                   </label>
-                  <span className="helper-note">PNG, JPG до 5 МБ</span>
+                  <span className="helper-note">
+                    Обязательное поле • с выбором области кадрирования (PNG, JPG до 5 МБ)
+                  </span>
                 </div>
               </div>
 
@@ -2176,7 +2273,7 @@ export function CabinetPage() {
                   />
                 </label>
                 <label htmlFor="athGender">
-                  Пол
+                  Пол *
                   <select
                     id="athGender"
                     value={athleteGender}
@@ -2187,67 +2284,60 @@ export function CabinetPage() {
                     <option value="Other">Другой</option>
                   </select>
                 </label>
+                <label htmlFor="athHeightCm">
+                  Рост, см *
+                  <input
+                    id="athHeightCm"
+                    type="number"
+                    min={50}
+                    max={250}
+                    placeholder="Например: 172"
+                    value={athleteHeightCm}
+                    onChange={(e) => setAthleteHeightCm(e.target.value)}
+                    required
+                  />
+                </label>
               </div>
 
               <div className="form-row">
                 <div className="phone-field-wrapper">
-                  <span className="field-label">Номер телефона</span>
+                  <span className="field-label">Номер телефона *</span>
                   <CountryPhoneInput
                     id="athletePhone"
                     value={athletePhone}
                     onChange={setAthletePhone}
                     defaultCountry={(athleteCountry as Country) || 'KZ'}
+                    onCountryChange={(c) => {
+                      if (c) setAthleteCountry(c)
+                    }}
                   />
                 </div>
-                <CitySelectInput
-                  cityLabel="Город"
-                  city={athleteCity}
-                  onCityChange={setAthleteCity}
-                  countryCode={athleteCountry || 'KZ'}
-                />
               </div>
 
-              {/* Dance Details */}
-              <div className="form-row">
-                <label htmlFor="athLevel">
-                  Уровень танцора
-                  <select
-                    id="athLevel"
-                    value={athleteLevel}
-                    onChange={(e) => setAthleteLevel(e.target.value)}
-                  >
-                    <option value="">Без уровня / Не указан</option>
-                    {(catalogs?.levels || []).map((lvl) => (
-                      <option key={lvl.name} value={lvl.name}>
-                        {lvl.title}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
+              <CitySelectInput
+                cityLabel="Город"
+                city={athleteCity}
+                onCityChange={setAthleteCity}
+                countryCode={athleteCountry || 'KZ'}
+                onCountryChange={(c) => setAthleteCountry(c)}
+                showCountry={true}
+              />
 
-              <div className="directions-selection">
-                <span className="field-label">Танцевальные направления</span>
-                <div className="chips-cloud">
-                  {(catalogs?.directions || []).map((d) => {
-                    const active = athleteDirections.includes(d.name)
-                    return (
-                      <button
-                        key={d.name}
-                        type="button"
-                        className={`direction-chip ${active ? 'active' : ''}`}
-                        onClick={() => setAthleteDirections((prev) => toggleItem(prev, d.name))}
-                      >
-                        {d.title} {active && '✓'}
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
+              {/* Extended Dancer Card Sections */}
+              <DancerCardFields
+                value={athleteCardState}
+                onChange={setAthleteCardState}
+                directionsCatalog={catalogs?.directions || []}
+                clubsCatalog={catalogs?.clubs || []}
+                fetchFederations={handleFetchFederations}
+                showClubsSelector={true}
+                disabled={savingAthleteProfile}
+                onMediaError={(msg) => setApiError(msg)}
+              />
 
               <div className="form-actions">
                 <button type="submit" className="primary-button" disabled={savingAthleteProfile}>
-                  {savingAthleteProfile ? 'Сохранение…' : 'Сохранить профиль танцора'}
+                  {savingAthleteProfile ? 'Сохранение…' : 'Сохранить карточку танцора'}
                 </button>
               </div>
             </form>
@@ -2743,9 +2833,15 @@ export function CabinetPage() {
                                   type="button"
                                   className="primary-button small-btn"
                                   onClick={() => void handleStartBooking(sl)}
-                                  disabled={sl.is_full}
+                                  disabled={sl.is_full || Boolean(sl.is_already_booked)}
                                 >
-                                  {sl.is_full ? 'Заполнено' : sl.schedule_type === 'Recurring' ? 'Записаться на курс' : 'Записаться'}
+                                  {sl.is_already_booked
+                                    ? 'Вы уже записаны ✓'
+                                    : sl.is_full
+                                      ? 'Заполнено'
+                                      : sl.schedule_type === 'Recurring'
+                                        ? 'Записаться на курс'
+                                        : 'Записаться'}
                                 </button>
                               </div>
                             </div>
@@ -2767,6 +2863,16 @@ export function CabinetPage() {
           person={person}
           hostStatus={context.host}
           onReloadContext={loadContext}
+        />
+      )}
+
+      {/* ±30 Minute Time Conflict Warning Modal */}
+      {conflictWarning && (
+        <TimeConflictWarningModal
+          conflicts={conflictWarning.conflicts}
+          message={conflictWarning.message}
+          onCancel={() => setConflictWarning(null)}
+          onConfirm={conflictWarning.onConfirm}
         />
       )}
 
@@ -2792,6 +2898,14 @@ export function CabinetPage() {
               void loadAvailableSlots()
             }
           }}
+        />
+      )}
+
+      {athleteCropFile && (
+        <AvatarCropModal
+          file={athleteCropFile}
+          onCancel={() => setAthleteCropFile(null)}
+          onComplete={(cropped) => void handleConfirmAthleteAvatar(cropped)}
         />
       )}
     </div>

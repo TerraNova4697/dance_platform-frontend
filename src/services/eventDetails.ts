@@ -195,7 +195,14 @@ function normalizePackages(input: unknown): MasterClassPackage[] {
     const title = text(source, 'title', 'name')
     const price = numberValue(source, 'price')
     if (!source || !title || price === undefined) return []
-    return [{ id: text(source, 'id') ?? 'package-' + index, title, description: text(source, 'description'), price, currency: text(source, 'currency') ?? 'KZT' }]
+    return [{
+      id: text(source, 'id') ?? 'package-' + index,
+      title,
+      description: text(source, 'description'),
+      price,
+      currency: text(source, 'currency') ?? 'KZT',
+      alreadyBooked: booleanValue(source, 'already_booked', 'alreadyBooked') ?? false,
+    }]
   })
 }
 
@@ -258,7 +265,7 @@ export async function getTournamentCategories(eventId: string): Promise<Tourname
     const participationType: TournamentCategory['participationType'] = rawParticipation === 'couple' || rawParticipation === 'team' || rawParticipation === 'formation' ? rawParticipation : 'solo'
     const rawAvailability = text(source, 'availability_status', 'availabilityStatus')?.toLowerCase()
     const availabilityStatus: TournamentCategory['availabilityStatus'] = rawAvailability === 'low' || rawAvailability === 'full' ? rawAvailability : 'available'
-    return [{ id: text(source, 'id', 'name') ?? `category-${index}`, discipline: entity(value(source, 'discipline')), category: entity(value(source, 'category')), ageFrom: numberValue(source, 'age_from', 'ageFrom'), ageTo: numberValue(source, 'age_to', 'ageTo'), level: value(source, 'level') ? entity(value(source, 'level')) : undefined, league: value(source, 'league') ? entity(value(source, 'league')) : undefined, className: text(source, 'class_name', 'className'), participationType, capacity: numberValue(source, 'capacity'), availabilityStatus, registrationStatus: registrationStatus(source), price: numberValue(source, 'price'), currency: text(source, 'currency') }]
+    return [{ id: text(source, 'id', 'name') ?? `category-${index}`, discipline: entity(value(source, 'discipline')), category: entity(value(source, 'category')), ageFrom: numberValue(source, 'age_from', 'ageFrom'), ageTo: numberValue(source, 'age_to', 'ageTo'), level: value(source, 'level') ? entity(value(source, 'level')) : undefined, league: value(source, 'league') ? entity(value(source, 'league')) : undefined, className: text(source, 'class_name', 'className'), participationType, capacity: numberValue(source, 'capacity'), availablePlaces: numberValue(source, 'available_places', 'availablePlaces'), availabilityStatus, registrationStatus: registrationStatus(source), price: numberValue(source, 'price'), currency: text(source, 'currency') }]
   })
 }
 
@@ -272,7 +279,19 @@ export async function getMasterClassSlots(eventId: string): Promise<MasterClassS
     const availabilityStatus: MasterClassSlot['availabilityStatus'] = rawAvailability === 'low' || rawAvailability === 'full' || rawAvailability === 'cancelled' ? rawAvailability : 'available'
     const slotVenue = value(source, 'venue')
     const venueEntity = slotVenue ? entity(slotVenue) : undefined
-    return [{ id: text(source, 'id', 'name') ?? `slot-${index}`, title: text(source, 'title'), startAt, endAt, venue: venueEntity?.name ? venueEntity : undefined, capacity: numberValue(source, 'capacity'), availablePlaces: numberValue(source, 'available_places', 'availablePlaces'), availabilityStatus, price: numberValue(source, 'price'), currency: text(source, 'currency') }]
+    return [{
+      id: text(source, 'id', 'name') ?? `slot-${index}`,
+      title: text(source, 'title'),
+      startAt,
+      endAt,
+      venue: venueEntity?.name ? venueEntity : undefined,
+      capacity: numberValue(source, 'capacity'),
+      availablePlaces: numberValue(source, 'available_places', 'availablePlaces'),
+      availabilityStatus,
+      price: numberValue(source, 'price'),
+      currency: text(source, 'currency'),
+      alreadyBooked: booleanValue(source, 'already_booked', 'alreadyBooked') ?? false,
+    }]
   })
 }
 

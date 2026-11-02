@@ -1,4 +1,4 @@
-export function withRegistrationParam(href: string, key: 'slot' | 'package', value: string): string {
+export function withRegistrationParam(href: string, key: 'slot' | 'package' | 'category', value: string): string {
   const parameter = `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
   if (!href.startsWith('/login?')) return `${href}${href.includes('?') ? '&' : '?'}${parameter}`
 

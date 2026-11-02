@@ -1,4 +1,5 @@
 import { frappeFetch } from './frappe'
+import type { AthleteAchievementItem, AthleteVideoItem } from './onboarding'
 
 export type TrainerRelationItem = {
   id: string
@@ -55,12 +56,26 @@ export type AthleteCabinetData = {
     phone?: string
     city?: string
     country?: string
+    height_cm?: number | null
     photo?: string
   }
   athlete: {
     name: string
     level?: string
     directions: string[]
+    dance_class?: string | null
+    standard_class?: string | null
+    latin_class?: string | null
+    dances_count?: number
+    international_competitions?: string | null
+    training_activities?: string[]
+    training_frequency?: string | null
+    achievements?: AthleteAchievementItem[]
+    gallery_photos?: string[]
+    videos?: AthleteVideoItem[]
+    social_links?: string[]
+    federation?: string | null
+    federation_title?: string | null
   }
   trainers: {
     active: TrainerRelationItem[]
@@ -106,11 +121,24 @@ export async function updateAthleteProfile(
     phone?: string
     city?: string
     country?: string
+    height_cm?: number | null
     photo?: string
   },
   athleteData: {
     level?: string
     directions?: string[]
+    standard_class?: string | null
+    latin_class?: string | null
+    dances_count?: number
+    international_competitions?: string | null
+    training_activities?: string[]
+    training_frequency?: string | null
+    achievements?: AthleteAchievementItem[]
+    gallery_photos?: string[]
+    videos?: AthleteVideoItem[]
+    social_links?: string[]
+    federation?: string | null
+    clubs?: string[]
   }
 ): Promise<{ success: boolean; message: string }> {
   const res = await frappeFetch<FrappeResponse<{ success: boolean; message: string }>>(

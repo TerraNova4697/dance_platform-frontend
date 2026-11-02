@@ -92,7 +92,7 @@ export function EventDetailsPage() {
             <EventAbout event={event} />
             <EventPoster event={event} />
             <EventSchedule event={event} />
-            {event.type === 'tournament' ? <TournamentCategories categories={categoriesQuery.data ?? []} isLoading={categoriesQuery.isPending} isError={categoriesQuery.isError} onRetry={() => void categoriesQuery.refetch()} /> : <MasterClassSlots eventId={event.id} slots={slotsQuery.data ?? []} isLoading={slotsQuery.isPending} isError={slotsQuery.isError} onRetry={() => void slotsQuery.refetch()} registrationHref={registrationHref} />}
+            {event.type === 'tournament' ? <TournamentCategories eventId={event.id} categories={categoriesQuery.data ?? []} isLoading={categoriesQuery.isPending} isError={categoriesQuery.isError} onRetry={() => void categoriesQuery.refetch()} registrationHref={registrationHref} /> : <MasterClassSlots eventId={event.id} slots={slotsQuery.data ?? []} isLoading={slotsQuery.isPending} isError={slotsQuery.isError} onRetry={() => void slotsQuery.refetch()} registrationHref={registrationHref} />}
             {event.type === 'master_class' && <MasterClassPackages packages={event.packages} registrationHref={registrationHref} />}
             <EventPeople event={event} />
             <EventPricing event={event} />

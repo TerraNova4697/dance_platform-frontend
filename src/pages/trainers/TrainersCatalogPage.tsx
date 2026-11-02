@@ -2,8 +2,15 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router-dom'
 import { getPublicTrainers, type PublicTrainerSummary } from '../../api/trainers'
-import { getAvailableTrainingSlots, initiateTrainingBooking, type AvailableTrainingSlot, type InitiateBookingResult } from '../../api/booking'
+import {
+  getAvailableTrainingSlots,
+  initiateTrainingBooking,
+  type AvailableTrainingSlot,
+  type InitiateBookingResult,
+  type BookingConflictItem,
+} from '../../api/booking'
 import { BookingHoldModal } from '../../components/BookingHoldModal'
+import { TimeConflictWarningModal } from '../../components/TimeConflictWarningModal'
 import { DashboardHeader } from '../dashboard/components/DashboardHeader'
 import { useAuth } from '../../hooks/useAuth'
 import { getDashboardProfile } from '../../services/dashboard'
@@ -24,6 +31,11 @@ export function TrainersCatalogPage() {
   const [holdSubtitle, setHoldSubtitle] = useState('')
   const [bookingLoading, setBookingLoading] = useState(false)
   const [bookingError, setBookingError] = useState<string | null>(null)
+  const [conflictWarning, setConflictWarning] = useState<{
+    conflicts: BookingConflictItem[]
+    message?: string
+    onConfirm: () => void
+  } | null>(null)
 
   const profileQuery = useQuery({
     queryKey: ['dashboard', 'profile', user],
@@ -45,9 +57,13 @@ export function TrainersCatalogPage() {
 
   const firstName = profileQuery.data?.firstName ?? user?.split('@')[0] ?? 'Танцор'
 
-  async function handleBookSlot(slot: AvailableTrainingSlot) {
+  async function handleBookSlot(slot: AvailableTrainingSlot, ignoreConflict = false) {
     if (!user) {
       navigate(`/login?redirect=${encodeURIComponent('/trainers')}`)
+      return
+    }
+    if (slot.is_already_booked) {
+      setBookingError('Вы уже записаны на эту тренировку.')
       return
     }
 
@@ -55,7 +71,18 @@ export function TrainersCatalogPage() {
     setBookingError(null)
 
     try {
-      const res = await initiateTrainingBooking(slot.id)
+      const res = await initiateTrainingBooking(slot.id, ignoreConflict)
+      if (res.warning_required && res.conflicts?.length) {
+        setConflictWarning({
+          conflicts: res.conflicts,
+          message: res.message,
+          onConfirm: () => {
+            setConflictWarning(null)
+            void handleBookSlot(slot, true)
+          },
+        })
+        return
+      }
       setHoldTitle(`${slot.offering_title} — ${slot.trainer_name}`)
       setHoldSubtitle(
         `${new Date(slot.start_datetime).toLocaleString('ru-RU', {
@@ -293,10 +320,16 @@ export function TrainersCatalogPage() {
                                         <button
                                           type="button"
                                           className="button primary full-width"
-                                          disabled={slot.is_full || bookingLoading}
+                                          disabled={slot.is_full || Boolean(slot.is_already_booked) || bookingLoading}
                                           onClick={() => void handleBookSlot(slot)}
                                         >
-                                          {slot.is_full ? 'Мест нет' : slot.schedule_type === 'Recurring' ? 'Записаться на курс' : 'Записаться на это время'}
+                                          {slot.is_already_booked
+                                            ? 'Вы уже записаны ✓'
+                                            : slot.is_full
+                                              ? 'Мест нет'
+                                              : slot.schedule_type === 'Recurring'
+                                                ? 'Записаться на курс'
+                                                : 'Записаться на это время'}
                                         </button>
                                       </div>
                                     </div>
@@ -445,6 +478,16 @@ export function TrainersCatalogPage() {
         )}
       </main>
 
+      {conflictWarning && (
+        <TimeConflictWarningModal
+          conflicts={conflictWarning.conflicts}
+          message={conflictWarning.message}
+          loading={bookingLoading}
+          onCancel={() => setConflictWarning(null)}
+          onConfirm={conflictWarning.onConfirm}
+        />
+      )}
+
       {holdSession && (
         <BookingHoldModal
           session={holdSession}
@@ -452,13 +495,17 @@ export function TrainersCatalogPage() {
           subtitle={holdSubtitle}
           onSuccess={(result) => {
             setHoldSession(null)
+            void slotsQuery.refetch()
             if (result?.ticket_id) {
               navigate(`/tickets/${encodeURIComponent(result.ticket_id)}`)
             } else {
               navigate('/tickets')
             }
           }}
-          onClose={() => setHoldSession(null)}
+          onClose={() => {
+            setHoldSession(null)
+            void slotsQuery.refetch()
+          }}
         />
       )}
     </div>

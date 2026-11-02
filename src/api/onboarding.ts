@@ -23,15 +23,73 @@ export type TrainerCatalogItem = {
   verification_status?: TrainerVerificationStatus
 }
 
+export type DancerClassOption = 'Не танцую' | 'H' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S'
+
+export type AchievementResultOption =
+  | 'полуфинал'
+  | 'финал'
+  | '3-е место'
+  | '2-е место'
+  | '1-е место'
+
+export type AthleteAchievementItem = {
+  id: string
+  tournament_name: string
+  category: string
+  result: AchievementResultOption
+}
+
+export type AthleteVideoItem = {
+  id: string
+  type: 'file' | 'link'
+  url: string
+  title?: string
+}
+
+export const DANCER_CLASS_OPTIONS: DancerClassOption[] = [
+  'H',
+  'E',
+  'D',
+  'C',
+  'B',
+  'A',
+  'S',
+  'Не танцую',
+]
+
+export const TRAINING_ACTIVITY_OPTIONS = [
+  'Участвую в семинарах и мастер-классах',
+  'Участвую в танцевальных сборах',
+  'Беру индивидуальные уроки у приглашённых педагогов',
+  'Пока не участвую',
+] as const
+
+export const TRAINING_FREQUENCY_OPTIONS = [
+  'Регулярно',
+  'Время от времени',
+  'Пока не участвую',
+] as const
+
+export const ACHIEVEMENT_RESULT_OPTIONS: AchievementResultOption[] = [
+  'полуфинал',
+  'финал',
+  '3-е место',
+  '2-е место',
+  '1-е место',
+]
+
 export type OnboardingContext = {
   person: {
     name: string
     first_name: string
     last_name: string
+    middle_name?: string | null
     date_of_birth: string | null
+    gender?: string | null
     phone: string | null
     city: string | null
     country?: string | null
+    height_cm?: number | null
     photo: string | null
     onboarding_status: OnboardingStatus
   }
@@ -53,10 +111,15 @@ export type OnboardingContext = {
 export type SubmitOnboardingPayload = {
   role: 'athlete' | 'trainer'
   person: {
+    first_name?: string
+    last_name?: string
+    middle_name?: string | null
     date_of_birth: string
+    gender?: string | null
     phone?: string | null
     city?: string | null
     country?: string | null
+    height_cm?: number | null
     photo?: string | null
   }
   athlete?: {
@@ -66,6 +129,16 @@ export type SubmitOnboardingPayload = {
     federation?: string | null
     clubs?: string[]
     trainers?: string[]
+    standard_class?: DancerClassOption | string | null
+    latin_class?: DancerClassOption | string | null
+    dances_count?: number
+    international_competitions?: 'Да' | 'Нет' | string | null
+    training_activities?: string[]
+    training_frequency?: string | null
+    achievements?: AthleteAchievementItem[]
+    gallery_photos?: string[]
+    videos?: AthleteVideoItem[]
+    social_links?: string[]
   }
   trainer?: {
     public_name: string

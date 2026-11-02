@@ -168,6 +168,20 @@ export function TicketDetailsPage() {
                 </div>
               </div>
             )}
+
+            {ticket.tournamentEntries && ticket.tournamentEntries.length > 0 && (
+              <div className="pass-included-section">
+                <div className="info-label">Подтвержденные категории турнира ({ticket.tournamentEntries.length})</div>
+                <div className="pass-slots-list">
+                  {ticket.tournamentEntries.map((ent) => (
+                    <div key={ent.id} className="pass-slot-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
+                      <span>🏆 {ent.title} ({ent.ageRange} · Класс: {ent.className || 'Open'})</span>
+                      <strong>{ent.price > 0 ? `${ent.price.toLocaleString('ru-RU')} ${ent.currency}` : 'Бесплатно'}</strong>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="pass-footer">

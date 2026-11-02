@@ -11,9 +11,17 @@ export function MasterClassPackages({ packages, registrationHref }: { packages: 
       <div className="ticket-type-list">
         {packages.map((item) => (
           <article key={item.id}>
-            <div><strong>{item.title}</strong>{item.description && <span className="section-empty">{item.description}</span>}</div>
+            <div>
+              <strong>{item.title}</strong>
+              {item.description && <span className="section-empty">{item.description}</span>}
+              {item.alreadyBooked && <span className="availability availability-available">Вы уже записаны ✓</span>}
+            </div>
             <b>{formatCurrency(item.price, item.currency)}</b>
-            <Link className="button secondary" to={withRegistrationParam(registrationHref, 'package', item.id)}>Выбрать</Link>
+            {item.alreadyBooked ? (
+              <button className="button secondary" type="button" disabled>Записаны ✓</button>
+            ) : (
+              <Link className="button secondary" to={withRegistrationParam(registrationHref, 'package', item.id)}>Выбрать</Link>
+            )}
           </article>
         ))}
       </div>
