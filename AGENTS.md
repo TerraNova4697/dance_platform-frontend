@@ -46,14 +46,6 @@ React Hook Form
 All frontend UI/UX must strictly adhere to the `on dance space` tactile design system:
 👉 **Full specification & design tokens:** [docs/design-rules.md](docs/design-rules.md)
 
-Key constraints for agents:
-- **NO indigo / purple / cold SaaS blue colors** (e.g. `#4f46e5`, `#6366f1`, `#5b48e8`).
-- **Canvas:** Warm stone `#EDECEC` (`--bg-canvas`).
-- **Brand Accent:** Flame Vermilion `#FD3A25` (`--brand-accent`) for active states, dots, and indicators.
-- **Primary CTA:** Deep charcoal `#272727` (`--brand-dark`) pill button with `--shadow-btn-dark`.
-- **Buttons & Pills:** Always use pill geometry (`border-radius: 100px` / `--radius-pill`).
-- **Tactile Surfaces:** Use 3D bevels and multi-layered shadows (`--shadow-card-tactile`, `--shadow-badge-tactile`).
-- **Branding:** Always use `<BrandLogo />` from `src/components/BrandLogo.tsx`.
 
 ## Testing
 

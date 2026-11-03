@@ -648,15 +648,15 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
                   {filteredRegistrations.map((r) => (
                     <tr key={r.id}>
                       <td>
-                        <div style={{ fontWeight: 600, color: '#111827' }}>{r.participant_name}</div>
-                        <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                        <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{r.participant_name}</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                           {r.participant_phone || r.participant_email}
                           {r.participant_city ? ` • ${r.participant_city}` : ''}
                         </div>
                       </td>
                       <td>
-                        <div style={{ fontWeight: 600, color: '#111827' }}>{r.event_title}</div>
-                        <div style={{ fontSize: '0.82rem', color: '#fd3a25', fontWeight: 600 }}>{r.item_label}</div>
+                        <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{r.event_title}</div>
+                        <div style={{ fontSize: '0.82rem', color: 'var(--brand-accent)', fontWeight: 600 }}>{r.item_label}</div>
                       </td>
                       <td>{formatDateTime(r.registered_at)}</td>
                       <td>{renderStatusBadge(r.status)}</td>

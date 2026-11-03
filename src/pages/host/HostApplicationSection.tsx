@@ -178,10 +178,10 @@ export function HostApplicationSection({
         <div className="host-app-status-banner submitted">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
             <div>
-              <h4 style={{ margin: '0 0 0.35rem 0', color: '#1d4ed8' }}>
+              <h4 style={{ margin: '0 0 0.35rem 0', color: 'var(--brand-accent-hover)' }}>
                 ⏳ Заявка отправлена и находится на проверке
               </h4>
-              <p style={{ margin: 0, fontSize: '0.9rem', color: '#1e3a8a' }}>
+              <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
                 Дата подачи: <strong>{app.submitted_at ? formatDateTime(app.submitted_at) : 'Сегодня'}</strong> • Организация: <strong>{org?.display_name}</strong> (ИИН: {org?.registration_number})
               </p>
             </div>
@@ -200,13 +200,13 @@ export function HostApplicationSection({
 
       {app && app.status === 'Changes Requested' && (
         <div className="host-app-status-banner changes">
-          <h4 style={{ margin: '0 0 0.4rem 0', color: '#b45309' }}>
+          <h4 style={{ margin: '0 0 0.4rem 0', color: '#fcd34d' }}>
             ✎ Модератор запросил изменения по вашей заявке
           </h4>
-          <p style={{ margin: '0 0 0.4rem 0', fontSize: '0.94rem', color: '#78350f' }}>
+          <p style={{ margin: 0, marginBottom: '0.4rem', fontSize: '0.94rem', color: 'var(--text-primary)' }}>
             <strong>Комментарий администратора:</strong> {app.review_comment || 'Пожалуйста, проверьте корректность данных и документов.'}
           </p>
-          <span style={{ fontSize: '0.84rem', color: '#92400e' }}>
+          <span style={{ fontSize: '0.84rem', color: 'var(--text-secondary)' }}>
             Внесите исправления в форму ниже и нажмите «Отправить повторно на проверку».
           </span>
         </div>
@@ -214,13 +214,13 @@ export function HostApplicationSection({
 
       {app && app.status === 'Rejected' && (
         <div className="host-app-status-banner rejected">
-          <h4 style={{ margin: '0 0 0.4rem 0', color: '#b91c1c' }}>
+          <h4 style={{ margin: '0 0 0.4rem 0', color: '#fda4af' }}>
             ✕ Заявка была отклонена
           </h4>
-          <p style={{ margin: '0 0 0.4rem 0', fontSize: '0.94rem', color: '#7f1d1d' }}>
+          <p style={{ margin: '0 0 0.4rem 0', fontSize: '0.94rem', color: 'var(--text-primary)' }}>
             <strong>Причина:</strong> {app.review_comment || 'Данные не прошли верификацию.'}
           </p>
-          <span style={{ fontSize: '0.84rem', color: '#991b1b' }}>
+          <span style={{ fontSize: '0.84rem', color: 'var(--text-secondary)' }}>
             Вы можете исправить анкету ниже и подать заявку повторно.
           </span>
         </div>

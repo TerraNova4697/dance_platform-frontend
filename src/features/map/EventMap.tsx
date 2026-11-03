@@ -81,8 +81,8 @@ export function EventMap({ events, selectedEventId, onSelect }: {
               center={[event.latitude, event.longitude]}
               radius={isSelected ? 13 : 10}
               pathOptions={{
-                color: '#ffffff',
-                fillColor: isSelected ? '#18181b' : '#fd3a25',
+                color: '#16110C',
+                fillColor: isSelected ? '#F3DEC3' : '#D4AF8C',
                 fillOpacity: 1,
                 opacity: 1,
                 weight: 3,

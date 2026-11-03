@@ -166,22 +166,22 @@ export function TrainerDetailsPage() {
 
             {trainer.slots.length > 0 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: '#4b5563' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                   <span>📅 Дата:</span>
                   <input
                     type="date"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    style={{ padding: '6px 10px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '0.85rem' }}
+                    style={{ padding: '6px 10px', borderRadius: '8px', border: '1px solid var(--border-default)', background: 'var(--bg-surface)', color: 'var(--text-primary)', fontSize: '0.85rem' }}
                   />
                 </label>
 
-                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: '#4b5563' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                   <span>Формат:</span>
                   <select
                     value={selectedType}
                     onChange={(e) => setSelectedType(e.target.value)}
-                    style={{ padding: '6px 10px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '0.85rem' }}
+                    style={{ padding: '6px 10px', borderRadius: '8px', border: '1px solid var(--border-default)', background: 'var(--bg-surface)', color: 'var(--text-primary)', fontSize: '0.85rem' }}
                   >
                     <option value="all">Все</option>
                     <option value="Individual">Индивидуальные</option>
@@ -246,12 +246,12 @@ export function TrainerDetailsPage() {
 
                   return (
                     <div key={dateStr} className="date-group-block">
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', borderBottom: '2px solid var(--border-default, #e4e4e7)', paddingBottom: '4px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', borderBottom: '1px solid var(--border-default)', paddingBottom: '4px' }}>
                         <span style={{ fontSize: '1.1rem' }}>🗓</span>
-                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary, #09090b)' }}>
+                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                           {capitalizedDateHeader}
                         </h3>
-                        <span style={{ fontSize: '0.8rem', color: '#fd3a25', background: '#f5f5f5', padding: '2px 8px', borderRadius: '100px', fontWeight: 650, boxShadow: 'var(--shadow-badge-tactile)' }}>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--brand-accent)', background: 'rgba(212, 175, 140, 0.14)', border: '1px solid rgba(212, 175, 140, 0.28)', padding: '2px 8px', borderRadius: '100px', fontWeight: 600 }}>
                           {slotsOnDate.length}
                         </span>
                       </div>

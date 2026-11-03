@@ -1,284 +1,91 @@
-# on dance space — Design System & UI/UX Rules
+# ON — THE WORLD OF DANCESPORT: Design System & UI/UX Rules
 
-> **Статус:** Обязательно к соблюдению для всех агентов и разработчиков платформы.  
-> **Референс визуального стиля:** [on-dance.space](https://www.on-dance.space/)  
-> **Глобальные стили:** [`src/index.css`](../src/index.css) | **Базовые компоненты:** [`src/App.css`](../src/App.css)
+## 1. Философия бренда и эстетика
+Платформа **ON | THE WORLD OF DANCESPORT** выполнена в премиальной тёмно-золотой эстетике (**Obsidian & Champagne Gold**), вдохновлённой вечерним светом танцевальных залов Grand Slam, шёлком и органзой бальных платьев Европейской программы и строгой элегантностью фрачных пар.
 
----
-
-## 1. Философия и Концепция дизайна
-
-Платформа **on dance space** использует эстетику **тактильного минимализма и софт-скевоморфизма (Tactile Neo-Brutalism / Soft Skeuomorphism)**:
-1. **Теплый каменный холст (Warm Stone Canvas)**: отказ от холодных синеватых SaaS-фонов (`#F4F7FB`, `#FFFFFF`). Фон всей платформы — мягкий теплый цинковый оттенок `#EDECEC`.
-2. **Тактильный 3D-объем**: карточки, кнопки и бейджи не являются плоскими («flat»). Они имеют физическую глубину за счет сочетания верхнего внутреннего полупрозрачного блика (`inset 0 1px 0 rgba(255,255,255,...)`) и нижней жесткой фаски (`inset 0 -3px 0 #...`), имитируя реальные физические плашки и кнопки.
-3. **Капсульная геометрия (Pill Shapes)**: все интерактивные контролы (кнопки, чипы, табы, поисковые капсулы, плавающий хедер) имеют скругление `100px` (`--radius-pill`). Крупные контейнеры имеют радиус `24px–32px`.
-4. **Контрастная триада цветов**:
-   - Фон: теплый камень `#EDECEC` / светлый цинк `#F4F4F5`.
-   - Акцент: пламенно-алый / вермильон **`#FD3A25`** (индикаторы, активные состояния, акцентные бейджи, свечение).
-   - Контраст (Primary CTA): глубокий графит **`#272727`** и темный уголь **`#292C2E`**.
+Ключевые визуальные принципы:
+- **Глубокий тёмный фон (Obsidian Velvet):** многослойный тёмный холст (`#0A0908` — `#121013`) с мягким тёплым золотистым свечением (ambient spotlight).
+- **Акцент шампань-золото (Champagne Gold):** благородные градиенты шампанского золота (`#F3DEC3` → `#D4AF8C` → `#B8906D`) вместо резких неоновых или красных оттенков.
+- **Контрастная антиква в заголовках (Editorial High-Contrast Serif):** использование шрифта `Cormorant Garamond` для заголовков секций, названий турниров и карточек событий в сочетании с геометрическим гротеском `Inter` / `Urbanist` для интерфейсных элементов, таблиц и мета-данных.
+- **Тонкие ювелирные контуры (Hairline Gold Borders):** карточки и интерактивные поверхности обрамляются полупрозрачными золотисто-бежевыми линиями `1px solid rgba(212, 175, 140, 0.18)`.
 
 ---
 
-## 2. Строгие правила (DOs and DON'Ts)
+## 2. Цветовые токены (`:root`)
 
-### ❌ КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО:
-* **Никаких синих/фиолетовых/индиго оттенков!** Никогда не использовать:
-  `#4F46E5`, `#6366F1`, `#4338CA`, `#5B48E8`, `#EEF2FF`, `#E0E7FF`, `#F4F7FB`.
-* **Никаких острых прямоугольных кнопок** с `border-radius: 4px–8px`. Кнопки должны быть капсулами `border-radius: 100px` или карточками со скруглением `16px–24px`.
-* **Никакого хардкода случайных HEX-цветов** в локальных CSS-файлах или `style={{ ... }}`. Всегда используйте CSS-переменные из `src/index.css`.
-* **Никаких плоских рамок `1px solid #ccc`** без тактильных теней на ключевых карточках.
-* **Никаких сторонних или старых квадратных логотипов** (буква «D», синий квадрат и т.д.). Для брендинга используется только `<BrandLogo />`.
+### Поверхности и холст (Canvas & Surfaces)
+| Токен | Значение | Назначение |
+|---|---|---|
+| `--bg-canvas` | `#0A0908` | Основной фон страниц платформы |
+| `--bg-surface` | `#141215` | Базовая поверхность карточек, модальных окон и блоков |
+| `--bg-surface-tactile` | `#1B181C` | Приподнятая поверхность карточек (hover, вложенные секции) |
+| `--bg-surface-subtle` | `#1F1C21` | Поля ввода, неактивные табы, плашки и чипы |
+| `--bg-surface-muted` | `#28242B` | Вторичные интерактивные элементы и разделители |
+| `--bg-glass` | `rgba(16, 14, 15, 0.84)` | Полупрозрачный фон шапки и липких панелей с `backdrop-filter: blur(28px)` |
 
-### ✅ ОБЯЗАТЕЛЬНО К СОБЛЮДЕНИЮ:
-* **Использовать семантические токены**: `var(--bg-canvas)`, `var(--bg-surface)`, `var(--brand-accent)`, `var(--brand-dark)`, `var(--shadow-btn-dark)` и т.д.
-* **Кнопки Primary действия**: цвет фона `#272727` (`var(--brand-dark)`), цвет текста `#FFFFFF`, скругление `100px`, тень `var(--shadow-btn-dark)`.
-* **Акцентные элементы и фокусы**: акцент только `#FD3A25` (`var(--brand-accent)`). Фокус инпутов — `outline: none; border-color: var(--brand-accent); box-shadow: 0 0 0 3px var(--brand-accent-soft);`.
-* **Заголовки секций и H1**: использовать класс `.metallic-heading` (металлический градиент `#61666A` $\to$ `#292C2E`) и плотный кернинг `letter-spacing: -0.03em`.
-* **Секционные теги**: использовать плашки с левой алой точкой `#FD3A25` (класс `.section-tagline` или `.eyebrow-badge`).
+### Акцентная палитра (Champagne Gold Accents)
+| Токен | Значение | Назначение |
+|---|---|---|
+| `--brand-accent` | `#D4AF8C` | Основной акцентный цвет (иконки, активные ссылки, бейджи) |
+| `--brand-accent-hover` | `#E5C4A3` | Светлое золото при наведении |
+| `--brand-accent-strong` | `#C59D79` | Насыщенное бронзовое золото для обводок и активных состояний |
+| `--brand-accent-gradient` | `linear-gradient(180deg, #F3DEC3 0%, #D4AF8C 52%, #B8906D 100%)` | Заливка главных CTA-кнопок («Регистрация», «Найти события») |
+| `--brand-accent-soft` | `rgba(212, 175, 140, 0.14)` | Мягкая подложка для активных фильтров и фокус-колец |
+| `--brand-accent-glow` | `rgba(212, 175, 140, 0.25)` | Свечение вокруг акцентных кнопок и маркеров |
+| `--text-on-gold` | `#16110C` | Тёмно-эспрессовый цвет текста на золотых кнопках |
 
----
+### Типографика и чернила (Typography / Ink Colors)
+| Токен | Значение | Назначение |
+|---|---|---|
+| `--text-primary` | `#F7F3EE` | Основной цвет текста и заголовков (тёплый жемчужно-белый) |
+| `--text-secondary` | `#C4B9AC` | Вторичный текст, описания, даты и локации |
+| `--text-muted` | `#8E8479` | Приглушённые подписи, плейсхолдеры и мета-данные |
+| `--text-dim` | `#635B52` | Неактивные элементы и второстепенные счётчики |
 
-## 3. Таблица Дизайн-Токенов (Design Tokens)
-
-### 3.1. Палитра цветов (Colors)
-
-| CSS Переменная | Значение HEX / RGB | Назначение |
-| :--- | :--- | :--- |
-| `--bg-canvas` | `#EDECEC` | Базовый фон страницы (`body`, главные контейнеры) |
-| `--bg-surface` | `#FFFFFF` | Активные карточки, поля ввода в фокусе, модальные окна |
-| `--bg-surface-tactile` | `#F4F4F5` | Тактильные контейнеры, закрытые панели, вторичные карточки |
-| `--bg-surface-subtle` | `#F5F5F5` | Подложки под инпуты, неактивные чипы, теги |
-| `--bg-glass` | `rgba(255, 255, 255, 0.55)` | Стеклянные парящие панели и Header (`backdrop-filter: blur(44px)`) |
-| `--brand-accent` | **`#FD3A25`** | Главный алый акцент: активные табы, индикаторы, бейджи, фокус |
-| `--brand-accent-gradient`| `linear-gradient(180deg, #EA2B16 0%, #FF3B26 100%)` | Заливка ключевых акцентных иконок и кнопок |
-| `--brand-accent-soft` | `rgba(253, 58, 37, 0.10)` | Мягкая подсветка активных чипов, тегов и фокус-колец |
-| `--brand-dark` | **`#272727`** | Основная кнопка (Primary Dark Pill), бейджи даты |
-| `--brand-charcoal` | **`#292C2E`** | Заголовки, градиенты текста, темные иконки |
-| `--text-primary` | `#09090B` | Основной высококонтрастный текст |
-| `--text-secondary` | `#3F3F46` / `#52525B` | Подзаголовки, вторичный текст описаний |
-| `--text-muted` | `#71717A` / `#A1A1AA` | Плейсхолдеры, таймкоды, неактивные подписи |
-| `--border-default` | `#E4E4E7` | Базовые границы инпутов и разделителей |
-| `--border-strong` | `#D4D4D8` | Ховер-границы, разделители карточек |
-| `--status-success-bg` | `#EAF5ED` | Фон успешных статусов (оплачен, подтвержден) |
-| `--status-success-text` | `#15803D` | Зеленый текст статуса успеха |
-
-### 3.2. Тактильные тени (Tactile Shadows & Insets)
-
-Всегда применяйте заготовленные CSS-переменные теней:
-
-```css
-/* Объемная карточка с верхним бликом и нижней фаской */
-box-shadow: var(--shadow-card-tactile);
-/*
-  inset 0px 4px 0px 0px rgba(255, 255, 255, 0.6),
-  inset 0px -8px 0px 0px rgba(0, 0, 0, 0.05),
-  0px 3px 3px 0px rgba(0, 0, 0, 0.10),
-  0px 7.77px 16px 0px rgba(0, 0, 0, 0.06);
-*/
-
-/* Графитовая primary кнопка (#272727) с 3D-фаской */
-box-shadow: var(--shadow-btn-dark);
-/*
-  0px 2.77px 2.21px 0px rgba(0, 0, 0, 0.12),
-  0px 6.65px 5.32px 0px rgba(0, 0, 0, 0.12),
-  0px 12.52px 10.02px 0px rgba(0, 0, 0, 0.13),
-  0px 22.34px 17.87px 0px rgba(0, 0, 0, 0.14),
-  inset 0px 1px 0px 0px rgba(255, 255, 255, 0.3),
-  inset 0px -3px 0px 0px #080808;
-*/
-
-/* Тактильные светлые бейджи, кнопки пагинации, теги */
-box-shadow: var(--shadow-badge-tactile);
-
-/* Свечение алых акцентных иконок и бейджей */
-box-shadow: var(--shadow-accent-glow);
-
-/* Парящий стеклянный Header */
-box-shadow: var(--shadow-glass-header);
-```
-
-### 3.3. Шкала скруглений (Border Radius)
-
-```css
---radius-pill: 100px; /* Кнопки, переключатели табов, поисковые капсулы, шапка */
---radius-xl:   32px;  /* Hero-баннеры, главная карточка ближайшего мероприятия, контейнеры страниц */
---radius-lg:   24px;  /* Карточки мероприятий, тренеров, модальные окна, форма авторизации */
---radius-md:   16px;  /* Иконки-контейнеры, внутренние виджеты, строки расписания */
---radius-sm:   10px;  /* Инпуты, селекты, бейджи */
-```
+### Границы и тени (Borders & Shadows)
+| Токен | Значение | Назначение |
+|---|---|---|
+| `--border-default` | `rgba(212, 175, 140, 0.16)` | Стандартная тонкая рамка карточек и таблиц |
+| `--border-strong` | `rgba(212, 175, 140, 0.38)` | Контур вторичных кнопок («Войти») и активных карточек |
+| `--shadow-card-tactile` | `inset 0 1px 0 rgba(255, 248, 238, 0.06), 0 14px 34px rgba(0, 0, 0, 0.55)` | Глубокая тень карточек с верхним бликом |
+| `--shadow-accent-glow` | `inset 0 1px 0 rgba(255, 253, 249, 0.65), 0 6px 22px rgba(197, 157, 121, 0.25)` | Блик и золотое свечение для CTA-кнопок |
 
 ---
 
-## 4. Паттерны верстки компонентов
-
-### 4.1. Кнопки (Buttons)
-
-```html
-<!-- Primary Dark Pill Button -->
-<button class="primary-button">
-  Зарегистрироваться
-</button>
-
-<!-- Accent Red Pill Button (для ключевых конверсионных триггеров) -->
-<button class="accent-button">
-  Купить билет
-</button>
-
-<!-- Secondary Light Tactile Button -->
-<button class="secondary-button">
-  Подробнее
-</button>
-```
-
-```css
-.primary-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.75rem;
-  font-family: var(--font-display);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: #ffffff;
-  background: var(--brand-dark);
-  border: 1px solid #1f1f1f;
-  border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-btn-dark);
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.primary-button:hover {
-  transform: translateY(-1px);
-  background: #1f1f1f;
-}
-
-.primary-button:active {
-  transform: translateY(1px);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-```
-
-### 4.2. Секционные теги с алой точкой (Section Eyebrow)
-
-```html
-<div class="section-tagline">
-  <span class="tagline-dot"></span>
-  <span>Каталог мероприятий</span>
-</div>
-```
-
-```css
-.section-tagline {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.85rem;
-  background: var(--bg-surface-tactile);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-badge-tactile);
-  font-size: 0.8125rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--brand-charcoal);
-}
-
-.tagline-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--brand-accent);
-  box-shadow: 0 0 6px rgba(253, 58, 37, 0.6);
-}
-```
-
-### 4.3. Металлический заголовок (Metallic Heading)
-
-```html
-<h1 class="metallic-heading">Все мероприятия</h1>
-```
-
-```css
-.metallic-heading {
-  font-family: var(--font-display);
-  font-size: 2.25rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  background: linear-gradient(93deg, #61666A 0%, #292C2E 36%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-```
-
-### 4.4. Тактильная карточка (Tactile Card)
-
-```css
-.tactile-card {
-  background: var(--bg-surface);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card-tactile);
-  padding: 1.5rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.tactile-card:hover {
-  transform: translateY(-2px);
-}
-```
-
-### 4.5. Поля ввода (Inputs & Controls)
-
-```css
-.form-input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  font-family: var(--font-sans);
-  font-size: 0.9375rem;
-  color: var(--text-primary);
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-sm);
-  outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.form-input:focus {
-  border-color: var(--brand-accent);
-  box-shadow: 0 0 0 3px var(--brand-accent-soft);
-}
-```
-
-### 4.6. Фирменный знак (Logo)
-
-Во всех хедерах, страницах авторизации и модальных окнах используйте компонент:
-```tsx
-import { BrandLogo } from '@/components/BrandLogo';
-
-// В хедере:
-<BrandLogo size={28} showText={true} />
-
-// В карточках авторизации:
-<BrandLogo size={36} showText={true} />
-```
+## 3. Типографика
+1. **Заголовки (`--font-serif`):** `'Cormorant Garamond', 'Playfair Display', Georgia, serif`
+   - Применяется для `h1`, `h2`, заголовков карточек мероприятий (`.catalog-card-body h2`, `.card-body h3`), приветствий и модальных заголовков.
+   - Начертание: `500`–`600`, межбуквенный интервал `-0.01em`..`0.01em`, цвет `#F7F3EE` или градиент шампанского золота.
+2. **Интерфейс и основной текст (`--font-sans`):** `'Inter', 'Urbanist', system-ui, sans-serif`
+   - Применяется для навигации, кнопок, инпутов, бейджей, таблиц, дат и адресов.
+3. **Надзаголовки (`.eyebrow`, `.overline`):**
+   - Верхний регистр (`text-transform: uppercase`), разрядка `letter-spacing: 0.18em`, размер `11px`–`12px`, цвет `var(--brand-accent)`.
 
 ---
 
-## 5. Контрольный чек-лист перед сдачей UI-задачи
+## 4. Компоненты
 
-Перед завершением любой задачи по фронтенду агент **ОБЯЗАН** проверить:
+### Логотип (`BrandLogo`)
+- Использует векторный знак `/logo.svg` (`ON` с золотым шлейфом венского вальса).
+- В шапке сопровождается тонким вертикальным разделителем `|` и двустрочным дескриптором:
+  `THE WORLD OF` / `DANCESPORT` с разрядкой `0.2em`.
 
-1. [ ] В созданных или измененных стилях **нет ни одного цвета из старой индиго-палитры** (`#4F46E5`, `#6366F1`, `#5B48E8` и т.д.).
-2. [ ] Все фоновые панели и карточки опираются на `--bg-canvas` (`#EDECEC`) и `--bg-surface` (`#FFFFFF`).
-3. [ ] Кнопки имеют форму капсулы (`100px`) и используют `--shadow-btn-dark` или `--shadow-badge-tactile`.
-4. [ ] Акцентные индикаторы и выделенные табы используют пламенно-алый `#FD3A25`.
-5. [ ] Пройдены проверки:
-   ```bash
-   npm run lint
-   npm run build
-   ```
+### Шапка (`DashboardHeader`)
+- Тёмная полупрозрачная панель с тонкой золотой нижней линией `1px solid rgba(212, 175, 140, 0.16)`.
+- Пункты навигации окрашены в `--text-secondary`, при наведении и в активном состоянии — `--text-primary` с золотым индикатором `--brand-accent`.
+
+### Кнопки (`Buttons`)
+- **Primary Button (`.primary-button`, `.button.primary`):**
+  - Фон: `var(--brand-accent-gradient)`
+  - Текст: `var(--text-on-gold)` (`#16110C`), `font-weight: 600`
+  - Скругление: `12px` (или `var(--radius-pill)` для компактных действий)
+- **Secondary / Outline Button (`.secondary-button`, `.button.secondary`):**
+  - Фон: `rgba(255, 255, 255, 0.03)`
+  - Рамка: `1px solid var(--border-strong)`
+  - Текст: `var(--text-primary)` (`#F7F3EE`)
+
+### Карточки мероприятий (`Event Cards`)
+- Тёмно-угольная поверхность с мягким градиентом `linear-gradient(135deg, rgba(30, 27, 32, 0.94) 0%, rgba(17, 15, 18, 0.98) 100%)`.
+- Тонкая золотистая обводка `1px solid rgba(212, 175, 140, 0.18)`, которая при наведении подсвечивается до `rgba(212, 175, 140, 0.45)`.
+- Заголовок события набирается антиквой (`var(--font-serif)`), мета-информация (дата, локация) сопровождается золотистыми иконками и круглой кнопкой со стрелкой `→` в правом нижнем углу.
 

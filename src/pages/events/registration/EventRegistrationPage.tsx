@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { getEventDetails, getMasterClassSlots, getTournamentCategories } from '../../../services/eventDetails'
+import { getEventDetails, getMasterClassSlots, getTournamentCategories, formatAgeRange } from '../../../services/eventDetails'
 import {
   initiateMasterClassBooking,
   getTournamentRegistrationContext,
@@ -151,13 +151,13 @@ export function EventRegistrationPage() {
   } | null>(null)
 
   // Tournament wizard state
-  const [participationType, setParticipationType] = useState<'solo' | 'couple' | 'team'>('solo')
+  const [userParticipationType, setParticipationType] = useState<'solo' | 'couple' | 'team' | null>(null)
   const [teamName, setTeamName] = useState('')
-  const [athleteDob, setAthleteDob] = useState('')
-  const [athleteClass, setAthleteClass] = useState('D')
-  const [editingAthleteInfo, setEditingAthleteInfo] = useState(false)
-  const [selectedClubId, setSelectedClubId] = useState('')
-  const [selectedTrainerId, setSelectedTrainerId] = useState('')
+  const [userAthleteDob, setAthleteDob] = useState<string | null>(null)
+  const [userAthleteClass, setAthleteClass] = useState<string | null>(null)
+  const [userEditingAthleteInfo, setEditingAthleteInfo] = useState<boolean | null>(null)
+  const [userSelectedClubId, setSelectedClubId] = useState<string | null>(null)
+  const [userSelectedTrainerId, setSelectedTrainerId] = useState<string | null>(null)
   const [editingRepresentation, setEditingRepresentation] = useState(false)
 
   const [partners, setPartners] = useState<PartnerDraft[]>(() => [createEmptyPartnerDraft(1)])
@@ -165,7 +165,6 @@ export function EventRegistrationPage() {
     preselectedCategoryId ? [preselectedCategoryId] : []
   )
   const [categoryFilterTab, setCategoryFilterTab] = useState<'eligible' | 'all'>('eligible')
-  const [contextInitialized, setContextInitialized] = useState(false)
 
   const profileQuery = useQuery({
     queryKey: ['dashboard', 'profile', user],
@@ -206,39 +205,37 @@ export function EventRegistrationPage() {
     enabled: Boolean(eventId && isTournament),
   })
 
-  // Initialize athlete fields from backend context once loaded
-  useEffect(() => {
-    const ctx = tournContextQuery.data
-    if (!ctx || contextInitialized) return
-    setAthleteDob(ctx.athlete.date_of_birth || '2008-05-15')
-    setAthleteClass(ctx.athlete.dance_class || 'D')
-    setSelectedClubId(ctx.athlete.club_id || (ctx.clubs[0]?.id ?? ''))
-    setSelectedTrainerId(ctx.athlete.trainer_id || (ctx.trainers[0]?.id ?? ''))
-    if (!ctx.athlete.date_of_birth || !ctx.athlete.dance_class) {
-      setEditingAthleteInfo(true)
-    }
-    setContextInitialized(true)
-  }, [tournContextQuery.data, contextInitialized])
-
-  // If preselectedCategoryId is passed, align participationType with that category
-  useEffect(() => {
-    if (!preselectedCategoryId || !tournCategoriesQuery.data) return
-    const targetCat = tournCategoriesQuery.data.find((c) => c.id === preselectedCategoryId)
-    if (!targetCat) return
-    if (targetCat.participationType === 'couple') {
-      setParticipationType('couple')
-    } else if (targetCat.participationType === 'team' || targetCat.participationType === 'formation') {
-      setParticipationType('team')
-    } else {
-      setParticipationType('solo')
-    }
-  }, [preselectedCategoryId, tournCategoriesQuery.data])
-
   const slots = slotsQuery.data || []
   const packages = event?.packages || []
-  const tournCategories = tournCategoriesQuery.data || []
+  const tournCategories = useMemo(
+    () => tournCategoriesQuery.data || [],
+    [tournCategoriesQuery.data]
+  )
   const tournContext = tournContextQuery.data
   const availablePartners = partnerAthletesQuery.data || []
+
+  const defaultParticipationType = useMemo<'solo' | 'couple' | 'team'>(() => {
+    if (!preselectedCategoryId || !tournCategories.length) return 'solo'
+    const targetCat = tournCategories.find((c) => c.id === preselectedCategoryId)
+    if (!targetCat) return 'solo'
+    if (targetCat.participationType === 'couple') return 'couple'
+    if (targetCat.participationType === 'team' || targetCat.participationType === 'formation') {
+      return 'team'
+    }
+    return 'solo'
+  }, [preselectedCategoryId, tournCategories])
+
+  const participationType = userParticipationType ?? defaultParticipationType
+  const athleteDob = userAthleteDob ?? (tournContext?.athlete.date_of_birth || '2008-05-15')
+  const athleteClass = userAthleteClass ?? (tournContext?.athlete.dance_class || 'D')
+  const selectedClubId =
+    userSelectedClubId ?? (tournContext?.athlete.club_id || (tournContext?.clubs[0]?.id ?? ''))
+  const selectedTrainerId =
+    userSelectedTrainerId ??
+    (tournContext?.athlete.trainer_id || (tournContext?.trainers[0]?.id ?? ''))
+  const editingAthleteInfo =
+    userEditingAthleteInfo ??
+    Boolean(tournContext && (!tournContext.athlete.date_of_birth || !tournContext.athlete.dance_class))
 
   // Compute effective age & effective class for Step 1 -> Step 2 filtering
   const eventStartDateStr = tournContext?.tournament.event_start_date || event?.startAt || null
@@ -302,10 +299,10 @@ export function EventRegistrationPage() {
 
       // 2. Age check
       if (effectiveAge !== null) {
-        if (cat.ageFrom !== undefined && effectiveAge < cat.ageFrom) {
+        if (cat.ageFrom !== undefined && cat.ageFrom > 0 && effectiveAge < cat.ageFrom) {
           reasons.push(`Возраст от ${cat.ageFrom} лет (у вас: ${effectiveAge})`)
         }
-        if (cat.ageTo !== undefined && effectiveAge > cat.ageTo) {
+        if (cat.ageTo !== undefined && cat.ageTo > 0 && effectiveAge > cat.ageTo) {
           reasons.push(`Возраст до ${cat.ageTo} лет (у вас: ${effectiveAge})`)
         }
       }
@@ -717,7 +714,7 @@ export function EventRegistrationPage() {
                   <button
                     type="button"
                     className="inline-link-btn"
-                    onClick={() => setEditingAthleteInfo((v) => !v)}
+                    onClick={() => setEditingAthleteInfo(!editingAthleteInfo)}
                   >
                     {editingAthleteInfo ? 'Свернуть' : 'Изменить ДР / класс'}
                   </button>
@@ -1116,10 +1113,7 @@ export function EventRegistrationPage() {
                           <div className="category-card-badges">
                             <span className="disc-pill">{cat.discipline.name}</span>
                             <span className="meta-pill">
-                              Возраст:{' '}
-                              {cat.ageFrom !== undefined || cat.ageTo !== undefined
-                                ? `${cat.ageFrom ?? '—'}–${cat.ageTo ?? '—'} лет`
-                                : 'Все возраста'}
+                              Возраст: {formatAgeRange(cat.ageFrom, cat.ageTo)}
                             </span>
                             <span className="meta-pill">
                               Класс: {cat.className || 'Open (Все классы)'}

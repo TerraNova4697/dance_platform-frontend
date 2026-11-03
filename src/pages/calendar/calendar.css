@@ -1,7 +1,7 @@
 .calendar-page {
   min-height: 100vh;
-  background: var(--bg-canvas, #edecec);
-  color: var(--text-primary, #09090b);
+  background: transparent;
+  color: var(--text-primary, #F7F3EE);
 }
 
 .calendar-main {
@@ -20,26 +20,27 @@
 }
 
 .calendar-header h1 {
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-family: var(--font-serif);
+  font-size: 34px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
   margin: 0 0 6px;
-  background: linear-gradient(93deg, #61666A 0%, #292C2E 36%);
+  background: var(--brand-gold-heading);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .calendar-subtitle {
-  color: var(--text-secondary, #3f3f46);
+  color: var(--text-secondary, #C4B9AC);
   font-size: 14px;
   margin: 0;
 }
 
 .calendar-filter-tabs {
   display: flex;
-  background: var(--bg-surface-subtle, #f5f5f5);
+  background: var(--bg-surface-subtle, #1F1C21);
   padding: 4px;
-  border: 1px solid var(--border-default, #e4e4e7);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-pill, 100px);
   box-shadow: var(--shadow-badge-tactile);
   gap: 4px;
@@ -50,16 +51,17 @@
   border-radius: var(--radius-pill, 100px);
   border: none;
   background: transparent;
-  color: var(--text-secondary, #3f3f46);
+  color: var(--text-secondary, #C4B9AC);
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 500;
   cursor: pointer;
   transition: all 140ms ease;
 }
 
 .calendar-filter-tabs button.active {
-  background: var(--brand-dark, #272727);
-  color: #ffffff;
+  background: var(--brand-accent-gradient);
+  color: var(--text-on-gold, #16110C);
+  font-weight: 600;
   box-shadow: var(--shadow-btn-dark);
 }
 
@@ -82,14 +84,15 @@
 }
 
 .day-bullet {
-  color: var(--brand-accent, #fd3a25);
+  color: var(--brand-accent, #D4AF8C);
   font-size: 14px;
 }
 
 .day-title {
-  font-size: 16px;
-  font-weight: 750;
-  color: var(--text-primary, #09090b);
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-primary, #F7F3EE);
   margin: 0;
   text-transform: capitalize;
 }
@@ -101,19 +104,20 @@
 }
 
 .timeline-item-card {
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-default, #e4e4e7);
-  border-radius: var(--radius-lg, 24px);
+  background: linear-gradient(135deg, rgba(28, 25, 31, 0.94) 0%, rgba(16, 15, 18, 0.98) 100%);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg, 18px);
   padding: 20px 24px;
   display: flex;
   align-items: center;
   gap: 20px;
   box-shadow: var(--shadow-card-tactile);
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
 .timeline-item-card:hover {
   transform: translateY(-2px);
+  border-color: var(--border-strong);
 }
 
 .timeline-time-col {
@@ -126,13 +130,13 @@
 
 .time-start {
   font-size: 16px;
-  font-weight: 800;
-  color: var(--text-primary, #09090b);
+  font-weight: 700;
+  color: var(--brand-accent-hover, #E5C4A3);
 }
 
 .time-end {
   font-size: 12px;
-  color: var(--text-muted, #71717a);
+  color: var(--text-muted, #8E8479);
   margin-top: 2px;
 }
 
@@ -143,20 +147,21 @@
 .timeline-type-pill {
   display: inline-block;
   font-size: 11px;
-  font-weight: 700;
-  background: var(--bg-surface-subtle, #f5f5f5);
-  box-shadow: var(--shadow-badge-tactile);
-  color: var(--brand-accent, #fd3a25);
+  font-weight: 600;
+  background: var(--brand-accent-soft);
+  border: 1px solid var(--border-default);
+  color: var(--brand-accent, #D4AF8C);
   padding: 3px 10px;
   border-radius: var(--radius-pill, 100px);
   margin-bottom: 6px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
 }
 
 .timeline-activity-title {
-  font-size: 16px;
-  font-weight: 750;
-  color: var(--text-primary, #09090b);
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-primary, #F7F3EE);
   margin: 0 0 6px;
 }
 
@@ -165,7 +170,7 @@
   gap: 16px;
   flex-wrap: wrap;
   font-size: 13px;
-  color: var(--text-secondary, #3f3f46);
+  color: var(--text-secondary, #C4B9AC);
 }
 
 .timeline-action-col {
@@ -176,15 +181,15 @@
 .button.small {
   padding: 8px 16px;
   font-size: 13px;
-  font-weight: 700;
-  border-radius: var(--radius-pill, 100px);
+  font-weight: 600;
+  border-radius: 10px;
 }
 
 .calendar-loading,
 .calendar-empty-state {
-  background: var(--bg-surface, #ffffff);
-  border: 1px dashed var(--border-strong, #d4d4d8);
-  border-radius: var(--radius-lg, 24px);
+  background: rgba(20, 18, 21, 0.75);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-lg, 18px);
   box-shadow: var(--shadow-card-tactile);
   text-align: center;
   padding: 48px 20px;

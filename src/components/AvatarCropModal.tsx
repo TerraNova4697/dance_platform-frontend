@@ -175,7 +175,8 @@ export function AvatarCropModal({ file, onCancel, onComplete }: AvatarCropModalP
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
-        backgroundColor: 'rgba(15, 23, 42, 0.72)',
+        backgroundColor: 'rgba(6, 5, 6, 0.78)',
+        backdropFilter: 'blur(8px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -187,20 +188,21 @@ export function AvatarCropModal({ file, onCancel, onComplete }: AvatarCropModalP
     >
       <div
         style={{
-          background: '#ffffff',
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border-default)',
           borderRadius: '18px',
           maxWidth: '380px',
           width: '100%',
           padding: '22px',
-          boxShadow: '0 20px 50px rgba(15, 23, 42, 0.25)',
+          boxShadow: 'var(--shadow-card-tactile)',
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
-          color: '#0f172a',
+          color: 'var(--text-primary)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700 }}>Кадрирование фото</h3>
+          <h3 style={{ margin: 0, fontSize: '20px', fontFamily: 'var(--font-serif)', fontWeight: 600 }}>Кадрирование фото</h3>
           <button
             type="button"
             onClick={onCancel}
@@ -209,7 +211,7 @@ export function AvatarCropModal({ file, onCancel, onComplete }: AvatarCropModalP
               background: 'transparent',
               fontSize: '22px',
               cursor: 'pointer',
-              color: '#64748b',
+              color: 'var(--text-secondary)',
               lineHeight: 1,
             }}
           >
@@ -217,7 +219,7 @@ export function AvatarCropModal({ file, onCancel, onComplete }: AvatarCropModalP
           </button>
         </div>
 
-        <p style={{ margin: 0, fontSize: '13px', color: '#475569' }}>
+        <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)' }}>
           Переместите изображение мышью или пальцем и настройте масштаб области аватара.
         </p>
 
@@ -236,7 +238,7 @@ export function AvatarCropModal({ file, onCancel, onComplete }: AvatarCropModalP
               borderRadius: '14px',
               cursor: dragging ? 'grabbing' : 'grab',
               touchAction: 'none',
-              border: '1px solid #e2e8f0',
+              border: '1px solid var(--border-default)',
             }}
           />
         </div>
@@ -248,12 +250,12 @@ export function AvatarCropModal({ file, onCancel, onComplete }: AvatarCropModalP
             gap: '6px',
             fontSize: '13px',
             fontWeight: 600,
-            color: '#334155',
+            color: 'var(--text-secondary)',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span>Масштаб</span>
-            <span>{Math.round(zoom * 100)}%</span>
+            <span style={{ color: 'var(--brand-accent)' }}>{Math.round(zoom * 100)}%</span>
           </div>
           <input
             type="range"
@@ -262,7 +264,7 @@ export function AvatarCropModal({ file, onCancel, onComplete }: AvatarCropModalP
             step="0.05"
             value={zoom}
             onChange={(e) => handleZoomChange(Number(e.target.value))}
-            style={{ width: '100%', accentColor: '#2563eb' }}
+            style={{ width: '100%', accentColor: 'var(--brand-accent)' }}
           />
         </label>
 

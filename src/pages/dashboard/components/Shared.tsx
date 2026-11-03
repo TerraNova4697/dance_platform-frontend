@@ -18,6 +18,6 @@ export function EmptyState({ title, description, action }: { title: string; desc
   return <div className="widget-state empty-state"><div className="empty-icon">✦</div><strong>{title}</strong>{description && <p>{description}</p>}{action}</div>
 }
 
-export function Meta({ icon, children }: { icon: 'pin' | 'clock'; children: ReactNode }) {
-  return <span className="meta"><Icon name={icon} size={16} />{children}</span>
+export function Meta({ icon, children }: { icon: 'pin' | 'clock' | 'calendar'; children: ReactNode }) {
+  return <span className="meta"><Icon name={icon} size={15} />{children}</span>
 }

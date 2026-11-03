@@ -317,12 +317,12 @@ export function AdminHostApplicationsPage() {
                         <div>
                           <strong>📄 {doc.document_type}</strong>
                           {doc.document_number && (
-                            <span style={{ marginLeft: '0.6rem', color: '#475569' }}>
+                            <span style={{ marginLeft: '0.6rem', color: 'var(--text-secondary)' }}>
                               № {doc.document_number}
                             </span>
                           )}
                           {doc.expiry_date && (
-                            <span style={{ marginLeft: '0.6rem', fontSize: '0.82rem', color: '#64748b' }}>
+                            <span style={{ marginLeft: '0.6rem', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
                               (действителен до {doc.expiry_date})
                             </span>
                           )}

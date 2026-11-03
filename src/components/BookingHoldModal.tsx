@@ -124,7 +124,7 @@ export function BookingHoldModal({
           </div>
         </div>
 
-        <div className="payment-stub-banner" style={{ background: '#f8fafc', border: '1px dashed #94a3b8', borderRadius: '8px', padding: '10px 12px', fontSize: '13px', color: '#475569', marginBottom: '14px' }}>
+        <div className="payment-stub-banner" style={{ background: 'var(--bg-surface-subtle)', border: '1px dashed var(--border-strong)', borderRadius: '10px', padding: '10px 12px', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '14px' }}>
           <strong>ℹ️ Демо-режим (Sprint 1):</strong> Онлайн-оплата отключена. Нажмите кнопку ниже для подтверждения бронирования и мгновенного выпуска QR-билета.
         </div>
 

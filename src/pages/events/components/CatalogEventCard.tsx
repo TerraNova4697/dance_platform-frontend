@@ -59,24 +59,30 @@ export function CatalogEventCard({
           {event.isArchived && <span className="archive-badge">Архив</span>}
         </div>
         <h2>{event.title}</h2>
-        <p className="catalog-date">{dates} · {location}</p>
-        {event.venueName && (
+        <div className="catalog-meta-stack">
+          <span className="catalog-meta">
+            <Icon name="calendar" size={15} />
+            {dates}
+          </span>
           <span className="catalog-meta">
             <Icon name="pin" size={15} />
-            {event.venueName}
+            {[event.venueName, location].filter(Boolean).join(' · ')}
           </span>
-        )}
+        </div>
         {event.direction && <span className="direction-label">{event.direction}</span>}
         <div className="catalog-card-footer">
-          <span>{event.hostName}</span>
-          {event.minimumPrice !== undefined && event.minimumPrice !== null ? (
-            <strong>
-              от {formatCurrency(event.minimumPrice, event.currency)}
-              {unit && <span className="unit-label">{unit}</span>}
-            </strong>
-          ) : (
-            <span className="price-terms">Стоимость по положению</span>
-          )}
+          <div className="catalog-footer-info">
+            <span>{event.hostName}</span>
+            {event.minimumPrice !== undefined && event.minimumPrice !== null ? (
+              <strong>
+                от {formatCurrency(event.minimumPrice, event.currency)}
+                {unit && <span className="unit-label">{unit}</span>}
+              </strong>
+            ) : (
+              <span className="price-terms">Стоимость по положению</span>
+            )}
+          </div>
+          <span className="card-arrow-circle" aria-hidden="true">→</span>
         </div>
       </div>
     </Link>

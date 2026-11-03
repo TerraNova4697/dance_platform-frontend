@@ -1,0 +1,406 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="18 286 1218 428" width="100%" height="100%">
+  <defs>
+    <!-- Subtle glow filters for the letters O and N only -->
+    <filter id="deepAura" x="-50%" y="-100%" width="200%" height="300%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="22" />
+    </filter>
+
+    <filter id="fineGlow" x="-30%" y="-50%" width="160%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="1.3" result="b" />
+      <feMerge>
+        <feMergeNode in="b" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Letter O Main Champagne Gold Gradient -->
+    <linearGradient id="oBodyGrad" x1="12%" y1="8%" x2="88%" y2="92%">
+      <stop offset="0%" stop-color="#FFFDF9" />
+      <stop offset="18%" stop-color="#EAD0B3" />
+      <stop offset="38%" stop-color="#A67E5B" />
+      <stop offset="56%" stop-color="#8A6443" />
+      <stop offset="76%" stop-color="#CCA683" />
+      <stop offset="92%" stop-color="#F8E7D2" />
+      <stop offset="100%" stop-color="#FFFDF9" />
+    </linearGradient>
+
+    <linearGradient id="oLightOverlay" x1="0%" y1="25%" x2="100%" y2="75%">
+      <stop offset="0%" stop-color="#FFFDF8" stop-opacity="0.55" />
+      <stop offset="22%" stop-color="#D4AF8C" stop-opacity="0.1" />
+      <stop offset="50%" stop-color="#4A321E" stop-opacity="0.35" />
+      <stop offset="78%" stop-color="#D4AF8C" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#FFFDF8" stop-opacity="0.45" />
+    </linearGradient>
+
+    <linearGradient id="oOuterRimGrad" x1="5%" y1="15%" x2="95%" y2="85%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.98" />
+      <stop offset="28%" stop-color="#FCECD7" stop-opacity="0.85" />
+      <stop offset="55%" stop-color="#9A7250" stop-opacity="0.3" />
+      <stop offset="82%" stop-color="#F6E2C8" stop-opacity="0.75" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.92" />
+    </linearGradient>
+
+    <linearGradient id="oInnerRimGrad" x1="15%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.85" />
+      <stop offset="25%" stop-color="#C8A07C" stop-opacity="0.25" />
+      <stop offset="55%" stop-color="#9A7250" stop-opacity="0.25" />
+      <stop offset="82%" stop-color="#FCECD7" stop-opacity="0.92" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.98" />
+    </linearGradient>
+
+    <!-- Letter N Gradients -->
+    <linearGradient id="nDiagGrad" x1="0%" y1="0%" x2="95%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDF9" />
+      <stop offset="18%" stop-color="#F4DFC4" />
+      <stop offset="42%" stop-color="#C59D79" />
+      <stop offset="68%" stop-color="#876142" />
+      <stop offset="86%" stop-color="#B8906D" />
+      <stop offset="96%" stop-color="#F3DEC4" />
+      <stop offset="100%" stop-color="#FFFDF9" />
+    </linearGradient>
+
+    <linearGradient id="nRightGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDF9" />
+      <stop offset="14%" stop-color="#DFC09F" />
+      <stop offset="45%" stop-color="#7D593C" />
+      <stop offset="78%" stop-color="#583C26" />
+      <stop offset="93%" stop-color="#C8A07C" />
+      <stop offset="100%" stop-color="#FFFDF9" />
+    </linearGradient>
+
+    <linearGradient id="nLeftGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDF9" />
+      <stop offset="22%" stop-color="#CFA884" />
+      <stop offset="52%" stop-color="#FBF0E1" />
+      <stop offset="82%" stop-color="#BA926E" />
+      <stop offset="95%" stop-color="#E7C9A9" />
+      <stop offset="100%" stop-color="#FFFDF9" />
+    </linearGradient>
+
+    <!-- ================================================================= -->
+    <!-- CRISP, UNBLURRED SILK & ORGANZA BALLGOWN GRADIENTS                -->
+    <!-- ================================================================= -->
+
+    <!-- Broad Gossamer Chiffon Base Gradient (Zero blur, pure translucent silk) -->
+    <linearGradient id="chiffonBroadGrad" x1="2%" y1="45%" x2="97%" y2="55%">
+      <stop offset="0%" stop-color="#7D5B3E" stop-opacity="0" />
+      <stop offset="6%" stop-color="#9E7856" stop-opacity="0.08" />
+      <stop offset="15%" stop-color="#CFA884" stop-opacity="0.2" />
+      <stop offset="28%" stop-color="#E8C9A9" stop-opacity="0.26" />
+      <stop offset="42%" stop-color="#DFC09F" stop-opacity="0.24" />
+      <stop offset="56%" stop-color="#F8E6CE" stop-opacity="0.34" />
+      <stop offset="72%" stop-color="#E5C4A3" stop-opacity="0.26" />
+      <stop offset="86%" stop-color="#C49C78" stop-opacity="0.16" />
+      <stop offset="94%" stop-color="#9A7250" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#7D5B3E" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Upper Vaulted Organza Fold (Clean translucent top pleat inside O sweeping into N) -->
+    <linearGradient id="organzaUpperFold" x1="4%" y1="40%" x2="95%" y2="60%">
+      <stop offset="0%" stop-color="#8A6647" stop-opacity="0" />
+      <stop offset="10%" stop-color="#B8906C" stop-opacity="0.14" />
+      <stop offset="22%" stop-color="#E5C4A3" stop-opacity="0.28" />
+      <stop offset="36%" stop-color="#F5E0C5" stop-opacity="0.38" />
+      <stop offset="52%" stop-color="#FCECD8" stop-opacity="0.44" />
+      <stop offset="68%" stop-color="#EED4B7" stop-opacity="0.34" />
+      <stop offset="84%" stop-color="#CFA884" stop-opacity="0.22" />
+      <stop offset="94%" stop-color="#9E7856" stop-opacity="0.06" />
+      <stop offset="100%" stop-color="#8A6647" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Primary Luminous Silk Fold (Where light catches the turning skirt) -->
+    <linearGradient id="silkLuminousFold" x1="3%" y1="48%" x2="96%" y2="52%">
+      <stop offset="0%" stop-color="#8A6647" stop-opacity="0" />
+      <stop offset="8%" stop-color="#C49C78" stop-opacity="0.22" />
+      <stop offset="18%" stop-color="#F3DEC3" stop-opacity="0.54" />
+      <stop offset="30%" stop-color="#EAD0B3" stop-opacity="0.46" />
+      <stop offset="46%" stop-color="#F7E5CD" stop-opacity="0.62" />
+      <stop offset="60%" stop-color="#FFFDF9" stop-opacity="0.85" />
+      <stop offset="74%" stop-color="#F5E1C8" stop-opacity="0.64" />
+      <stop offset="86%" stop-color="#DFC09F" stop-opacity="0.36" />
+      <stop offset="95%" stop-color="#A8805D" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#8A6647" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Crisp Pearl-Champagne Hem Edge of the Main Dress Fold -->
+    <linearGradient id="silkHemCrest" x1="2%" y1="50%" x2="97%" y2="50%">
+      <stop offset="0%" stop-color="#7D5B3E" stop-opacity="0" />
+      <stop offset="7%" stop-color="#B8906D" stop-opacity="0.28" />
+      <stop offset="16%" stop-color="#F5E1C8" stop-opacity="0.85" />
+      <stop offset="25%" stop-color="#FFFDF9" stop-opacity="0.96" />
+      <stop offset="39%" stop-color="#F4DFC4" stop-opacity="0.88" />
+      <stop offset="55%" stop-color="#FFFDF9" stop-opacity="1" />
+      <stop offset="70%" stop-color="#F8E7D2" stop-opacity="0.92" />
+      <stop offset="83%" stop-color="#FFFDF9" stop-opacity="0.92" />
+      <stop offset="92%" stop-color="#CFA884" stop-opacity="0.38" />
+      <stop offset="100%" stop-color="#7D5B3E" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Secondary Soft Pleat Rim (Upper arch edge) -->
+    <linearGradient id="secondaryHemGrad" x1="5%" y1="50%" x2="95%" y2="50%">
+      <stop offset="0%" stop-color="#7D5B3E" stop-opacity="0" />
+      <stop offset="12%" stop-color="#C49C78" stop-opacity="0.24" />
+      <stop offset="28%" stop-color="#F2DBC0" stop-opacity="0.62" />
+      <stop offset="44%" stop-color="#FCECD8" stop-opacity="0.72" />
+      <stop offset="62%" stop-color="#F5E0C5" stop-opacity="0.6" />
+      <stop offset="80%" stop-color="#E6C7A7" stop-opacity="0.48" />
+      <stop offset="92%" stop-color="#B68E6B" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#7D5B3E" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Radial Sheen on the Main Fabric Swirl (Across N's stem & diagonal) -->
+    <radialGradient id="fabricSheenBloom" cx="58%" cy="58%" r="24%">
+      <stop offset="0%" stop-color="#FFFDF9" stop-opacity="0.58" />
+      <stop offset="45%" stop-color="#F6E2C8" stop-opacity="0.28" />
+      <stop offset="80%" stop-color="#CFA884" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#8A6647" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Master Centered Logo Group (Transparent Background) -->
+  <g transform="translate(0, -63)">
+
+    <!-- ========================================== -->
+    <!-- LETTER O (High-Contrast Didone Serif Ring) -->
+    <!-- ========================================== -->
+    <g id="letter-O">
+      <!-- Outer soft golden aura -->
+      <path fill="#C59D79" opacity="0.18" filter="url(#deepAura)" fill-rule="evenodd"
+        d="M 466 369
+           C 578 369, 669 456, 669 563
+           C 669 670, 578 757, 466 757
+           C 354 757, 263 670, 263 563
+           C 263 456, 354 369, 466 369 Z
+           M 466 374.2
+           C 550 374.2, 626 458, 626 563
+           C 626 668, 550 751.8, 466 751.8
+           C 382 751.8, 306 668, 306 563
+           C 306 458, 382 374.2, 466 374.2 Z" />
+
+      <!-- Main metallic champagne-gold body of O -->
+      <path fill="url(#oBodyGrad)" fill-rule="evenodd"
+        d="M 466 369
+           C 578 369, 669 456, 669 563
+           C 669 670, 578 757, 466 757
+           C 354 757, 263 670, 263 563
+           C 263 456, 354 369, 466 369 Z
+           M 466 374.2
+           C 550 374.2, 626 458, 626 563
+           C 626 668, 550 751.8, 466 751.8
+           C 382 751.8, 306 668, 306 563
+           C 306 458, 382 374.2, 466 374.2 Z" />
+
+      <!-- Studio shading overlay on O -->
+      <path fill="url(#oLightOverlay)" fill-rule="evenodd"
+        d="M 466 369
+           C 578 369, 669 456, 669 563
+           C 669 670, 578 757, 466 757
+           C 354 757, 263 670, 263 563
+           C 263 456, 354 369, 466 369 Z
+           M 466 374.2
+           C 550 374.2, 626 458, 626 563
+           C 626 668, 550 751.8, 466 751.8
+           C 382 751.8, 306 668, 306 563
+           C 306 458, 382 374.2, 466 374.2 Z" />
+
+      <!-- Outer edge specular rim highlight -->
+      <path fill="none" stroke="url(#oOuterRimGrad)" stroke-width="2.0" filter="url(#fineGlow)"
+        d="M 466 369
+           C 578 369, 669 456, 669 563
+           C 669 670, 578 757, 466 757
+           C 354 757, 263 670, 263 563
+           C 263 456, 354 369, 466 369 Z" />
+
+      <!-- Inner edge specular rim highlight -->
+      <path fill="none" stroke="url(#oInnerRimGrad)" stroke-width="1.9" filter="url(#fineGlow)"
+        d="M 466 374.2
+           C 550 374.2, 626 458, 626 563
+           C 626 668, 550 751.8, 466 751.8
+           C 382 751.8, 306 668, 306 563
+           C 306 458, 382 374.2, 466 374.2 Z" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- LETTER N (High-Contrast Didone Serif)      -->
+    <!-- ========================================== -->
+    <g id="letter-N">
+      <!-- Soft golden aura behind N -->
+      <g opacity="0.16" filter="url(#deepAura)" fill="#C59D79">
+        <path d="M 642 373 L 693 373 L 974 698 L 974 751 L 682 411 Z" />
+        <rect x="973" y="380" width="29" height="370" />
+      </g>
+
+      <!-- Right vertical stem + top flared serif -->
+      <path fill="url(#nRightGrad)"
+        d="M 945 373
+           L 1031 373
+           L 1031 375.0
+           C 1011 375.0, 1002 385, 1002 414
+           L 1002 758
+           L 999 758
+           L 973 729
+           L 973 414
+           C 973 385, 964 375.0, 945 375.0
+           Z" />
+
+      <!-- Left thin vertical stem + bottom flared serif + top left bracket -->
+      <path fill="url(#nLeftGrad)"
+        d="M 641 373
+           L 693 373
+           L 684.5 385
+           L 684.5 712
+           C 684.5 739, 695 749.8, 720 749.8
+           L 720 752
+           L 645 752
+           L 645 749.8
+           C 670 749.8, 679.8 739, 679.8 712
+           L 679.8 408
+           C 679.8 383, 667 375.0, 641 375.0
+           Z" />
+
+      <!-- Thick Diagonal Stroke of N -->
+      <path fill="url(#nDiagGrad)"
+        d="M 641 373
+           L 693 373
+           L 974 696
+           L 1002 729
+           L 1002 758
+           L 999 758
+           L 684 410
+           C 673 397, 661 375.0, 641 375.0
+           Z" />
+
+      <!-- Crisp Specular Rim Highlights on Letter N -->
+      <path fill="none" stroke="#FFFDF9" stroke-width="1.6" opacity="0.92" filter="url(#fineGlow)"
+        d="M 641 373.8 L 693 373.8 L 974 696.5" />
+      <path fill="none" stroke="#FCECD7" stroke-width="1.5" opacity="0.85" filter="url(#fineGlow)"
+        d="M 684 410 L 999.5 757.5" />
+      <path fill="none" stroke="#FFFDF9" stroke-width="1.4" opacity="0.88"
+        d="M 681.5 406 L 681.5 714 C 681.5 739, 671 750.8, 645 750.8 M 682.8 714 C 682.8 739, 694 750.8, 720 750.8" />
+      <path fill="none" stroke="#FFFDF9" stroke-width="1.6" opacity="0.92" filter="url(#fineGlow)"
+        d="M 945 373.8 L 1031 373.8 M 1031 374.4 C 1011 374.4, 1001.2 385, 1001.2 414 L 1001.2 758" />
+      <path fill="none" stroke="#E8C8A7" stroke-width="1.2" opacity="0.72"
+        d="M 945 374.4 C 964 374.4, 973.8 385, 973.8 414 L 973.8 697" />
+    </g>
+
+    <!-- ========================================================================= -->
+    <!-- VIENNESE WALTZ SILK & ORGANZA BALLGOWN DRAPERY (Crisp, Zero Blur Filters) -->
+    <!-- ========================================================================= -->
+    <g id="viennese-waltz-fabric">
+
+      <!-- 1. Broad outer translucent organza veil -->
+      <path fill="url(#chiffonBroadGrad)"
+        d="M 28 505
+           C 85 595, 165 628, 255 582
+           C 340 538, 405 478, 505 486
+           C 608 494, 715 558, 835 612
+           C 938 658, 1020 648, 1098 584
+           C 1142 548, 1178 515, 1212 496
+           C 1175 538, 1135 586, 1082 628
+           C 1002 690, 902 702, 790 652
+           C 678 602, 592 544, 492 542
+           C 392 540, 322 596, 238 638
+           C 155 678, 78 618, 28 505 Z" />
+
+      <!-- 2. Lower sweeping skirt train (dips gracefully into a soft trough on the left and rises on the right) -->
+      <path fill="url(#chiffonBroadGrad)"
+        d="M 32 512
+           C 88 592, 162 652, 248 616
+           C 332 580, 408 518, 512 526
+           C 615 534, 702 602, 812 644
+           C 914 682, 1002 662, 1082 598
+           C 1126 562, 1162 530, 1198 508
+           C 1160 546, 1120 588, 1068 626
+           C 985 686, 890 698, 785 656
+           C 678 614, 596 558, 498 548
+           C 400 538, 325 598, 242 634
+           C 160 670, 82 608, 32 512 Z" />
+
+      <!-- 3. Upper vaulted organza fold (wide translucent arch inside O sweeping across N) -->
+      <path fill="url(#organzaUpperFold)"
+        d="M 65 558
+           C 128 626, 202 626, 275 580
+           C 348 534, 412 486, 508 492
+           C 605 498, 705 552, 825 608
+           C 925 654, 1012 648, 1088 592
+           C 1130 560, 1164 528, 1195 508
+           C 1162 540, 1124 578, 1076 612
+           C 996 668, 905 674, 798 622
+           C 692 570, 604 532, 505 526
+           C 406 520, 342 562, 268 600
+           C 194 638, 122 632, 65 558 Z" />
+
+      <!-- 4. Intermediate overlapping chiffon pleat (adds 3D layered depth to the skirt turn) -->
+      <path fill="url(#organzaUpperFold)"
+        d="M 78 570
+           C 138 624, 206 620, 280 578
+           C 352 536, 418 504, 514 510
+           C 610 516, 706 572, 818 622
+           C 916 666, 1002 658, 1078 606
+           C 1120 576, 1154 544, 1185 520
+           C 1152 552, 1114 590, 1068 620
+           C 992 670, 904 674, 804 630
+           C 696 582, 608 538, 510 534
+           C 412 530, 346 562, 274 596
+           C 202 630, 134 628, 78 570 Z" />
+
+      <!-- 5. Main luminous silk fold (catches the warm light as the dress turns across O and N) -->
+      <path fill="url(#silkLuminousFold)"
+        d="M 55 546
+           C 116 618, 192 628, 270 590
+           C 348 552, 418 526, 515 533
+           C 612 540, 695 596, 808 634
+           C 912 669, 998 660, 1074 610
+           C 1118 580, 1152 548, 1185 524
+           C 1150 554, 1114 588, 1068 618
+           C 990 669, 902 680, 796 644
+           C 685 606, 604 554, 510 544
+           C 415 534, 345 558, 268 596
+           C 190 634, 114 622, 55 546 Z" />
+
+      <!-- 6. Silky sheen highlight across the central drape (between O's right arc and N's diagonal) -->
+      <path fill="url(#fabricSheenBloom)"
+        d="M 450 512
+           C 565 516, 675 568, 805 624
+           C 895 662, 975 666, 1040 632
+           C 970 676, 882 678, 785 640
+           C 665 592, 560 542, 450 538 Z" />
+
+      <!-- 7. Crisp top fold edge of the upper organza arch -->
+      <path fill="none" stroke="url(#secondaryHemGrad)" stroke-width="1.8" stroke-linecap="round"
+        d="M 65 558
+           C 128 626, 202 626, 275 580
+           C 348 534, 412 486, 508 492
+           C 605 498, 705 552, 825 608
+           C 925 654, 1012 648, 1088 592
+           C 1130 560, 1164 528, 1195 508" />
+
+      <!-- 8. Crisp middle pleat ridge -->
+      <path fill="none" stroke="url(#secondaryHemGrad)" stroke-width="1.5" stroke-linecap="round"
+        d="M 78 570
+           C 138 624, 206 620, 280 578
+           C 352 536, 418 504, 514 510
+           C 610 516, 706 572, 818 622
+           C 916 666, 1002 658, 1078 606
+           C 1120 576, 1154 544, 1185 520" />
+
+      <!-- 9. Crisp lower skirt train fold edge -->
+      <path fill="none" stroke="url(#chiffonBroadGrad)" stroke-width="1.6" stroke-linecap="round"
+        d="M 32 512
+           C 88 592, 162 652, 248 616
+           C 332 580, 408 518, 512 526
+           C 615 534, 702 602, 812 644
+           C 914 682, 1002 662, 1082 598
+           C 1126 562, 1162 530, 1198 508" />
+
+      <!-- 10. PRIMARY SATIN HEM CREST (Crisp, unblurred champagne-gold fold highlight) -->
+      <path fill="none" stroke="url(#silkHemCrest)" stroke-width="2.6" stroke-linecap="round"
+        d="M 55 546
+           C 116 618, 192 628, 270 590
+           C 348 552, 418 526, 515 533
+           C 612 540, 695 596, 808 634
+           C 912 669, 998 660, 1074 610
+           C 1118 580, 1152 548, 1185 524" />
+    </g>
+  </g>
+</svg>

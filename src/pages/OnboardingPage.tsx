@@ -374,10 +374,10 @@ export function OnboardingPage() {
                   gap: '16px',
                   padding: '14px',
                   borderRadius: '14px',
-                  background: '#f8fafc',
+                  background: 'var(--bg-surface-subtle)',
                   border: validationErrors.photo
-                    ? '1px solid #dc2626'
-                    : '1px solid #e2e8f0',
+                    ? '1px solid rgba(244, 63, 94, 0.6)'
+                    : '1px solid var(--border-default)',
                 }}
               >
                 <div
@@ -386,14 +386,15 @@ export function OnboardingPage() {
                     height: '72px',
                     borderRadius: '50%',
                     overflow: 'hidden',
-                    background: '#e2e8f0',
+                    background: 'var(--bg-surface)',
+                    border: '1px solid var(--border-strong)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
                     fontWeight: 700,
                     fontSize: '24px',
-                    color: '#475569',
+                    color: 'var(--brand-accent)',
                   }}
                 >
                   {photoUrl ? (
@@ -407,7 +408,7 @@ export function OnboardingPage() {
                   )}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <span style={{ fontWeight: 600, fontSize: '14px', color: '#0f172a' }}>
+                  <span style={{ fontWeight: 600, fontSize: '14px', color: 'var(--text-primary)' }}>
                     Аватар профиля {role === 'athlete' ? '*' : ''}
                   </span>
                   <span className="helper-note" style={{ margin: 0 }}>

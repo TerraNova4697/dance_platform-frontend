@@ -43,7 +43,8 @@ export function TimeConflictWarningModal({
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
-        backgroundColor: 'rgba(15, 23, 42, 0.72)',
+        backgroundColor: 'rgba(6, 5, 6, 0.78)',
+        backdropFilter: 'blur(8px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -55,16 +56,17 @@ export function TimeConflictWarningModal({
     >
       <div
         style={{
-          background: '#ffffff',
-          borderRadius: '18px',
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border-default)',
+          borderRadius: '20px',
           maxWidth: '460px',
           width: '100%',
           padding: '24px',
-          boxShadow: '0 24px 60px rgba(15, 23, 42, 0.28)',
+          boxShadow: 'var(--shadow-card-tactile)',
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
-          color: '#0f172a',
+          color: 'var(--text-primary)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -73,8 +75,9 @@ export function TimeConflictWarningModal({
               width: '36px',
               height: '36px',
               borderRadius: '50%',
-              background: '#fef3c7',
-              color: '#d97706',
+              background: 'rgba(245, 158, 11, 0.16)',
+              border: '1px solid rgba(245, 158, 11, 0.4)',
+              color: '#fcd34d',
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -84,12 +87,12 @@ export function TimeConflictWarningModal({
           >
             ⚠️
           </span>
-          <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700 }}>
+          <h3 style={{ margin: 0, fontSize: '20px', fontFamily: 'var(--font-serif)', fontWeight: 600 }}>
             Пересечение по времени (менее 30 минут)
           </h3>
         </div>
 
-        <p style={{ margin: 0, fontSize: '14px', color: '#475569', lineHeight: 1.5 }}>
+        <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
           {message ||
             'У вас уже есть подтверждённая запись на другое занятие или мероприятие в это же время или с интервалом менее 30 минут:'}
         </p>
@@ -109,8 +112,8 @@ export function TimeConflictWarningModal({
               style={{
                 padding: '12px 14px',
                 borderRadius: '12px',
-                background: '#fffbeb',
-                border: '1px solid #fde68a',
+                background: 'rgba(245, 158, 11, 0.08)',
+                border: '1px solid rgba(245, 158, 11, 0.35)',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '4px',
@@ -124,29 +127,29 @@ export function TimeConflictWarningModal({
                     textTransform: 'uppercase',
                     padding: '2px 8px',
                     borderRadius: '999px',
-                    background: '#fef3c7',
-                    color: '#92400e',
+                    background: 'rgba(245, 158, 11, 0.2)',
+                    color: '#fcd34d',
                   }}
                 >
                   {item.type_label}
                 </span>
-                <strong style={{ fontSize: '14px', color: '#0f172a' }}>
+                <strong style={{ fontSize: '14px', color: 'var(--text-primary)' }}>
                   {item.title}
                 </strong>
               </div>
               {item.subtitle && (
-                <span style={{ fontSize: '12px', color: '#64748b' }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
                   {item.subtitle}
                 </span>
               )}
-              <span style={{ fontSize: '13px', fontWeight: 600, color: '#b45309' }}>
+              <span style={{ fontSize: '13px', fontWeight: 600, color: '#fcd34d' }}>
                 🕒 {formatInterval(item.start_datetime, item.end_datetime)}
               </span>
             </div>
           ))}
         </div>
 
-        <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>
+        <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)' }}>
           Вы уверены, что хотите продолжить запись несмотря на накладку по времени?
         </p>
 

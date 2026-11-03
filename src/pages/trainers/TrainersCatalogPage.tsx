@@ -207,12 +207,12 @@ export function TrainersCatalogPage() {
                       </button>
 
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '0.9rem', color: '#4b5563' }}>Фильтр по дате:</span>
+                        <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Фильтр по дате:</span>
                         <input
                           type="date"
                           value={selectedDateFilter}
                           onChange={(e) => setSelectedDateFilter(e.target.value)}
-                          style={{ padding: '6px 10px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '0.85rem' }}
+                          style={{ padding: '6px 10px', borderRadius: '8px', border: '1px solid var(--border-default)', background: 'var(--bg-surface)', color: 'var(--text-primary)', fontSize: '0.85rem' }}
                         />
                         {selectedDateFilter && (
                           <button
@@ -228,36 +228,36 @@ export function TrainersCatalogPage() {
                     </div>
 
                     {firstSlot && (
-                      <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '10px', border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+                      <div style={{ background: 'var(--bg-surface)', padding: '18px', borderRadius: '14px', border: '1px solid var(--border-default)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
                         <div>
-                          <span style={{ fontSize: '0.8rem', fontWeight: 600, padding: '3px 8px', borderRadius: '6px', background: firstSlot.training_type === 'Individual' ? '#eff6ff' : '#f0fdf4', color: firstSlot.training_type === 'Individual' ? '#1d4ed8' : '#15803d', display: 'inline-block', marginBottom: '6px' }}>
+                          <span style={{ fontSize: '0.8rem', fontWeight: 600, padding: '3px 10px', borderRadius: '999px', background: 'rgba(212, 175, 140, 0.14)', border: '1px solid rgba(212, 175, 140, 0.28)', color: 'var(--brand-accent)', display: 'inline-block', marginBottom: '6px' }}>
                             {firstSlot.training_type === 'Individual' ? 'Индивидуальная тренировка' : 'Групповая тренировка'}
                           </span>
-                          <h2 style={{ margin: 0, fontSize: '1.3rem', color: '#0f172a' }}>{firstSlot.offering_title}</h2>
-                          <div style={{ fontSize: '0.9rem', color: '#64748b', marginTop: '4px' }}>
+                          <h2 style={{ margin: 0, fontSize: '1.45rem', fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>{firstSlot.offering_title}</h2>
+                          <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
                             Преподаватель: <strong>{firstSlot.trainer_name}</strong> {firstSlot.direction_title && `· ${firstSlot.direction_title}`}
                           </div>
                           {firstSlot.schedule_type === 'Recurring' && (
-                            <div style={{ marginTop: '6px', fontSize: '0.85rem', color: '#92400e', background: '#fef3c7', padding: '4px 8px', borderRadius: '4px', display: 'inline-block' }}>
+                            <div style={{ marginTop: '6px', fontSize: '0.85rem', color: '#fcd34d', background: 'rgba(245, 158, 11, 0.14)', border: '1px solid rgba(245, 158, 11, 0.35)', padding: '4px 10px', borderRadius: '6px', display: 'inline-block' }}>
                               📦 Регулярные занятия — оплата абонементом на {firstSlot.package_size || 8} тренировок
                             </div>
                           )}
                         </div>
 
                         <div style={{ textAlign: 'right' }}>
-                          <span style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', display: 'block' }}>
+                          <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--brand-accent)', display: 'block' }}>
                             {firstSlot.schedule_type === 'Recurring' && firstSlot.package_price
                               ? `${Number(firstSlot.package_price).toLocaleString()} ${firstSlot.currency}`
                               : firstSlot.price > 0 ? `${firstSlot.price.toLocaleString()} ${firstSlot.currency}` : 'Бесплатно'}
                           </span>
-                          <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                             {firstSlot.schedule_type === 'Recurring' ? `за абонемент (${firstSlot.package_size} зан.)` : 'за занятие'}
                           </span>
                         </div>
                       </div>
                     )}
 
-                    <h3 style={{ margin: '8px 0 0', fontSize: '1.1rem' }}>Выберите дату и время для записи:</h3>
+                    <h3 style={{ margin: '8px 0 0', fontSize: '1.2rem', fontFamily: 'var(--font-serif)' }}>Выберите дату и время для записи:</h3>
 
                     {Object.keys(grouped).length === 0 ? (
                       <div className="trainers-empty-state">
@@ -277,11 +277,11 @@ export function TrainersCatalogPage() {
                           const capitalizedHeader = formattedDateHeader.charAt(0).toUpperCase() + formattedDateHeader.slice(1)
 
                           return (
-                            <div key={dKey} style={{ background: '#fff', padding: '16px', borderRadius: '10px', border: '1px solid #e5e7eb' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', borderBottom: '1px solid #f1f5f9', paddingBottom: '6px' }}>
+                            <div key={dKey} style={{ background: 'var(--bg-surface)', padding: '16px', borderRadius: '14px', border: '1px solid var(--border-default)' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '8px' }}>
                                 <span>🗓</span>
-                                <h4 style={{ margin: 0, fontSize: '1rem', color: '#1e293b' }}>{capitalizedHeader}</h4>
-                                <span style={{ fontSize: '0.8rem', color: '#fd3a25', background: '#f5f5f5', padding: '2px 8px', borderRadius: '100px', fontWeight: 650, boxShadow: 'var(--shadow-badge-tactile)' }}>
+                                <h4 style={{ margin: 0, fontSize: '1rem', color: 'var(--text-primary)' }}>{capitalizedHeader}</h4>
+                                <span style={{ fontSize: '0.8rem', color: 'var(--brand-accent)', background: 'rgba(212, 175, 140, 0.14)', border: '1px solid rgba(212, 175, 140, 0.28)', padding: '2px 8px', borderRadius: '100px', fontWeight: 600 }}>
                                   {dSlots.length} {dSlots.length === 1 ? 'время' : 'варианта'}
                                 </span>
                               </div>
@@ -298,11 +298,11 @@ export function TrainersCatalogPage() {
                                   })
 
                                   return (
-                                    <div key={slot.id} className="training-slot-card" style={{ border: '1px solid #e2e8f0' }}>
+                                    <div key={slot.id} className="training-slot-card">
                                       <div className="slot-meta-box">
                                         <div className="meta-row">
                                           <span className="meta-icon">⏰</span>
-                                          <strong style={{ fontSize: '1.05rem', color: 'var(--text-primary, #09090b)' }}>{startStr} — {endStr}</strong>
+                                          <strong style={{ fontSize: '1.05rem', color: 'var(--text-primary)' }}>{startStr} — {endStr}</strong>
                                         </div>
                                         <div className="meta-row">
                                           <span className="meta-icon">📍</span>
@@ -405,7 +405,7 @@ export function TrainersCatalogPage() {
                           <span>Доступно слотов для записи: <strong>{slotsCount}</strong></span>
                         </div>
                         {offering.schedule_type === 'Recurring' && (
-                          <div className="meta-row" style={{ color: '#92400e', fontWeight: 500 }}>
+                          <div className="meta-row" style={{ color: '#fcd34d', fontWeight: 500 }}>
                             <span className="meta-icon">📦</span>
                             <span>Курс на {offering.package_size || 8} тренировок</span>
                           </div>

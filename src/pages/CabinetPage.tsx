@@ -1379,11 +1379,11 @@ export function CabinetPage() {
                             {off.training_type === 'Individual' ? 'Индивидуальная' : 'Групповая'}
                           </span>
                           {off.schedule_type === 'Recurring' ? (
-                            <span style={{ fontSize: '0.75rem', fontWeight: 600, background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: '4px' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 600, background: 'rgba(245, 158, 11, 0.14)', border: '1px solid rgba(245, 158, 11, 0.35)', color: '#fcd34d', padding: '2px 8px', borderRadius: '999px' }}>
                               Регулярная (Пакет {off.package_size || 8} зан.)
                             </span>
                           ) : (
-                            <span style={{ fontSize: '0.75rem', fontWeight: 700, background: '#f5f5f5', color: '#fd3a25', padding: '2px 8px', borderRadius: '100px', boxShadow: 'var(--shadow-badge-tactile)' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 600, background: 'rgba(212, 175, 140, 0.14)', border: '1px solid rgba(212, 175, 140, 0.28)', color: 'var(--brand-accent)', padding: '2px 8px', borderRadius: '999px' }}>
                               Разовая
                             </span>
                           )}
@@ -1454,7 +1454,7 @@ export function CabinetPage() {
                           {sl.participants.map((p) => (
                             <div
                               key={p.booking_id}
-                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f3f4f6', padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem' }}
+                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-surface)', border: '1px solid var(--border-default)', padding: '6px 10px', borderRadius: '8px', fontSize: '0.8rem' }}
                             >
                               <span>
                                 <strong>{p.participant_name}</strong> ({p.status === 'Booked' ? 'Оплачено' : p.status}) {p.phone && `· ${p.phone}`}
@@ -1582,9 +1582,9 @@ export function CabinetPage() {
                   />
 
                   {/* Schedule Configuration Direct in Offering Creation */}
-                  <div style={{ marginTop: '16px', borderTop: '1px solid #e5e7eb', paddingTop: '16px' }}>
+                  <div style={{ marginTop: '16px', borderTop: '1px solid var(--border-subtle)', paddingTop: '16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                      <strong style={{ fontSize: '0.95rem', color: '#111827' }}>
+                      <strong style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>
                         📅 Время и слоты для записи
                       </strong>
                       <label className="checkbox-row" style={{ margin: 0 }}>
@@ -1598,7 +1598,7 @@ export function CabinetPage() {
                     </div>
 
                     {offeringIncludeSchedule && (
-                      <div style={{ background: '#f9fafb', padding: '14px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+                      <div style={{ background: 'var(--bg-surface-subtle)', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-default)' }}>
                         <div className="form-row" style={{ marginBottom: '12px' }}>
                           <label className="radio-label">
                             <input
@@ -1694,8 +1694,8 @@ export function CabinetPage() {
                             </div>
 
                             {/* Package size & Package Price for Recurring Trainings */}
-                            <div style={{ marginTop: '12px', padding: '12px', background: '#fffbeb', borderRadius: '6px', border: '1px solid #fde68a' }}>
-                              <strong style={{ display: 'block', fontSize: '0.85rem', color: '#92400e', marginBottom: '8px' }}>
+                            <div style={{ marginTop: '12px', padding: '12px', background: 'rgba(245, 158, 11, 0.1)', borderRadius: '10px', border: '1px solid rgba(245, 158, 11, 0.35)' }}>
+                              <strong style={{ display: 'block', fontSize: '0.85rem', color: '#fcd34d', marginBottom: '8px' }}>
                                 📦 Настройки абонемента / пакета (Пользователь оплачивает сразу пакетом):
                               </strong>
                               <div className="form-row">
@@ -1726,7 +1726,7 @@ export function CabinetPage() {
                                   />
                                 </label>
                               </div>
-                              <span style={{ fontSize: '0.8rem', color: '#b45309' }}>
+                              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                                 Ученик бронирует первое занятие и сразу оплачивает абонемент на {offeringPackageSize} занятий без необходимости перезаписываться на каждое.
                               </span>
                             </div>
@@ -2645,23 +2645,23 @@ export function CabinetPage() {
           </div>
 
           {/* Date & Filter controls for Athlete Booking */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '20px', background: '#f9fafb', padding: '14px', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
-            <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem', fontWeight: 500, color: '#374151' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '20px', background: 'var(--bg-surface-subtle)', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-default)' }}>
+            <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
               <span>📅 Выберите дату:</span>
               <input
                 type="date"
                 value={selectedBookingDate}
                 onChange={(e) => setSelectedBookingDate(e.target.value)}
-                style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '0.9rem' }}
+                style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--border-default)', background: 'var(--bg-surface)', color: 'var(--text-primary)', fontSize: '0.9rem' }}
               />
             </label>
 
-            <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem', fontWeight: 500, color: '#374151', minWidth: '180px' }}>
+            <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)', minWidth: '180px' }}>
               <span>💃 Направление:</span>
               <select
                 value={selectedBookingDirection}
                 onChange={(e) => setSelectedBookingDirection(e.target.value)}
-                style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '0.9rem' }}
+                style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--border-default)', background: 'var(--bg-surface)', color: 'var(--text-primary)', fontSize: '0.9rem' }}
               >
                 <option value="">Все направления</option>
                 {catalogs.directions.map((d) => (
@@ -2670,12 +2670,12 @@ export function CabinetPage() {
               </select>
             </label>
 
-            <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem', fontWeight: 500, color: '#374151', minWidth: '160px' }}>
+            <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)', minWidth: '160px' }}>
               <span>👥 Тип занятия:</span>
               <select
                 value={selectedBookingType}
                 onChange={(e) => setSelectedBookingType(e.target.value)}
-                style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '0.9rem' }}
+                style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--border-default)', background: 'var(--bg-surface)', color: 'var(--text-primary)', fontSize: '0.9rem' }}
               >
                 <option value="all">Все форматы</option>
                 <option value="Individual">Индивидуальные</option>
@@ -2737,12 +2737,12 @@ export function CabinetPage() {
 
                   return (
                     <div key={dateStr} className="date-slots-group">
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px', borderBottom: '2px solid var(--border-default, #e4e4e7)', paddingBottom: '6px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px', borderBottom: '1px solid var(--border-default)', paddingBottom: '6px' }}>
                         <span style={{ fontSize: '1.2rem' }}>🗓</span>
-                        <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary, #09090b)' }}>
+                        <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                           {capitalizedDateHeader}
                         </h4>
-                        <span style={{ fontSize: '0.85rem', color: 'var(--brand-accent, #fd3a25)', background: '#f5f5f5', padding: '2px 10px', borderRadius: '100px', fontWeight: 650, boxShadow: 'var(--shadow-badge-tactile)' }}>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--brand-accent)', background: 'rgba(212, 175, 140, 0.14)', border: '1px solid rgba(212, 175, 140, 0.28)', padding: '2px 10px', borderRadius: '100px', fontWeight: 600 }}>
                           {slotsOnDate.length} {slotsOnDate.length === 1 ? 'слот' : 'слотов'}
                         </span>
                       </div>
@@ -2764,28 +2764,28 @@ export function CabinetPage() {
                                     </div>
                                   )}
                                   <div style={{ flex: 1 }}>
-                                    <strong style={{ fontSize: '0.95rem', color: '#111827' }}>{sl.trainer_name}</strong>
+                                    <strong style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>{sl.trainer_name}</strong>
                                     {sl.trainer_verification_status === 'Verified' && (
                                       <span className="badge-verified" style={{ marginLeft: '6px' }}>✓</span>
                                     )}
                                   </div>
-                                  <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '3px 8px', borderRadius: '6px', background: sl.training_type === 'Individual' ? '#eff6ff' : '#f0fdf4', color: sl.training_type === 'Individual' ? '#1d4ed8' : '#15803d' }}>
+                                  <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '3px 8px', borderRadius: '999px', background: 'rgba(212, 175, 140, 0.14)', border: '1px solid rgba(212, 175, 140, 0.28)', color: 'var(--brand-accent)' }}>
                                     {sl.training_type === 'Individual' ? 'Индивидуально' : 'Группа'}
                                   </span>
                                 </div>
 
-                                <div className="catalog-slot-title" style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '8px', color: '#111827' }}>
+                                <div className="catalog-slot-title" style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '8px', color: 'var(--text-primary)' }}>
                                   {sl.offering_title}
                                 </div>
 
                                 {sl.schedule_type === 'Recurring' && (
-                                  <div style={{ marginBottom: '8px', fontSize: '0.8rem', background: '#fef3c7', color: '#92400e', padding: '4px 8px', borderRadius: '4px', fontWeight: 500 }}>
+                                  <div style={{ marginBottom: '8px', fontSize: '0.8rem', background: 'rgba(245, 158, 11, 0.14)', border: '1px solid rgba(245, 158, 11, 0.35)', color: '#fcd34d', padding: '4px 8px', borderRadius: '6px', fontWeight: 500 }}>
                                     📦 Регулярный курс: абонемент на {sl.package_size || 8} тренировок
                                   </div>
                                 )}
 
-                                <div className="catalog-slot-meta" style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.85rem', color: '#4b5563', marginBottom: '16px' }}>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700, color: 'var(--text-primary, #09090b)' }}>
+                                <div className="catalog-slot-meta" style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: 'var(--text-primary)' }}>
                                     <span>⏰</span>
                                     <span>{startTime} — {endTime}</span>
                                   </div>
@@ -2812,19 +2812,19 @@ export function CabinetPage() {
                                 </div>
                               </div>
 
-                              <div className="catalog-slot-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #f3f4f6', paddingTop: '12px' }}>
+                              <div className="catalog-slot-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border-subtle)', paddingTop: '12px' }}>
                                 <div>
                                   {sl.schedule_type === 'Recurring' && sl.package_price ? (
                                     <div>
-                                      <span className="catalog-slot-price" style={{ fontSize: '1.1rem', fontWeight: 700, color: '#111827', display: 'block' }}>
+                                      <span className="catalog-slot-price" style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--brand-accent)', display: 'block' }}>
                                         {Number(sl.package_price).toLocaleString()} {sl.currency}
                                       </span>
-                                      <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+                                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                                         за весь абонемент ({sl.package_size} зан.)
                                       </span>
                                     </div>
                                   ) : (
-                                    <span className="catalog-slot-price" style={{ fontSize: '1.1rem', fontWeight: 700, color: '#111827' }}>
+                                    <span className="catalog-slot-price" style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--brand-accent)' }}>
                                       {sl.price > 0 ? `${sl.price.toLocaleString()} ${sl.currency}` : 'Бесплатно'}
                                     </span>
                                   )}

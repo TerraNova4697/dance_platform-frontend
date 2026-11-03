@@ -1,11 +1,11 @@
 .my-events-page {
   min-height: 100vh;
-  background: var(--bg-canvas, #edecec);
-  color: var(--text-primary, #09090b);
+  background: transparent;
+  color: var(--text-primary, #F7F3EE);
 }
 
 .my-events-main {
-  max-width: 1000px;
+  max-width: 1040px;
   margin: 0 auto;
   padding: 36px 20px 72px;
 }
@@ -20,26 +20,27 @@
 }
 
 .my-events-header h1 {
-  font-size: 28px;
-  font-weight: 800;
+  font-family: var(--font-serif);
+  font-size: 34px;
+  font-weight: 500;
   margin: 0 0 6px;
-  letter-spacing: -0.03em;
-  background: linear-gradient(93deg, #61666A 0%, #292C2E 36%);
+  letter-spacing: -0.01em;
+  background: var(--brand-gold-heading);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .my-events-subtitle {
-  color: var(--text-secondary, #3f3f46);
+  color: var(--text-secondary, #C4B9AC);
   font-size: 14px;
   margin: 0;
 }
 
 .events-filter-tabs {
   display: flex;
-  background: var(--bg-surface-subtle, #f5f5f5);
+  background: var(--bg-surface-subtle, #1F1C21);
   padding: 4px;
-  border: 1px solid var(--border-default, #e4e4e7);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-pill, 100px);
   box-shadow: var(--shadow-badge-tactile);
   gap: 6px;
@@ -50,15 +51,16 @@
   border: 0;
   border-radius: var(--radius-pill, 100px);
   background: transparent;
-  color: var(--text-secondary, #3f3f46);
+  color: var(--text-secondary, #C4B9AC);
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 500;
   transition: all 140ms ease;
 }
 
 .events-filter-tabs button.active {
-  background: var(--brand-dark, #272727);
-  color: #ffffff;
+  background: var(--brand-accent-gradient);
+  color: var(--text-on-gold, #16110C);
+  font-weight: 600;
   box-shadow: var(--shadow-btn-dark);
 }
 
@@ -68,26 +70,27 @@
   gap: 22px;
 }
 
-.my-event-card {
-  background: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-default, #e4e4e7);
-  border-radius: var(--radius-lg, 24px);
+.my-events-grid .my-event-card {
+  background: linear-gradient(135deg, rgba(28, 25, 31, 0.94) 0%, rgba(16, 15, 18, 0.98) 100%);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg, 18px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   box-shadow: var(--shadow-card-tactile);
-  transition: transform 150ms ease;
+  transition: transform 150ms ease, border-color 150ms ease;
 }
 
-.my-event-card:hover {
+.my-events-grid .my-event-card:hover {
   transform: translateY(-2px);
+  border-color: var(--border-strong);
 }
 
 .event-card-cover-wrapper {
   height: 150px;
   overflow: hidden;
-  background: var(--brand-dark, #272727);
+  background: linear-gradient(145deg, #241E22, #121013);
 }
 
 .event-card-cover {
@@ -112,38 +115,39 @@
 
 .badge-event-type {
   font-size: 11px;
-  font-weight: 750;
-  background: var(--bg-surface-subtle, #f5f5f5);
-  box-shadow: var(--shadow-badge-tactile);
-  color: var(--brand-accent, #fd3a25);
+  font-weight: 600;
+  background: var(--brand-accent-soft);
+  border: 1px solid var(--border-default);
+  color: var(--brand-accent, #D4AF8C);
   padding: 4px 10px;
   border-radius: var(--radius-pill, 100px);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
 }
 
 .badge-reg-status {
   font-size: 11px;
-  font-weight: 750;
+  font-weight: 600;
   padding: 4px 10px;
   border-radius: var(--radius-pill, 100px);
 }
 
 .badge-reg-status.confirmed {
-  background: var(--status-success-bg, #eaf5ed);
-  color: var(--status-success-text, #15803d);
+  background: var(--status-success-bg);
+  color: var(--status-success-text, #4ADE80);
 }
 
 .badge-reg-status.pending_payment {
-  background: var(--status-warning-bg, #fff7ed);
-  color: var(--status-warning-text, #c2410c);
+  background: var(--status-warning-bg);
+  color: var(--status-warning-text, #FBBF24);
 }
 
 .my-event-title {
-  font-size: 18px;
-  font-weight: 750;
-  color: var(--text-primary, #09090b);
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--text-primary, #F7F3EE);
   margin: 0 0 12px;
-  line-height: 1.3;
+  line-height: 1.25;
 }
 
 .my-event-meta-lines {
@@ -152,7 +156,7 @@
   gap: 7px;
   margin-bottom: 16px;
   font-size: 13px;
-  color: var(--text-secondary, #3f3f46);
+  color: var(--text-secondary, #C4B9AC);
 }
 
 .my-event-entries-box {
@@ -165,19 +169,18 @@
 
 .entries-label {
   font-size: 12px;
-  color: var(--text-muted, #71717a);
-  font-weight: 600;
+  color: var(--text-muted, #8E8479);
+  font-weight: 500;
 }
 
 .entry-tag {
-  background: var(--bg-surface-subtle, #f5f5f5);
-  color: var(--text-secondary, #3f3f46);
-  border: 1px solid var(--border-default, #e4e4e7);
-  box-shadow: var(--shadow-badge-tactile);
+  background: var(--bg-surface-subtle, #1F1C21);
+  color: var(--text-secondary, #C4B9AC);
+  border: 1px solid var(--border-default);
   font-size: 11px;
   padding: 4px 9px;
   border-radius: var(--radius-pill, 100px);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .my-event-card-actions {
@@ -191,15 +194,15 @@
   text-align: center;
   padding: 10px 16px;
   font-size: 13px;
-  font-weight: 700;
-  border-radius: var(--radius-pill, 100px);
+  font-weight: 600;
+  border-radius: 12px;
 }
 
 .events-loading,
 .events-empty-state {
-  background: var(--bg-surface, #ffffff);
-  border: 1px dashed var(--border-strong, #d4d4d8);
-  border-radius: var(--radius-lg, 24px);
+  background: rgba(20, 18, 21, 0.75);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-lg, 18px);
   box-shadow: var(--shadow-card-tactile);
   text-align: center;
   padding: 48px 20px;

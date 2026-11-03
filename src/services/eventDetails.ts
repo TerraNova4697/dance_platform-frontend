@@ -259,6 +259,15 @@ export async function getVenue(venueId: string): Promise<EventVenue> {
   return normalizeVenue(source)
 }
 
+export function formatAgeRange(ageFrom?: number | null, ageTo?: number | null): string {
+  const from = ageFrom !== undefined && ageFrom !== null && ageFrom > 0 ? ageFrom : null
+  const to = ageTo !== undefined && ageTo !== null && ageTo > 0 ? ageTo : null
+  if (from && to) return `${from}–${to} лет`
+  if (from) return `от ${from} лет`
+  if (to) return `до ${to} лет`
+  return 'Без ограничений'
+}
+
 export async function getTournamentCategories(eventId: string): Promise<TournamentCategory[]> {
   return listPayload(await fetchTournamentCategories(eventId), 'categories').flatMap((item, index) => {
     const source = record(item)
@@ -267,7 +276,11 @@ export async function getTournamentCategories(eventId: string): Promise<Tourname
     const participationType: TournamentCategory['participationType'] = rawParticipation === 'couple' || rawParticipation === 'team' || rawParticipation === 'formation' ? rawParticipation : 'solo'
     const rawAvailability = text(source, 'availability_status', 'availabilityStatus')?.toLowerCase()
     const availabilityStatus: TournamentCategory['availabilityStatus'] = rawAvailability === 'low' || rawAvailability === 'full' ? rawAvailability : 'available'
-    return [{ id: text(source, 'id', 'name') ?? `category-${index}`, discipline: entity(value(source, 'discipline')), category: entity(value(source, 'category')), ageFrom: numberValue(source, 'age_from', 'ageFrom'), ageTo: numberValue(source, 'age_to', 'ageTo'), level: value(source, 'level') ? entity(value(source, 'level')) : undefined, league: value(source, 'league') ? entity(value(source, 'league')) : undefined, className: text(source, 'class_name', 'className'), participationType, capacity: numberValue(source, 'capacity'), availablePlaces: numberValue(source, 'available_places', 'availablePlaces'), availabilityStatus, registrationStatus: registrationStatus(source), price: numberValue(source, 'price'), currency: text(source, 'currency') }]
+    const rawAgeFrom = numberValue(source, 'age_from', 'ageFrom')
+    const rawAgeTo = numberValue(source, 'age_to', 'ageTo')
+    const ageFrom = rawAgeFrom !== undefined && rawAgeFrom > 0 ? rawAgeFrom : undefined
+    const ageTo = rawAgeTo !== undefined && rawAgeTo > 0 ? rawAgeTo : undefined
+    return [{ id: text(source, 'id', 'name') ?? `category-${index}`, discipline: entity(value(source, 'discipline')), category: entity(value(source, 'category')), ageFrom, ageTo, level: value(source, 'level') ? entity(value(source, 'level')) : undefined, league: value(source, 'league') ? entity(value(source, 'league')) : undefined, className: text(source, 'class_name', 'className'), participationType, capacity: numberValue(source, 'capacity'), availablePlaces: numberValue(source, 'available_places', 'availablePlaces'), availabilityStatus, registrationStatus: registrationStatus(source), price: numberValue(source, 'price'), currency: text(source, 'currency') }]
   })
 }
 

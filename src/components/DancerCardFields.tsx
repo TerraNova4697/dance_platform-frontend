@@ -258,15 +258,15 @@ export function DancerCardFields({
         style={{
           padding: '18px',
           borderRadius: '14px',
-          border: '1px solid #e2e8f0',
-          background: '#f8fafc',
+          border: '1px solid var(--border-default)',
+          background: 'var(--bg-surface-subtle)',
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
         }}
       >
         <div>
-          <h4 style={{ margin: '0 0 4px 0', fontSize: '16px', color: '#0f172a' }}>
+          <h4 style={{ margin: '0 0 4px 0', fontSize: '18px', fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>
             Танцевальные данные
           </h4>
           <p className="helper-note" style={{ margin: 0 }}>
@@ -425,8 +425,8 @@ export function DancerCardFields({
             </span>
             <span
               style={{
-                background: '#2563eb',
-                color: '#ffffff',
+                background: 'var(--brand-accent-gradient)',
+                color: 'var(--text-on-gold)',
                 fontWeight: 700,
                 fontSize: '15px',
                 padding: '3px 12px',
@@ -444,14 +444,14 @@ export function DancerCardFields({
             value={value.dancesCount}
             disabled={disabled}
             onChange={(e) => updateField('dancesCount', Number(e.target.value))}
-            style={{ width: '100%', accentColor: '#2563eb', cursor: 'pointer' }}
+            style={{ width: '100%', accentColor: 'var(--brand-accent)', cursor: 'pointer' }}
           />
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
               fontSize: '11px',
-              color: '#64748b',
+              color: 'var(--text-muted)',
               marginTop: '2px',
             }}
           >
@@ -460,7 +460,7 @@ export function DancerCardFields({
                 key={num}
                 style={{
                   fontWeight: value.dancesCount === num ? 700 : 400,
-                  color: value.dancesCount === num ? '#2563eb' : '#64748b',
+                  color: value.dancesCount === num ? 'var(--brand-accent)' : 'var(--text-muted)',
                 }}
               >
                 {num}
@@ -500,15 +500,15 @@ export function DancerCardFields({
         style={{
           padding: '18px',
           borderRadius: '14px',
-          border: '1px solid #e2e8f0',
-          background: '#f8fafc',
+          border: '1px solid var(--border-default)',
+          background: 'var(--bg-surface-subtle)',
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
         }}
       >
         <div>
-          <h4 style={{ margin: '0 0 4px 0', fontSize: '16px', color: '#0f172a' }}>
+          <h4 style={{ margin: '0 0 4px 0', fontSize: '18px', fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>
             Обучение и повышение уровня
           </h4>
           <p className="helper-note" style={{ margin: 0 }}>
@@ -537,11 +537,11 @@ export function DancerCardFields({
                     gap: '10px',
                     padding: '10px 12px',
                     borderRadius: '10px',
-                    border: checked ? '1px solid #2563eb' : '1px solid #cbd5e1',
-                    background: checked ? '#eff6ff' : '#ffffff',
+                    border: checked ? '1px solid var(--brand-accent)' : '1px solid var(--border-default)',
+                    background: checked ? 'rgba(212, 175, 140, 0.14)' : 'var(--bg-surface)',
                     cursor: disabled ? 'default' : 'pointer',
                     fontSize: '14px',
-                    color: '#0f172a',
+                    color: 'var(--text-primary)',
                     fontWeight: checked ? 600 : 400,
                   }}
                 >
@@ -550,7 +550,7 @@ export function DancerCardFields({
                     checked={checked}
                     disabled={disabled}
                     onChange={() => handleToggleTrainingActivity(opt)}
-                    style={{ width: '16px', height: '16px', accentColor: '#2563eb' }}
+                    style={{ width: '16px', height: '16px', accentColor: 'var(--brand-accent)' }}
                   />
                   <span>{opt}</span>
                 </label>
@@ -591,8 +591,8 @@ export function DancerCardFields({
         style={{
           padding: '18px',
           borderRadius: '14px',
-          border: '1px solid #e2e8f0',
-          background: '#f8fafc',
+          border: '1px solid var(--border-default)',
+          background: 'var(--bg-surface-subtle)',
           display: 'flex',
           flexDirection: 'column',
           gap: '14px',
@@ -608,7 +608,7 @@ export function DancerCardFields({
           }}
         >
           <div>
-            <h4 style={{ margin: '0 0 2px 0', fontSize: '16px', color: '#0f172a' }}>
+            <h4 style={{ margin: '0 0 2px 0', fontSize: '18px', fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>
               Самые значимые достижения в спортивной карьере
             </h4>
             <p className="helper-note" style={{ margin: 0 }}>
@@ -635,8 +635,8 @@ export function DancerCardFields({
               <div
                 key={ach.id}
                 style={{
-                  background: '#ffffff',
-                  border: '1px solid #e2e8f0',
+                  background: 'var(--bg-surface)',
+                  border: '1px solid var(--border-default)',
                   borderRadius: '10px',
                   padding: '12px',
                   display: 'flex',
@@ -651,7 +651,7 @@ export function DancerCardFields({
                     alignItems: 'center',
                   }}
                 >
-                  <strong style={{ fontSize: '13px', color: '#334155' }}>
+                  <strong style={{ fontSize: '13px', color: 'var(--brand-accent)' }}>
                     Достижение #{idx + 1}
                   </strong>
                   <button
@@ -661,7 +661,7 @@ export function DancerCardFields({
                     style={{
                       background: 'none',
                       border: 'none',
-                      color: '#dc2626',
+                      color: '#fda4af',
                       fontSize: '13px',
                       cursor: 'pointer',
                     }}
@@ -728,15 +728,15 @@ export function DancerCardFields({
         style={{
           padding: '18px',
           borderRadius: '14px',
-          border: '1px solid #e2e8f0',
-          background: '#f8fafc',
+          border: '1px solid var(--border-default)',
+          background: 'var(--bg-surface-subtle)',
           display: 'flex',
           flexDirection: 'column',
           gap: '18px',
         }}
       >
         <div>
-          <h4 style={{ margin: '0 0 2px 0', fontSize: '16px', color: '#0f172a' }}>
+          <h4 style={{ margin: '0 0 2px 0', fontSize: '18px', fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}>
             Танцевальные фотографии, видео и социальные сети
           </h4>
           <p className="helper-note" style={{ margin: 0 }}>
@@ -798,8 +798,8 @@ export function DancerCardFields({
                     borderRadius: '10px',
                     overflow: 'hidden',
                     aspectRatio: '1 / 1',
-                    border: '1px solid #cbd5e1',
-                    background: '#e2e8f0',
+                    border: '1px solid var(--border-default)',
+                    background: 'var(--bg-surface)',
                   }}
                 >
                   <img
@@ -820,7 +820,7 @@ export function DancerCardFields({
                       height: '22px',
                       borderRadius: '50%',
                       border: 'none',
-                      background: 'rgba(15, 23, 42, 0.75)',
+                      background: 'rgba(10, 9, 8, 0.78)',
                       color: '#ffffff',
                       cursor: 'pointer',
                       fontSize: '14px',
@@ -917,9 +917,9 @@ export function DancerCardFields({
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     padding: '8px 12px',
-                    background: '#ffffff',
+                    background: 'var(--bg-surface)',
                     borderRadius: '8px',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid var(--border-default)',
                     fontSize: '13px',
                   }}
                 >
@@ -930,7 +930,7 @@ export function DancerCardFields({
                       target="_blank"
                       rel="noreferrer"
                       style={{
-                        color: '#2563eb',
+                        color: 'var(--brand-accent)',
                         textOverflow: 'ellipsis',
                         overflow: 'hidden',
                         whiteSpace: 'nowrap',
@@ -946,7 +946,7 @@ export function DancerCardFields({
                     style={{
                       background: 'none',
                       border: 'none',
-                      color: '#dc2626',
+                      color: '#fda4af',
                       cursor: 'pointer',
                       fontSize: '14px',
                     }}
@@ -999,9 +999,9 @@ export function DancerCardFields({
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     padding: '8px 12px',
-                    background: '#ffffff',
+                    background: 'var(--bg-surface)',
                     borderRadius: '8px',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid var(--border-default)',
                     fontSize: '13px',
                   }}
                 >
@@ -1010,7 +1010,7 @@ export function DancerCardFields({
                     target="_blank"
                     rel="noreferrer"
                     style={{
-                      color: '#2563eb',
+                      color: 'var(--brand-accent)',
                       textOverflow: 'ellipsis',
                       overflow: 'hidden',
                       whiteSpace: 'nowrap',
@@ -1025,7 +1025,7 @@ export function DancerCardFields({
                     style={{
                       background: 'none',
                       border: 'none',
-                      color: '#dc2626',
+                      color: '#fda4af',
                       cursor: 'pointer',
                       fontSize: '14px',
                     }}

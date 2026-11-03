@@ -35,7 +35,10 @@ export function MyEventsSection({ query }: { query: UseQueryResult<RegisteredEve
         <div className="cards-grid cards-grid-two">
           {query.data.map((event, index) => (
             <article className={`my-event-card cover-tone-${index + 1}`} key={event.id}>
-              <div className="event-cover">
+              <div
+                className="event-cover"
+                style={event.coverUrl ? { backgroundImage: `url(${event.coverUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+              >
                 <span>{event.direction}</span>
               </div>
               <div className="card-body">
@@ -76,24 +79,32 @@ function renderEventCard(event: EventPreview, index: number) {
 
   return (
     <Link className={`event-card cover-tone-${(index % 3) + 1}`} to={routes.event(event.id)} key={event.id}>
-      <div className="event-cover">
+      <div
+        className="event-cover"
+        style={event.coverUrl ? { backgroundImage: `url(${event.coverUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+      >
         <span>{event.direction ?? eventTypeLabel[event.type]}</span>
       </div>
       <div className="card-body">
         <span className={`type-badge type-${event.type}`}>{eventTypeLabel[event.type]}</span>
         <h3>{event.title}</h3>
-        <div className="event-date">{dates}</div>
         <div className="stacked-meta">
+          <Meta icon="calendar">{dates}</Meta>
           <Meta icon="pin">{location}</Meta>
         </div>
-        {event.minimumPrice !== undefined && event.minimumPrice !== null ? (
-          <strong className="price">
-            от {formatCurrency(event.minimumPrice, event.currency)}{unit}
-          </strong>
-        ) : (
-          <span className="price-terms">Стоимость по положению</span>
-        )}
-        <span className="host">{event.hostName}</span>
+        <div className="event-card-bottom">
+          <div>
+            {event.minimumPrice !== undefined && event.minimumPrice !== null ? (
+              <strong className="price">
+                от {formatCurrency(event.minimumPrice, event.currency)}{unit}
+              </strong>
+            ) : (
+              <span className="price-terms">Стоимость по положению</span>
+            )}
+            <span className="host">{event.hostName}</span>
+          </div>
+          <span className="card-arrow-circle" aria-hidden="true">→</span>
+        </div>
       </div>
     </Link>
   )
