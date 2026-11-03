@@ -22,7 +22,7 @@ export function HomePage() {
   return (
     <main className="home-page">
       <section className="home-card">
-        <p className="eyebrow">Dance Platform</p>
+        <p className="eyebrow">On Dance Space</p>
         <h1>Главная страница</h1>
         <p>Вы вошли как <strong>{user}</strong></p>
         {error && <div className="form-error" role="alert">{error}</div>}

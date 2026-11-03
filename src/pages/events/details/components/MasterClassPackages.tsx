@@ -16,11 +16,11 @@ export function MasterClassPackages({ packages, registrationHref }: { packages: 
               {item.description && <span className="section-empty">{item.description}</span>}
               {item.alreadyBooked && <span className="availability availability-available">Вы уже записаны ✓</span>}
             </div>
-            <b>{formatCurrency(item.price, item.currency)}</b>
+            <b>{formatCurrency(item.price, item.currency)} <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-secondary)' }}>/ пакет</span></b>
             {item.alreadyBooked ? (
               <button className="button secondary" type="button" disabled>Записаны ✓</button>
             ) : (
-              <Link className="button secondary" to={withRegistrationParam(registrationHref, 'package', item.id)}>Выбрать</Link>
+              <Link className="button secondary" to={withRegistrationParam(registrationHref, 'package', item.id)}>Выбрать пакет</Link>
             )}
           </article>
         ))}

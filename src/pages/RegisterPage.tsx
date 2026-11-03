@@ -147,7 +147,7 @@ export function RegisterPage() {
         <section className="login-card" aria-labelledby="register-success-title">
           <div className="brand-mark brand-mark-success" aria-hidden="true">✓</div>
           <div className="login-heading">
-            <p className="eyebrow">Dance Platform</p>
+            <p className="eyebrow">On Dance Space</p>
             <h1 id="register-success-title">Проверьте вашу почту</h1>
             <p>
               Мы отправили письмо со ссылкой для активации аккаунта на адрес{' '}

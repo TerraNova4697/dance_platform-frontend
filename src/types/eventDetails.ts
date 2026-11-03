@@ -10,6 +10,7 @@ export interface NamedEntity {
 
 export interface EventVenue extends NamedEntity {
   city: string
+  country?: string
   address: string
   latitude?: number
   longitude?: number
@@ -76,6 +77,13 @@ export interface EventDetails {
   rules?: string
   contacts: EventContact[]
   spectatorTicketsAvailable: boolean
+  relatedEvent?: {
+    id?: string
+    title: string
+    type: string
+    dates?: string
+    tag?: string
+  }
   currentUserState?: {
     registered: boolean
     ticketId?: string

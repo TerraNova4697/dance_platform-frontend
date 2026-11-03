@@ -29,7 +29,13 @@ export function AthleteDashboard() {
 
   return (
     <div className="dashboard-page">
-      <DashboardHeader firstName={firstName} avatarUrl={queries.profile.data?.avatarUrl} onLogout={() => void handleLogout()} isLoggingOut={isLoggingOut} />
+      <DashboardHeader
+        firstName={firstName}
+        avatarUrl={queries.profile.data?.avatarUrl}
+        hasHostRole={queries.profile.data?.hasHostRole}
+        onLogout={() => void handleLogout()}
+        isLoggingOut={isLoggingOut}
+      />
       <main className="dashboard-main">
         <section className="greeting-section">
           <p>{getGreeting()}, {firstName} <span aria-hidden="true">👋</span></p>
@@ -38,7 +44,7 @@ export function AthleteDashboard() {
         <ImportantNotification query={queries.notifications} />
         <NextActivityCard query={queries.nextActivity} />
         <SchedulePreview query={queries.schedule} />
-        <MyEventsSection query={queries.myEvents} />
+        {queries.profile.data?.hasHostRole && <MyEventsSection query={queries.myEvents} />}
         <MyTrainingsSection query={queries.trainings} />
         <UpcomingEventsSection query={queries.upcomingEvents} />
         <DiscoveryCtas query={queries.nearbySummary} />

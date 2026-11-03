@@ -20,7 +20,14 @@ export type MasterPackageRecord = { name: string; master_class: string; title: s
 export type TrainingBookingRecord = { name: string; slot: string; participant: string; booked_by: string; status?: string }
 export type TrainingSlotRecord = { name: string; training_offering: string; trainer: string; start_datetime: string; end_datetime: string; venue?: string; status?: string }
 export type TrainingOfferingRecord = { name: string; trainer: string; title: string; direction: string; default_venue?: string }
-export type AthleteDashboardProfileRecord = { id: string; firstName: string; avatarUrl?: string | null; city?: string | null }
+export type AthleteDashboardProfileRecord = {
+  id: string
+  firstName: string
+  avatarUrl?: string | null
+  city?: string | null
+  hasHostRole?: boolean
+  roles?: string[]
+}
 export type NextActivityRecord = { id: string; type: 'tournament' | 'master_class' | 'training'; title: string; startAt: string; endAt?: string; venueName?: string; secondaryInfo?: string; status: string; ticketId?: string }
 
 function byIds(field: string, ids: string[]): FrappeFilter[] {

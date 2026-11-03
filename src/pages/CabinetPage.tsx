@@ -993,7 +993,7 @@ export function CabinetPage() {
             </button>
           )}
           <button type="button" className="ghost-button" onClick={() => navigate('/dashboard')}>
-            ← В Дашборд
+            ← На главную
           </button>
         </div>
       </header>
@@ -2347,7 +2347,7 @@ export function CabinetPage() {
           <section className="cabinet-card tab-content-card">
             <div className="section-head">
               <h3>Студии и клубы</h3>
-              <p className="helper-note">Поиск студии с задержкой 1 секунда и отправка заявок на вступление</p>
+              <p className="helper-note">Введите название клуба, чтобы найти его в реестре и отправить заявку на вступление</p>
             </div>
 
             {/* Club Search with 1000ms debounce */}
@@ -2468,7 +2468,7 @@ export function CabinetPage() {
           <section className="cabinet-card tab-content-card">
             <div className="section-head">
               <h3>Лиги</h3>
-              <p className="helper-note">Поиск лиги с задержкой 1 секунда и отправка заявок на прикрепление</p>
+              <p className="helper-note">Введите название лиги, чтобы найти её в реестре и отправить заявку</p>
             </div>
 
             {/* League Search with 1000ms debounce */}
@@ -2553,7 +2553,7 @@ export function CabinetPage() {
           <section className="cabinet-card tab-content-card">
             <div className="section-head">
               <h3>Федерации</h3>
-              <p className="helper-note">Поиск федерации с задержкой 1 секунда и отправка заявок на прикрепление</p>
+              <p className="helper-note">Введите название федерации, чтобы найти её в реестре и отправить заявку</p>
             </div>
 
             {/* Federation Search with 1000ms debounce */}

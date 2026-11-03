@@ -43,8 +43,35 @@ export function MasterClassSlots({ eventId, slots, isLoading, isError, onRetry, 
   const state = <SectionState isLoading={isLoading} isError={isError} onRetry={onRetry} />
   return (
     <section className="event-content-card" id="slots">
-      <h2>Доступные занятия</h2>
-      {isLoading || isError ? state : slots.length ? <div className="slot-list">{slots.map((slot) => { const isBooked = Boolean(slot.alreadyBooked); const disabled = isBooked || slot.availabilityStatus === 'full' || slot.availabilityStatus === 'cancelled'; return <article className="slot-card" key={slot.id}><div><span>{formatEventDate(slot.startAt)}</span><strong>{formatTimeRange(slot.startAt, slot.endAt)}</strong></div><div><h3>{slot.title ?? 'Мастер-класс'}</h3>{slot.venue?.name && <small>{slot.venue.name}</small>}<span className={`availability availability-${slot.availabilityStatus}`}>{isBooked ? 'Вы уже записаны ✓' : slot.availabilityStatus === 'cancelled' ? 'Занятие отменено' : slot.availablePlaces !== undefined && slot.availabilityStatus === 'low' ? `Осталось ${slot.availablePlaces} мест` : availabilityLabels[slot.availabilityStatus]}</span></div><div>{slot.price !== undefined && <strong>{formatCurrency(slot.price, slot.currency ?? 'KZT')}</strong>}{disabled ? <button className="button secondary" type="button" disabled>{isBooked ? 'Записаны ✓' : 'Выбрать'}</button> : <Link className="button secondary" to={withRegistrationParam(registrationHref, 'slot', slot.id)} state={{ eventId }}>Выбрать</Link>}</div></article> })}</div> : <p className="section-empty">Доступные занятия пока не опубликованы.</p>}
+      <h2>Доступные занятия и уроки</h2>
+      {isLoading || isError ? state : slots.length ? <div className="slot-list">{slots.map((slot) => {
+        const isBooked = Boolean(slot.alreadyBooked);
+        const disabled = isBooked || slot.availabilityStatus === 'full' || slot.availabilityStatus === 'cancelled';
+        const displayTitle = slot.title && slot.title.trim().toLowerCase() !== 'мастер-класс' ? slot.title : 'Занятие / Урок';
+        return (
+          <article className="slot-card" key={slot.id}>
+            <div>
+              <span>{formatEventDate(slot.startAt)}</span>
+              <strong>{formatTimeRange(slot.startAt, slot.endAt)}</strong>
+            </div>
+            <div>
+              <h3>{displayTitle}</h3>
+              {slot.venue?.name && <small>{slot.venue.name}</small>}
+              <span className={`availability availability-${slot.availabilityStatus}`}>
+                {isBooked ? 'Вы уже записаны ✓' : slot.availabilityStatus === 'cancelled' ? 'Занятие отменено' : slot.availablePlaces !== undefined && slot.availabilityStatus === 'low' ? `Осталось ${slot.availablePlaces} мест` : availabilityLabels[slot.availabilityStatus]}
+              </span>
+            </div>
+            <div>
+              {slot.price !== undefined && <strong>{formatCurrency(slot.price, slot.currency ?? 'KZT')} <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-secondary)' }}>/ урок</span></strong>}
+              {disabled ? (
+                <button className="button secondary" type="button" disabled>{isBooked ? 'Записаны ✓' : 'Мест нет'}</button>
+              ) : (
+                <Link className="button secondary" to={withRegistrationParam(registrationHref, 'slot', slot.id)} state={{ eventId }}>Записаться на урок</Link>
+              )}
+            </div>
+          </article>
+        )
+      })}</div> : <p className="section-empty">Доступные занятия пока не опубликованы.</p>}
     </section>
   )
 }

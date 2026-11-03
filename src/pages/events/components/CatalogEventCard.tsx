@@ -2,17 +2,34 @@ import { Link } from 'react-router-dom'
 import { routes } from '../../../routes'
 import type { EventPreview } from '../../../types/dashboard'
 import { formatCurrency } from '../../../utils/currency'
-import { formatDay } from '../../../utils/date'
+import { formatDateRange } from '../../../utils/date'
 import { Icon } from '../../dashboard/components/Icons'
 
-const typeLabels = { tournament: 'Турнир', master_class: 'Мастер-класс' } as const
+const typeLabels = {
+  tournament: 'Соревнования',
+  master_class: 'Мастер-классы и сборы',
+} as const
 
-export function CatalogEventCard({ event, compact = false, selected = false, onSelect }: {
+function locationLabel(city?: string, country?: string): string {
+  return [city, country].filter(Boolean).join(', ')
+}
+
+export function CatalogEventCard({
+  event,
+  compact = false,
+  selected = false,
+  onSelect,
+}: {
   event: EventPreview
   compact?: boolean
   selected?: boolean
   onSelect?: () => void
 }) {
+  const dates = formatDateRange(event.startAt, event.endAt)
+  const location = locationLabel(event.city, event.country)
+  const isMasterClass = event.type === 'master_class'
+  const unit = event.pricingUnit || (isMasterClass ? ' / урок' : '')
+
   if (compact) {
     return (
       <button className={`catalog-compact-card${selected ? ' selected' : ''}`} type="button" onClick={onSelect}>
@@ -20,8 +37,12 @@ export function CatalogEventCard({ event, compact = false, selected = false, onS
         <span className="compact-copy">
           <span className={`type-badge type-${event.type}`}>{typeLabels[event.type]}</span>
           <strong>{event.title}</strong>
-          <small>{formatDay(event.startAt)} · {event.city}</small>
-          {event.minimumPrice !== undefined && <b>от {formatCurrency(event.minimumPrice, event.currency)}</b>}
+          <small>{dates} · {location}</small>
+          {event.minimumPrice !== undefined && event.minimumPrice !== null ? (
+            <b>от {formatCurrency(event.minimumPrice, event.currency)}{unit}</b>
+          ) : (
+            <span className="price-terms">Стоимость по положению</span>
+          )}
         </span>
       </button>
     )
@@ -33,14 +54,29 @@ export function CatalogEventCard({ event, compact = false, selected = false, onS
         {!event.coverUrl && <span>{event.direction ?? typeLabels[event.type]}</span>}
       </div>
       <div className="catalog-card-body">
-        <span className={`type-badge type-${event.type}`}>{typeLabels[event.type]}</span>
+        <div className="catalog-card-header">
+          <span className={`type-badge type-${event.type}`}>{typeLabels[event.type]}</span>
+          {event.isArchived && <span className="archive-badge">Архив</span>}
+        </div>
         <h2>{event.title}</h2>
-        <p className="catalog-date">{formatDay(event.startAt)} · {event.city}</p>
-        {event.venueName && <span className="catalog-meta"><Icon name="pin" size={15} />{event.venueName}</span>}
+        <p className="catalog-date">{dates} · {location}</p>
+        {event.venueName && (
+          <span className="catalog-meta">
+            <Icon name="pin" size={15} />
+            {event.venueName}
+          </span>
+        )}
         {event.direction && <span className="direction-label">{event.direction}</span>}
         <div className="catalog-card-footer">
           <span>{event.hostName}</span>
-          {event.minimumPrice !== undefined && <strong>от {formatCurrency(event.minimumPrice, event.currency)}</strong>}
+          {event.minimumPrice !== undefined && event.minimumPrice !== null ? (
+            <strong>
+              от {formatCurrency(event.minimumPrice, event.currency)}
+              {unit && <span className="unit-label">{unit}</span>}
+            </strong>
+          ) : (
+            <span className="price-terms">Стоимость по положению</span>
+          )}
         </div>
       </div>
     </Link>

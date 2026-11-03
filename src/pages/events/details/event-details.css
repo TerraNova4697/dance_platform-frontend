@@ -37,6 +37,58 @@
 .event-warning strong { font-size: 14px; }
 .event-warning p { margin: 5px 0 0; font-size: 13px; line-height: 1.55; }
 
+.linked-event-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px 24px;
+  border: 1px solid rgba(253, 58, 37, 0.2);
+  border-radius: var(--radius-lg, 20px);
+  background: linear-gradient(90deg, rgba(253, 58, 37, 0.06) 0%, rgba(255, 255, 255, 0.95) 100%);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.linked-event-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.linked-event-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill, 100px);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--brand-accent, #fd3a25);
+  color: #ffffff;
+}
+
+.linked-event-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.linked-event-info strong {
+  font-size: 15px;
+  color: var(--text-primary, #09090b);
+}
+
+.linked-event-info span {
+  font-size: 13px;
+  color: var(--text-secondary, #52525b);
+}
+
+.linked-event-action {
+  white-space: nowrap;
+}
+
 .event-top-grid > .registration-card { display: none; }
 
 .event-details-hero {

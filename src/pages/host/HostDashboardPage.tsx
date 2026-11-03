@@ -109,9 +109,13 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
       setLogo(res.organization.logo || '')
     } catch (err: unknown) {
       if (err instanceof FrappeApiError) {
-        setApiError(err.message)
+        if (err.status === 403 || err.message?.includes('PermissionError') || err.message?.includes('Кабинет организатора')) {
+          setApiError('Кабинет организатора будет доступен после одобрения заявки.')
+        } else {
+          setApiError(err.message)
+        }
       } else {
-        setApiError('Не удалось загрузить данные кабинета Организатора.')
+        setApiError('Кабинет организатора будет доступен после одобрения заявки.')
       }
     } finally {
       setLoading(false)
@@ -136,9 +140,13 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
       } catch (err: unknown) {
         if (!isMounted) return
         if (err instanceof FrappeApiError) {
-          setApiError(err.message)
+          if (err.status === 403 || err.message?.includes('PermissionError') || err.message?.includes('Кабинет организатора')) {
+            setApiError('Кабинет организатора будет доступен после одобрения заявки.')
+          } else {
+            setApiError(err.message)
+          }
         } else {
-          setApiError('Не удалось загрузить данные кабинета Организатора.')
+          setApiError('Кабинет организатора будет доступен после одобрения заявки.')
         }
       } finally {
         if (isMounted) setLoading(false)
@@ -353,7 +361,15 @@ export function HostDashboardView({ embedded = false }: HostDashboardViewProps) 
               <h1>{organization.display_name}</h1>
               <span className="host-verified-pill">✓ Верифицирован</span>
               <span className="host-type-pill">
-                {organization.organization_type === 'Individual' ? 'Физ. лицо' : organization.organization_type}
+                {organization.organization_type === 'Individual'
+                  ? 'Физ. лицо'
+                  : organization.organization_type === 'Company'
+                    ? 'Организация / Компания'
+                    : organization.organization_type === 'Federation'
+                      ? 'Федерация'
+                      : organization.organization_type === 'Club'
+                        ? 'Танцевальный клуб'
+                        : organization.organization_type}
               </span>
             </div>
             <div className="host-hero-meta">

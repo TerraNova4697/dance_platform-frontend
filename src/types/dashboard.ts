@@ -5,6 +5,8 @@ export interface AthleteDashboardProfile {
   firstName: string
   avatarUrl?: string
   city?: string
+  hasHostRole?: boolean
+  roles?: string[]
 }
 
 export interface DashboardActivity {
@@ -25,14 +27,25 @@ export interface EventPreview {
   title: string
   coverUrl?: string
   startAt: string
+  endAt?: string
   city: string
+  country?: string
   venueName?: string
   direction?: string
   hostName: string
   minimumPrice?: number
+  pricingUnit?: string
   currency: 'KZT' | 'RUB' | 'USD' | 'EUR'
   latitude?: number
   longitude?: number
+  isArchived?: boolean
+  relatedEvent?: {
+    id?: string
+    title: string
+    type: string
+    dates?: string
+    tag?: string
+  }
   ageGroups?: string[]
   levels?: string[]
 }

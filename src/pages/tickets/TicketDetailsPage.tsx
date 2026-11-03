@@ -84,7 +84,7 @@ export function TicketDetailsPage() {
 
         <div className="ticket-pass-card printable-ticket">
           <div className="pass-header">
-            <div className="pass-host-label">{ticket.event.hostName || 'Dance Platform'}</div>
+            <div className="pass-host-label">{ticket.event.hostName || 'On Dance Space'}</div>
             <h1 className="pass-event-title">{ticket.event.title}</h1>
             <div className="pass-type-badge">{ticket.ticketType}</div>
           </div>

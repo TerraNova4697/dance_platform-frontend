@@ -85,8 +85,38 @@ export function EventDetailsPage() {
       <main className="event-details-main">
         <button className="event-back" type="button" onClick={goBack}>← Назад к мероприятиям</button>
         <EventStatusBanner event={event} />
+        {event.relatedEvent && (
+          <aside className="linked-event-banner" aria-label="Связанное мероприятие">
+            <div className="linked-event-content">
+              <span className="linked-event-tag">{event.relatedEvent.tag ?? 'Связанное событие'}</span>
+              <div className="linked-event-info">
+                <strong>{event.relatedEvent.title}</strong>
+                {event.relatedEvent.dates && <span>{event.relatedEvent.dates}</span>}
+              </div>
+            </div>
+            {event.relatedEvent.id ? (
+              <Link className="button secondary linked-event-action" to={routes.event(event.relatedEvent.id)}>
+                Перейти к {event.relatedEvent.type === 'tournament' ? 'соревнованиям' : 'мастер-классам'} →
+              </Link>
+            ) : (
+              <Link
+                className="button secondary linked-event-action"
+                to={`/events?type=${event.relatedEvent.type}`}
+              >
+                Смотреть в каталоге →
+              </Link>
+            )}
+          </aside>
+        )}
         <div className="event-top-grid"><EventHero event={event} /><EventRegistrationCard event={event} registrationHref={registrationHref} ticketHref={ticketHref} /></div>
-        <nav className="event-anchor-nav" aria-label="Разделы мероприятия"><a href="#about">Описание</a><a href="#schedule">Расписание</a><a href={event.type === 'tournament' ? '#categories' : '#slots'}>{event.type === 'tournament' ? 'Категории' : 'Слоты'}</a><a href="#pricing">Стоимость</a><a href="#location">Место</a><a href="#rules">Правила</a></nav>
+        <nav className="event-anchor-nav" aria-label="Разделы мероприятия">
+          {event.description && <a href="#about">Описание</a>}
+          {event.schedule && event.schedule.length > 0 && <a href="#schedule">Расписание</a>}
+          {event.type === 'tournament' ? <a href="#categories">Категории</a> : <a href="#slots">Занятия</a>}
+          {((event.pricing && event.pricing.length > 0) || event.minimumPrice !== undefined) && <a href="#pricing">Стоимость</a>}
+          {venue && <a href="#location">Место</a>}
+          {event.rules && <a href="#rules">Правила</a>}
+        </nav>
         <div className="event-body-grid">
           <div className="event-content-column">
             <EventAbout event={event} />

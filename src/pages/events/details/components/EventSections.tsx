@@ -64,6 +64,14 @@ export function EventRules({ event }: { event: EventDetails }) {
   return <Section id="rules" title="Правила"><details className="event-rules"><summary>Ознакомиться с правилами</summary><p className="event-long-copy">{event.rules}</p></details></Section>
 }
 
+const hostTypeLabels: Record<string, string> = {
+  Company: 'Организация / Компания',
+  Federation: 'Федерация',
+  Club: 'Танцевальный клуб',
+  Individual: 'Индивидуальный организатор',
+}
+
 export function EventContactsAndOrganizer({ event }: { event: EventDetails }) {
-  return <>{event.contacts.length > 0 && <Section title="Контакты"><div className="event-contacts">{event.contacts.map((contact) => <article key={contact.id}>{contact.name && <strong>{contact.name}</strong>}{contact.phone && <a href={`tel:${contact.phone}`}>{contact.phone}</a>}{contact.email && <a href={`mailto:${contact.email}`}>{contact.email}</a>}</article>)}</div></Section>}<Section title="Организатор"><div className="event-organizer">{event.host.logoUrl ? <img src={event.host.logoUrl} alt="" /> : <span>{event.host.name.charAt(0) || 'D'}</span>}<div><strong>{event.host.name || 'Организатор мероприятия'}</strong>{event.host.type && <small>{event.host.type}</small>}</div></div></Section></>
+  const hostType = event.host.type ? (hostTypeLabels[event.host.type] || event.host.type) : ''
+  return <>{event.contacts.length > 0 && <Section title="Контакты"><div className="event-contacts">{event.contacts.map((contact) => <article key={contact.id}>{contact.name && <strong>{contact.name}</strong>}{contact.phone && <a href={`tel:${contact.phone}`}>{contact.phone}</a>}{contact.email && <a href={`mailto:${contact.email}`}>{contact.email}</a>}</article>)}</div></Section>}<Section title="Организатор"><div className="event-organizer">{event.host.logoUrl ? <img src={event.host.logoUrl} alt="" /> : <span>{event.host.name.charAt(0) || 'D'}</span>}<div><strong>{event.host.name || 'Организатор мероприятия'}</strong>{hostType && <small>{hostType}</small>}</div></div></Section></>
 }

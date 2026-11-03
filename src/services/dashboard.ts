@@ -44,7 +44,14 @@ function eventPreview(event: DanceEventRecord, context: EventContext): EventPrev
 
 export async function getDashboardProfile(userId: string): Promise<AthleteDashboardProfile> {
   const profile = await dashboardApi.athleteProfile(userId)
-  return { id: profile.id, firstName: profile.firstName, avatarUrl: profile.avatarUrl ?? undefined, city: profile.city ?? undefined }
+  return {
+    id: profile.id,
+    firstName: profile.firstName,
+    avatarUrl: profile.avatarUrl ?? undefined,
+    city: profile.city ?? undefined,
+    hasHostRole: Boolean(profile.hasHostRole),
+    roles: profile.roles ?? [],
+  }
 }
 
 export async function getUpcomingEvents(): Promise<EventPreview[]> {

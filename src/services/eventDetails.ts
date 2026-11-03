@@ -132,6 +132,7 @@ function normalizeVenue(input: unknown, parent?: UnknownRecord): EventVenue {
     id: base.id || (text(parent, 'venue_id', 'venueId', 'venue') ?? ''),
     name: base.name || (text(parent, 'venue_name', 'venueName') ?? ''),
     city: text(source, 'city', 'city_name', 'cityName') ?? text(parent, 'city', 'city_name', 'cityName') ?? '',
+    country: text(source, 'country', 'country_name', 'countryName') ?? text(parent, 'country', 'country_name', 'countryName', 'venue_country'),
     address: text(source, 'address', 'full_address', 'fullAddress') ?? text(parent, 'address', 'venue_address', 'venueAddress') ?? '',
     latitude: numberValue(source, 'latitude', 'lat') ?? numberValue(parent, 'latitude', 'lat'),
     longitude: numberValue(source, 'longitude', 'lng', 'lon') ?? numberValue(parent, 'longitude', 'lng', 'lon'),
@@ -246,6 +247,7 @@ export async function getEventDetails(eventId: string): Promise<EventDetails> {
     packages: normalizePackages(value(masterClassSource, 'packages')),
     rules: text(source, 'rules'),
     contacts: normalizeContacts(value(source, 'contacts')),
+    relatedEvent: record(value(source, 'related_event', 'relatedEvent')) as EventDetails['relatedEvent'],
     spectatorTicketsAvailable: booleanValue(source, 'spectator_tickets_available', 'spectatorTicketsAvailable') ?? false,
     currentUserState: currentState ? { registered: booleanValue(currentState, 'registered') ?? false, ticketId: text(currentState, 'ticket_id', 'ticketId'), spectatorTicketOwned: booleanValue(currentState, 'spectator_ticket_owned', 'spectatorTicketOwned') } : undefined,
   }

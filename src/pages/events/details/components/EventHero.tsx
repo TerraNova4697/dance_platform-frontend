@@ -15,7 +15,7 @@ export function EventHero({ event }: { event: EventDetails }) {
   return (
     <section className="event-details-hero">
       <div className="event-details-cover">
-        {event.coverUrl ? <img src={event.coverUrl} alt={`Обложка мероприятия «${event.title}»`} /> : <span>Dance Platform</span>}
+        {event.coverUrl ? <img src={event.coverUrl} alt={`Обложка мероприятия «${event.title}»`} /> : <span>On Dance Space</span>}
       </div>
       <div className="event-hero-copy">
         <span className={`type-badge type-${event.type}`}>{event.type === 'tournament' ? 'Турнир' : 'Мастер-класс'}</span>

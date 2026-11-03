@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
+import { routes } from '../../routes'
 import { getDashboardProfile } from '../../services/dashboard'
 import { getAllMyEvents } from '../../services/myEvents'
 import { DashboardHeader } from '../dashboard/components/DashboardHeader'
@@ -33,9 +34,17 @@ export function MyEventsPage() {
 
   const firstName = profileQuery.data?.firstName ?? user?.split('@')[0] ?? 'Танцор'
 
+  if (profileQuery.data && !profileQuery.data.hasHostRole) {
+    return <Navigate to={routes.home} replace />
+  }
+
   return (
     <div className="dashboard-page my-events-page">
-      <DashboardHeader firstName={firstName} onLogout={() => void logout()} />
+      <DashboardHeader
+        firstName={firstName}
+        hasHostRole={profileQuery.data?.hasHostRole}
+        onLogout={() => void logout()}
+      />
       <main className="my-events-main">
         <div className="my-events-header">
           <div>
