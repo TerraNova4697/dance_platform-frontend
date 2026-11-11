@@ -6,6 +6,11 @@ type PublicOfferModalProps = {
 export function PublicOfferModal({ isOpen, onClose }: PublicOfferModalProps) {
   if (!isOpen) return null
 
+  const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`
+  const pdfUrl = `${baseUrl}public-offer.pdf`
+
   return (
     <div
       className="legal-modal-overlay"
@@ -37,6 +42,21 @@ export function PublicOfferModal({ isOpen, onClose }: PublicOfferModalProps) {
           <span>Город: Астана, Республика Казахстан</span>
           <span>·</span>
           <span>Дата публикации: 29 октября 2026 года</span>
+          <a
+            href={pdfUrl}
+            download="Публичная_оферта_BPM_Technologies.pdf"
+            className="legal-download-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Скачать официальный PDF документ"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span>Скачать PDF</span>
+          </a>
         </div>
 
         <div className="legal-modal-body">
@@ -524,6 +544,20 @@ export function PublicOfferModal({ isOpen, onClose }: PublicOfferModalProps) {
         </div>
 
         <div className="legal-modal-footer">
+          <a
+            href={pdfUrl}
+            download="Публичная_оферта_BPM_Technologies.pdf"
+            className="legal-btn-secondary"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span>Скачать файл PDF (167 КБ)</span>
+          </a>
           <button type="button" className="legal-btn-primary" onClick={onClose}>
             Понятно, закрыть
           </button>
