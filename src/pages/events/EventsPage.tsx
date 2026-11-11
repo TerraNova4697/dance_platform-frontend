@@ -148,6 +148,7 @@ export function EventsPage() {
   const profileQuery = useQuery({
     queryKey: ['dashboard', 'profile', userId],
     queryFn: () => getDashboardProfile(userId),
+    enabled: Boolean(user),
   })
 
   const eventsQuery = useQuery({

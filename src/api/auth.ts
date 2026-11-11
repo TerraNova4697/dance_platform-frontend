@@ -55,7 +55,7 @@ export async function logout(): Promise<void> {
 }
 
 export async function getLoggedUser(): Promise<string> {
-  const response = await frappeFetch<FrappeResponse<string>>('/api/method/frappe.auth.get_logged_user')
+  const response = await frappeFetch<FrappeResponse<string>>('/api/method/dance_platform.api.auth.get_current_user')
   return response.message
 }
 

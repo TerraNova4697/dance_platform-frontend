@@ -22,6 +22,7 @@ type DashboardHeaderProps = {
   onLogout: () => void
   isLoggingOut?: boolean
   actionLabel?: string
+  customNavLinks?: Array<[string, string]>
 }
 
 export function DashboardHeader({
@@ -31,6 +32,7 @@ export function DashboardHeader({
   onLogout,
   isLoggingOut = false,
   actionLabel,
+  customNavLinks,
 }: DashboardHeaderProps) {
   const { user } = useAuth()
   const profileQuery = useQuery({
@@ -43,6 +45,16 @@ export function DashboardHeader({
   const hasHostRole = hasHostRoleProp ?? Boolean(profileQuery.data?.hasHostRole)
 
   const desktopLinks = useMemo(() => {
+    if (customNavLinks) {
+      return customNavLinks
+    }
+    if (!user) {
+      return [
+        ['Главная', routes.home],
+        ['Мероприятия', routes.events],
+        ['Тренеры', routes.trainers],
+      ]
+    }
     const links: [string, string][] = [
       ['Главная', routes.home],
       ['Мероприятия', routes.events],
@@ -56,7 +68,7 @@ export function DashboardHeader({
     }
     links.push(['Календарь', routes.calendar])
     return links
-  }, [hasHostRole])
+  }, [hasHostRole, user, customNavLinks])
 
   const initial = firstName.charAt(0).toUpperCase() || 'D'
 
@@ -75,23 +87,59 @@ export function DashboardHeader({
             ))}
           </nav>
           <div className="header-actions">
-            <a className="icon-button" href="#notifications" aria-label="Уведомления">
-              <Icon name="bell" />
-            </a>
-            <button
-              className="profile-button"
-              type="button"
-              onClick={onLogout}
-              disabled={isLoggingOut}
-              aria-label={actionLabel ?? 'Выйти из аккаунта'}
-            >
-              {avatarUrl ? (
-                <img className="avatar" src={avatarUrl} alt="" />
-              ) : (
-                <span className="avatar">{initial}</span>
-              )}
-              <span>{isLoggingOut ? 'Выходим…' : actionLabel ?? firstName}</span>
-            </button>
+            {user ? (
+              <>
+                <a className="icon-button" href="#notifications" aria-label="Уведомления">
+                  <Icon name="bell" />
+                </a>
+                <button
+                  className="profile-button"
+                  type="button"
+                  onClick={onLogout}
+                  disabled={isLoggingOut}
+                  aria-label={actionLabel ?? 'Выйти из аккаунта'}
+                >
+                  {avatarUrl ? (
+                    <img className="avatar" src={avatarUrl} alt="" />
+                  ) : (
+                    <span className="avatar">{initial}</span>
+                  )}
+                  <span>{isLoggingOut ? 'Выходим…' : actionLabel ?? firstName}</span>
+                </button>
+              </>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <NavLink
+                  to={routes.login}
+                  className="button secondary"
+                  style={{
+                    padding: '8px 18px',
+                    fontSize: '13.5px',
+                    borderRadius: '20px',
+                    height: 'auto',
+                    border: '1px solid var(--border-strong)',
+                    color: 'var(--text-primary)',
+                  }}
+                >
+                  Войти
+                </NavLink>
+                <NavLink
+                  to={routes.register}
+                  className="button primary"
+                  style={{
+                    padding: '8px 18px',
+                    fontSize: '13.5px',
+                    borderRadius: '20px',
+                    height: 'auto',
+                    background: 'var(--brand-accent-gradient)',
+                    color: 'var(--text-on-gold)',
+                    fontWeight: 600,
+                  }}
+                >
+                  Регистрация
+                </NavLink>
+              </div>
+            )}
           </div>
         </div>
       </header>

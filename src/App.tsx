@@ -9,6 +9,7 @@ import { RegisterPage } from './pages/RegisterPage'
 import { VerifyEmailPage } from './pages/VerifyEmailPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 import { AthleteDashboard } from './pages/dashboard/AthleteDashboard'
+import { LandingPage } from './pages/landing/LandingPage'
 import { EventsPage } from './pages/events/EventsPage'
 import { CabinetPage } from './pages/CabinetPage'
 import { EventRegistrationPage } from './pages/events/registration/EventRegistrationPage'
@@ -23,8 +24,17 @@ import { TrainingBookingDetailsPage } from './pages/trainings/TrainingBookingDet
 import { HostDashboardPage } from './pages/host/HostDashboardPage'
 import { AdminHostApplicationsPage } from './pages/admin/AdminHostApplicationsPage'
 import { useAuthStore } from './stores/authStore'
+import { useAuth } from './hooks/useAuth'
 
 const EventDetailsPage = lazy(() => import('./pages/events/details/EventDetailsPage').then((module) => ({ default: module.EventDetailsPage })))
+
+function HomeRoute() {
+  const { user, isLoading } = useAuth()
+  if (isLoading) {
+    return <LoadingScreen />
+  }
+  return user ? <AthleteDashboard /> : <LandingPage />
+}
 
 function App() {
   useEffect(() => {
@@ -37,20 +47,25 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/welcome" element={<LandingPage />} />
+        
+        {/* Public Catalog Routes */}
+        <Route path="/" element={<HomeRoute />} />
+        <Route path="events" element={<EventsPage />} />
+        <Route path="events/map" element={<Navigate to="/events?view=map" replace />} />
         <Route path="events/:eventId" element={<Suspense fallback={<LoadingScreen />}><EventDetailsPage /></Suspense>} />
         <Route path="events/:eventId/tickets" element={<PlaceholderPage />} />
+        <Route path="trainers" element={<TrainersCatalogPage />} />
+        <Route path="trainers/:trainerId" element={<TrainerDetailsPage />} />
         <Route path="tickets/verify/:tokenHash" element={<TicketVerifyPage />} />
+
+        {/* Authenticated Routes */}
         <Route element={<ProtectedRoute />}>
-          <Route index element={<AthleteDashboard />} />
           <Route path="onboarding" element={<OnboardingPage />} />
           <Route path="dashboard" element={<AthleteDashboard />} />
-          <Route path="events" element={<EventsPage />} />
-          <Route path="events/map" element={<Navigate to="/events?view=map" replace />} />
           <Route path="events/:eventId/register" element={<EventRegistrationPage />} />
           <Route path="my-events" element={<MyEventsPage />} />
           <Route path="calendar" element={<CalendarPage />} />
-          <Route path="trainers" element={<TrainersCatalogPage />} />
-          <Route path="trainers/:trainerId" element={<TrainerDetailsPage />} />
           <Route path="trainings/:bookingId" element={<TrainingBookingDetailsPage />} />
           <Route path="tickets" element={<MyTicketsPage />} />
           <Route path="tickets/:ticketId" element={<TicketDetailsPage />} />
