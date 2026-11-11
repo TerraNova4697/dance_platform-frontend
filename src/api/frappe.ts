@@ -1,3 +1,4 @@
+const API_BASE_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '')
 type FrappeWindow = Window & { frappe?: { csrf_token?: string } }
 type FrappeListResponse<T> = { data: T[] }
 
@@ -55,7 +56,12 @@ export async function frappeFetch<T>(path: string, options: Omit<RequestInit, 'c
     if (csrfToken) headers.set('X-Frappe-CSRF-Token', csrfToken)
   }
 
-  const response = await fetch(path, { ...options, method, headers, credentials: 'include' })
+  // Если путь относительный и задан API_BASE_URL, объединяем их
+  const url = path.startsWith('http://') || path.startsWith('https://')
+    ? path
+    : `${API_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`
+
+  const response = await fetch(url, { ...options, method, headers, credentials: 'include' })
   const payload = await readResponseBody(response)
   if (!response.ok) throw new FrappeApiError(getErrorMessage(payload, `Ошибка запроса (${response.status})`), response.status)
   return payload as T
