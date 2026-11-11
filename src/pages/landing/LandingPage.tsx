@@ -856,7 +856,7 @@ export function LandingPage() {
                   className="footer-link-btn"
                   onClick={() => setOfertaModalOpen(true)}
                 >
-                  Публичная оферта (toCloud)
+                  Публичная оферта (BPM Technologies)
                 </button>
                 <button
                   type="button"
@@ -871,7 +871,7 @@ export function LandingPage() {
             {/* Part C: Bottom Bar */}
             <div className="footer-bottom-bar">
               <span className="footer-copyright">
-                © 2026 On dance space. Все права защищены. ТОО «toCloud», БИН 240640005239.
+                © 2026 On dance space. Все права защищены. ТОО «BPM Technologies», БИН 180440008976.
               </span>
               <div className="footer-social-links">
                 <a href="https://t.me" target="_blank" rel="noopener noreferrer">Telegram</a>
