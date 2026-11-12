@@ -889,8 +889,8 @@ export function LandingPage() {
                 © 2026 On dance space. Все права защищены. ТОО «BPM Technologies», БИН 180440008976.
               </span>
               <div className="footer-social-links">
-                <a href="https://t.me" target="_blank" rel="noopener noreferrer">Telegram</a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+                {/* <a href="https://t.me" target="_blank" rel="noopener noreferrer">Telegram</a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a> */}
                 <a
                   href="#top"
                   onClick={(e) => handleAnchorClick(e, 'top')}
